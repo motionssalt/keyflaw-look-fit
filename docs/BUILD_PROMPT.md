@@ -95,3 +95,6 @@ Create `BUILD_STATE.json` in the **first commit** and update it after every mean
 
 ## 10. Definition of done and final report
 Done means every queue item is `done` (or `blocked` with the reason recorded), `LOOK_SPEC.md` is verified against `look_apply.py`, and everything is pushed.
+
+## 11. Follow-up refinement note (Magic Bullet Looks "Dade")
+The output from the previous session was almost a 100% match, except the grass/foliage in the second reference was yellow whereas in the edit it was bluish-green. Editors commonly use the **Dade** preset/LUT in **Magic Bullet Looks**, which imparts that signature bluish/teal look on foliage and cool shadows while keeping warm skin and gold tones intact. Research and incorporate the properties of the Dade filter into the closed-form colour specification without wasting time.
