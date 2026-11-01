@@ -2,8 +2,8 @@
   "project": "keyflaw-look-fit",
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
-  "status": "in_progress",
-  "current_phase": "Q8",
+  "status": "complete",
+  "current_phase": "complete",
   "queue": [
     {
       "id": "Q1",
@@ -21,724 +21,142 @@
       "id": "Q3",
       "title": "Colour correction fit",
       "status": "done",
-      "notes": "Tested M1/M2/M3 in sRGB and linear light on cluster-balanced flat samples with dark/bright anchors and Huber loss. Selected M2_srgb: held-out DE00 = 3.703 vs in-sample 3.864 (gap -0.161 <= 1.0), beating M1_srgb (5.043) and M2_linear (3.806) while generalizing better cross-pair A->B than M3_srgb (7.136 vs 7.701 DE00) with 22 vs 73 params. Recorded Joint and per-pair params, observed channel ranges, and exported 33^3 look.cube (will update after joint refit with spatial stages)."
+      "notes": "Tested M1/M2/M3 in sRGB and linear light on cluster-balanced flat samples, then upgraded in Q7/Q8 to closed-form M2_Dade_srgb (per-channel sRGB Levels + cool slate-blue shadow toe + neutral-preserving 3x3 matrix + opponent-polar Magic Bullet Looks 'Dade' hue-chroma shaper). Rotates yellow-green/green foliage (H in [60, 155] deg) by +38..+52 deg into bluish-green/teal while keeping warm skin, straw gold (H~40 deg), and yellow clothing/blonde hair (H~51-52 deg) untouched. Held-out DE00 = 2.2586 vs in-sample 2.2392 (gap +0.0194 << 1.0)."
     },
     {
       "id": "Q4",
       "title": "Gradient / lower-area darkening",
       "status": "done",
-      "notes": "2D surface R^2: vertical 70.2%/75.7% vs radial vignette 6.4%/0.5%. Visual inspection of row profiles confirmed pure smoothstep multiply gradient starting at y0=0.1733 and saturating at y1=0.7281 (strength_rgb=[0.250636, 0.255053, 0.292137]). Row-mean y correlation dropped from -0.9393/-0.9309 to -0.3514 (A) and +0.2994 (B). Full flat_interior median DE00: 2.408 (A), 2.775 (B)."
+      "notes": "2D surface R^2: vertical 70.2% (Pair A) / 75.7% (Pair B) vs radial vignette 6.4% / 0.5%. Jointly refined smoothstep Multiply gradient starting at y0_norm=0.1400 and saturating at y1_norm=0.758341 with strength_rgb=[0.262739, 0.256392, 0.280550] (~25.95% luma darkening). Drops Pair B row-mean y correlation from -0.9428 to -0.0340 and flat median DE00 to 2.25 (A) / 2.66 (B)."
     },
     {
       "id": "Q5",
       "title": "Unsharp mask",
       "status": "done",
-      "notes": ""
+      "notes": "Fitted 1D edge profiles (650/dataset) and calibrated 2D single-pass 25-tap (5x5 [1,4,6,4,1]/16) RGB USM: sigma_frac_h = 0.003473 (2.5006 px at 720p, 1.4205 px at 409p; independent height-normalised radii agree within 9.47% across Pair A 720p and Pair B 409p), amount = 0.82, soft coring threshold = 0.01433 (3.654/255). Reduces 1D edge-profile RMSE by 38.92% (A 720p), 39.31% (B 720p), and 33.56% (B 409p), and full-frame edge-band RMSE from 19.67 -> 16.10 (A) and 28.15 -> 21.76 (B)."
     },
     {
       "id": "Q6",
       "title": "Haze flare",
       "status": "done",
-      "notes": ""
+      "notes": "Tested 12 falloff x blend candidates on low-pass spatial residuals; selected 2D anisotropic rotated Gaussian with Screen blend and global_veil_needed=false (fitted veil <= 2.5/255 within reconstruction noise floor). Reduces LP spatial residual energy by 77.2-85.3% on Pair A and 52.3-94.7% (top-right) on Pair B. Documented consistent top-right geometry (rx~0.19H, ry~0.25-0.30H) vs scene-dependent tint/intensity (Pair A warm golden 0.34 vs Pair B cool sky 0.13) and fitted an in-frame shared default preset (intensity=0.118307) that improves all metrics on both pairs."
     },
     {
       "id": "Q7",
       "title": "Order of operations and the full composite",
       "status": "done",
-      "notes": ""
+      "notes": "Evaluated all 5 pipeline orders; selected USM -> CC -> GRAD -> FLARE (lowest mean Edge RMSE 18.125, highest mean Luma SSIM 0.94028, tied best flat median DE00 2.1963, and enables 25 raw texture taps in a single-pass GLSL shader). Full composite beats Original and CC-only on every metric across both pairs for both shared default and per-scene flare presets."
     },
     {
       "id": "Q8",
       "title": "Deliverables",
-      "status": "in_progress",
-      "notes": ""
+      "status": "done",
+      "notes": "Generated and verified look_params.json, look_apply.py, look.cube (33^3), LOOK_SPEC.md (with GLSL pseudocode, control sheet, assumptions, and 66 test vectors), REPORT.md (with stage ablations, Dade swatch proof, and side-by-side residual panels), and src/verify_spec_parity.py confirming max_abs_diff < 1.5e-6 across all formulas, vectors, and LUT entries."
     }
   ],
   "results": {
-    "cc_model": "M2_srgb (per-channel Levels + neutral-preserving 3x3 colour matrix in gamma-encoded sRGB)",
-    "cc_params": {
-      "model_type": "M2",
-      "colour_space": "srgb",
-      "levels": {
-        "in_black": [
-          -0.105873,
-          -0.091134,
-          0.016481
-        ],
-        "in_white": [
-          0.946858,
-          0.937232,
-          0.964706
-        ],
-        "gamma": [
-          0.789845,
-          0.802537,
-          0.902941
-        ],
-        "out_black": [
-          -0.174205,
-          -0.179963,
-          0.046905
-        ],
-        "out_white": [
-          1.021549,
-          1.025685,
-          1.098564
-        ]
-      },
-      "observed_input_range_srgb_0_255": [
-        {
-          "channel": "R",
-          "min_255": 16.0,
-          "max_255": 251.0,
-          "extrapolated_below_255": 16.0,
-          "extrapolated_above_255": 251.0
-        },
-        {
-          "channel": "G",
-          "min_255": 21.0,
-          "max_255": 253.0,
-          "extrapolated_below_255": 21.0,
-          "extrapolated_above_255": 253.0
-        },
-        {
-          "channel": "B",
-          "min_255": 25.0,
-          "max_255": 254.0,
-          "extrapolated_below_255": 25.0,
-          "extrapolated_above_255": 254.0
-        }
-      ],
-      "saturation_equiv": 1.106893,
-      "matrix_3x3": [
-        [
-          1.253076,
-          -0.079521,
-          -0.173555
-        ],
-        [
-          -0.1643,
-          1.26228,
-          -0.09798
-        ],
-        [
-          -0.241388,
-          0.126996,
-          1.114391
-        ]
-      ]
+    "order_of_operations": [
+      "1_unsharp_mask_25tap_rgb",
+      "2_colour_correction_dade_srgb",
+      "3_vertical_multiply_gradient",
+      "4_anisotropic_gaussian_screen_flare"
+    ],
+    "cc_model": "M2_Dade_srgb (per-channel sRGB Levels + cool slate-blue shadow toe + neutral-preserving 3x3 matrix + closed-form opponent-polar Magic Bullet Looks 'Dade' hue-chroma shaper)",
+    "held_out_validation": {
+      "in_sample_median_de00": 2.2392,
+      "held_out_median_de00": 2.2586,
+      "gap_de00": 0.0194
     },
-    "gradient": {
-      "hypothesis": "H1_vertical_spatial_multiply_gradient (smoothstep falloff with subtle RGB shadow tint)",
-      "coordinate_reference": "Full frame height including letterbox bars (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
-      "y0_norm": 0.14,
-      "y1_norm": 0.749458,
-      "pixel_rows_at_resolutions": {
-        "pairA_1278x720": {
-          "y0_px": 100.8,
-          "y1_px": 539.61
-        },
-        "pairB_edit_1291x720": {
-          "y0_px": 100.8,
-          "y1_px": 539.61
-        },
-        "pairB_orig_720x409": {
-          "y0_px": 57.26,
-          "y1_px": 306.53
-        }
-      },
-      "falloff_curve": "smoothstep",
-      "blend_mode": "multiply",
-      "blend_formula": "out = clamp(cc * (1.0 - smoothstep(y0, y1, y_norm) * strength_rgb), 0.0, 1.0)",
-      "strength_rgb": [
-        0.233803,
-        0.256836,
-        0.294552
-      ],
-      "strength_luma_equiv": 0.254663
-    },
-    "unsharp": {
-      "mode": "rgb",
-      "colour_space": "gamma-encoded sRGB [0..1] (post-gradient)",
-      "kernel": "single-pass 25-tap (5x5 separable [1,4,6,4,1]/16 with bilinear UV offset = vec2(i,j) * sigma_px / resolution)",
-      "scaling_law": "constant_fraction_of_height",
-      "sigma_frac_h": 0.003473,
-      "sigma_px_at_resolutions": {
-        "pairA_1278x720": 2.5007,
-        "pairB_edit_1291x720": 2.5007,
-        "pairB_orig_720x409": 1.4205,
-        "fhd_1920x1080": 3.751
-      },
-      "amount": 0.82,
-      "threshold_01": 0.01433,
-      "threshold_255": 3.654,
-      "formula": "d = rgb - blur25(rgb, sigma_frac_h * H); d_t = sign(d) * max(abs(d) - threshold, 0.0); out = clamp(rgb + amount * d_t, 0.0, 1.0)",
-      "nuisance_pre_blur_excluded_from_spec": {
-        "pairA_720p_px": 0.7228,
-        "pairB_720p_px": 0.0683,
-        "pairB_409p_px": 0.0029,
-        "note": "Accounts solely for AI-reconstruction sharpness vs export recompression/upscaling; NOT applied in look_apply.py or shader."
-      },
-      "edge_profile_rmse_reduction_pct": {
-        "pairA_720p_vs_no_sharpening": 38.92,
-        "pairB_720p_vs_no_sharpening": 39.31,
-        "pairB_409p_vs_no_sharpening": 33.56
-      },
-      "amount_1d_with_nuisance_preblur": 1.2563
-    },
-    "flare": {
-      "model": "2D anisotropic rotated Gaussian radial glow with Screen blend",
-      "falloff_curve": "gaussian",
-      "blend_mode": "screen",
-      "blend_formula": "f = intensity * exp(-0.5 * (u^2 + v^2)) * colour_rgb; out = 1.0 - (1.0 - base) * (1.0 - clamp(f, 0.0, 1.0))",
-      "global_veil_needed": false,
-      "global_veil_test": {
-        "pairA_veil_rgb_255": [
-          4.07,
-          5.11,
-          0.0
-        ],
-        "pairA_lp_mse_without_veil": 43.244,
-        "pairA_lp_mse_with_veil": 40.942,
-        "pairB_veil_rgb_255": [
-          0.0,
-          0.0,
-          0.84
-        ],
-        "pairB_lp_mse_without_veil": 32.884,
-        "pairB_lp_mse_with_veil": 32.806,
-        "conclusion": "Fitted uniform veil is <= 2.5/255 on Pair A (within the 3/255 reconstruction noise floor) and adds negligible LP energy reduction; excluded to prevent washing out global blacks."
-      },
-      "canonical_default_params": {
-        "cx": 0.9252927318432319,
-        "cy": 0.10456239935648844,
-        "rx_frac_h": 0.17897826241978573,
-        "ry_frac_h": 0.2974364692545333,
-        "angle_deg": -9.328781958362885,
-        "colour_rgb": [
-          0.973168,
-          1.0,
-          0.331495
-        ],
-        "intensity": 0.350495,
-        "pixel_equivalents": {
-          "pairA_1278x720": {
-            "cx_px": 1182.52,
-            "cy_px": 75.28,
-            "rx_px": 128.86,
-            "ry_px": 214.15
-          },
-          "pairB_edit_1291x720": {
-            "cx_px": 1194.55,
-            "cy_px": 75.28,
-            "rx_px": 128.86,
-            "ry_px": 214.15
-          },
-          "pairB_orig_720x409": {
-            "cx_px": 666.21,
-            "cy_px": 42.77,
-            "rx_px": 73.2,
-            "ry_px": 121.65
-          }
-        },
-        "source_basis": "Pair A unambiguous top-right golden-warm haze flare (lifts dark hair [18,23,29] -> [78,77,62] without clipping straw-hat highlights, confirming Screen blend)."
-      },
-      "pairB_fitted_params": {
-        "cx": 0.8747528680416167,
-        "cy": 0.012447830766951273,
-        "rx_frac_h": 0.18059946772758897,
-        "ry_frac_h": 0.26947565041499544,
-        "angle_deg": 87.56893402199576,
-        "colour_rgb": [
-          0.343815,
-          0.927396,
-          1.0
-        ],
-        "intensity": 0.133403,
-        "pixel_equivalents": {
-          "pairA_1278x720": {
-            "cx_px": 1117.93,
-            "cy_px": 8.96,
-            "rx_px": 130.03,
-            "ry_px": 194.02
-          },
-          "pairB_edit_1291x720": {
-            "cx_px": 1129.31,
-            "cy_px": 8.96,
-            "rx_px": 130.03,
-            "ry_px": 194.02
-          },
-          "pairB_orig_720x409": {
-            "cx_px": 629.82,
-            "cy_px": 5.09,
-            "rx_px": 73.87,
-            "ry_px": 110.22
-          }
-        },
-        "source_basis": "Pair B subtle top-right cool sky haze lift ([32,51,48] -> [46,79,86] on upper-right cloak)."
-      },
-      "consistency_and_scene_dependence": {
-        "consistent_across_pairs": [
-          "Top-right quadrant placement (cx ~ 0.85..0.92 of width, cy ~ 0.05..0.22 of height)",
-          "Broad soft spread (rx, ry ~ 0.20..0.34 of frame height)",
-          "Screen blend mode (lifts darks strongly while preserving bright highlights)",
-          "Smooth Gaussian radial falloff"
-        ],
-        "scene_dependent_or_animated": [
-          "Intensity (0.24-0.28 strong glow on Pair A vs 0.09-0.12 subtle glow on Pair B)",
-          "Tint colour_rgb (warm golden-amber [0.95, 1.00, 0.40] matching straw-hat/sunlight in Pair A vs cool cyan [0.47, 0.96, 1.00] matching sky in Pair B \u2014 suggests either per-clip keyframing/tint selection or a source-tinted optical bloom/haze plugin)."
-        ],
-        "confidence": "Medium-High on Pair A geometry & Screen blend; Low-Medium on cross-clip static colour/intensity invariance (expose flare_intensity, flare_pos, flare_radius, and flare_colour as Keyflaw user controls)."
-      },
-      "lp_residual_energy_reduction_pct": {
-        "pairA_full_frame_pct": 78.15,
-        "pairA_top_hemisphere_pct": 85.25,
-        "pairB_full_frame_pct": 43.82,
-        "pairB_top_right_quadrant_pct": 94.71
-      }
-    },
-    "order_of_operations": "USM_CC_GRAD_FLARE",
-    "metrics": {
+    "params_file": "look_params.json",
+    "reference_script": "look_apply.py",
+    "lut_file": "look.cube",
+    "spec_file": "LOOK_SPEC.md",
+    "report_file": "REPORT.md",
+    "headline_metrics_verified_cli": {
       "pairA_720p": {
-        "0_original": {
-          "de00_median": 7.4888,
-          "de00_p90": 11.9587,
-          "de00_mean": 8.1524,
-          "flat_mae_rgb_255": [
-            25.884,
-            25.715,
-            24.344
-          ],
-          "flat_mae_mean_255": 25.314,
-          "valid_mae_mean_255": 24.341,
+        "original": {
+          "de00_median": 7.4764,
+          "de00_p90": 11.9446,
+          "flat_mae_255": 25.314,
           "edge_rmse_255": 27.716,
-          "luma_ssim_valid": 0.92053
+          "luma_ssim": 0.92053
         },
-        "1_cc_only": {
-          "de00_median": 12.7204,
-          "de00_p90": 16.4299,
-          "de00_mean": 11.4744,
-          "flat_mae_rgb_255": [
-            26.219,
-            36.871,
-            30.268
-          ],
-          "flat_mae_mean_255": 31.119,
-          "valid_mae_mean_255": 28.668,
-          "edge_rmse_255": 31.289,
-          "luma_ssim_valid": 0.92222
+        "full_default_flare": {
+          "de00_median": 2.2301,
+          "de00_p90": 6.1175,
+          "flat_mae_255": 7.185,
+          "edge_rmse_255": 15.207,
+          "luma_ssim": 0.95673
         },
-        "2_cc_plus_gradient": {
-          "de00_median": 2.1994,
-          "de00_p90": 7.2006,
-          "de00_mean": 4.3131,
-          "flat_mae_rgb_255": [
-            8.681,
-            8.683,
-            7.012
-          ],
-          "flat_mae_mean_255": 8.125,
-          "valid_mae_mean_255": 9.876,
-          "edge_rmse_255": 19.565,
-          "luma_ssim_valid": 0.93788
-        },
-        "3_cc_grad_plus_unsharp": {
-          "de00_median": 2.1994,
-          "de00_p90": 7.2006,
-          "de00_mean": 4.3131,
-          "flat_mae_rgb_255": [
-            8.681,
-            8.683,
-            7.012
-          ],
-          "flat_mae_mean_255": 8.125,
-          "valid_mae_mean_255": 9.099,
-          "edge_rmse_255": 16.296,
-          "luma_ssim_valid": 0.94722
-        },
-        "4_full_composite_shared_flare": {
-          "de00_median": 2.1925,
-          "de00_p90": 6.7574,
-          "de00_mean": 3.5769,
-          "flat_mae_rgb_255": [
-            7.366,
-            6.66,
-            6.409
-          ],
-          "flat_mae_mean_255": 6.812,
-          "valid_mae_mean_255": 8.049,
-          "edge_rmse_255": 15.148,
-          "luma_ssim_valid": 0.95927
-        },
-        "5_full_composite_scene_flare": {
-          "de00_median": 2.0558,
-          "de00_p90": 5.1676,
-          "de00_mean": 2.6465,
-          "flat_mae_rgb_255": [
-            5.132,
-            5.022,
-            6.067
-          ],
-          "flat_mae_mean_255": 5.407,
-          "valid_mae_mean_255": 7.003,
-          "edge_rmse_255": 14.66,
-          "luma_ssim_valid": 0.9633
+        "full_scene_flare": {
+          "de00_median": 2.1516,
+          "de00_p90": 4.9244,
+          "flat_mae_255": 5.506,
+          "edge_rmse_255": 14.481,
+          "luma_ssim": 0.96327
         }
       },
       "pairB_720p_all_flat": {
-        "0_original": {
+        "original": {
           "de00_median": 4.7071,
-          "de00_p90": 11.7559,
-          "de00_mean": 5.9913,
-          "flat_mae_rgb_255": [
-            10.699,
-            12.92,
-            14.248
-          ],
-          "flat_mae_mean_255": 12.622,
-          "valid_mae_mean_255": 18.029,
+          "de00_p90": 11.7406,
+          "flat_mae_255": 12.622,
           "edge_rmse_255": 27.967,
-          "luma_ssim_valid": 0.87459
+          "luma_ssim": 0.87459
         },
-        "1_cc_only": {
-          "de00_median": 6.126,
-          "de00_p90": 10.8069,
-          "de00_mean": 6.2553,
-          "flat_mae_rgb_255": [
-            15.866,
-            15.095,
-            14.613
-          ],
-          "flat_mae_mean_255": 15.192,
-          "valid_mae_mean_255": 23.171,
-          "edge_rmse_255": 37.859,
-          "luma_ssim_valid": 0.86618
+        "full_default_flare": {
+          "de00_median": 2.3247,
+          "de00_p90": 4.6866,
+          "flat_mae_255": 4.925,
+          "edge_rmse_255": 21.77,
+          "luma_ssim": 0.91635
         },
-        "2_cc_plus_gradient": {
-          "de00_median": 2.7576,
-          "de00_p90": 5.9129,
-          "de00_mean": 3.4296,
-          "flat_mae_rgb_255": [
-            6.192,
-            5.751,
-            7.486
-          ],
-          "flat_mae_mean_255": 6.477,
-          "valid_mae_mean_255": 14.364,
-          "edge_rmse_255": 28.205,
-          "luma_ssim_valid": 0.87231
-        },
-        "3_cc_grad_plus_unsharp": {
-          "de00_median": 2.7576,
-          "de00_p90": 5.9132,
-          "de00_mean": 3.4296,
-          "flat_mae_rgb_255": [
-            6.192,
-            5.751,
-            7.486
-          ],
-          "flat_mae_mean_255": 6.477,
-          "valid_mae_mean_255": 12.616,
-          "edge_rmse_255": 21.704,
-          "luma_ssim_valid": 0.91614
-        },
-        "4_full_composite_shared_flare": {
-          "de00_median": 2.7693,
-          "de00_p90": 6.176,
-          "de00_mean": 3.5285,
-          "flat_mae_rgb_255": [
-            6.858,
-            4.967,
-            6.095
-          ],
-          "flat_mae_mean_255": 5.974,
-          "valid_mae_mean_255": 12.444,
-          "edge_rmse_255": 21.704,
-          "luma_ssim_valid": 0.91687
-        },
-        "5_full_composite_scene_flare": {
-          "de00_median": 2.2809,
-          "de00_p90": 5.0469,
-          "de00_mean": 2.9301,
-          "flat_mae_rgb_255": [
-            5.75,
-            4.078,
-            5.462
-          ],
-          "flat_mae_mean_255": 5.097,
-          "valid_mae_mean_255": 11.929,
-          "edge_rmse_255": 21.789,
-          "luma_ssim_valid": 0.91704
+        "full_scene_flare": {
+          "de00_median": 2.2394,
+          "de00_p90": 4.5637,
+          "flat_mae_255": 4.849,
+          "edge_rmse_255": 21.773,
+          "luma_ssim": 0.91642
         }
       },
       "pairB_720p_excluding_ai_bush": {
-        "0_original": {
-          "de00_median": 4.7212,
-          "de00_p90": 11.4746,
-          "de00_mean": 5.7873,
-          "flat_mae_rgb_255": [
-            9.203,
-            13.403,
-            14.747
-          ],
-          "flat_mae_mean_255": 12.451,
-          "valid_mae_mean_255": 16.623,
+        "original": {
+          "de00_median": 4.7183,
+          "de00_p90": 11.4652,
+          "flat_mae_255": 12.451,
           "edge_rmse_255": 27.967,
-          "luma_ssim_valid": 0.87863
+          "luma_ssim": 0.87863
         },
-        "1_cc_only": {
-          "de00_median": 5.7832,
-          "de00_p90": 10.0788,
-          "de00_mean": 5.7655,
-          "flat_mae_rgb_255": [
-            13.919,
-            14.101,
-            14.058
-          ],
-          "flat_mae_mean_255": 14.026,
-          "valid_mae_mean_255": 20.727,
-          "edge_rmse_255": 37.859,
-          "luma_ssim_valid": 0.87397
-        },
-        "2_cc_plus_gradient": {
-          "de00_median": 2.7367,
-          "de00_p90": 5.6427,
-          "de00_mean": 3.0883,
-          "flat_mae_rgb_255": [
-            4.493,
-            5.738,
-            7.342
-          ],
-          "flat_mae_mean_255": 5.858,
-          "valid_mae_mean_255": 12.185,
-          "edge_rmse_255": 28.205,
-          "luma_ssim_valid": 0.87734
-        },
-        "3_cc_grad_plus_unsharp": {
-          "de00_median": 2.7367,
-          "de00_p90": 5.6427,
-          "de00_mean": 3.0883,
-          "flat_mae_rgb_255": [
-            4.493,
-            5.738,
-            7.342
-          ],
-          "flat_mae_mean_255": 5.858,
-          "valid_mae_mean_255": 10.3,
-          "edge_rmse_255": 21.704,
-          "luma_ssim_valid": 0.92263
-        },
-        "4_full_composite_shared_flare": {
-          "de00_median": 2.7518,
-          "de00_p90": 5.9752,
-          "de00_mean": 3.2026,
-          "flat_mae_rgb_255": [
-            5.214,
-            4.908,
-            5.843
-          ],
-          "flat_mae_mean_255": 5.321,
-          "valid_mae_mean_255": 10.106,
-          "edge_rmse_255": 21.704,
-          "luma_ssim_valid": 0.92349
-        },
-        "5_full_composite_scene_flare": {
-          "de00_median": 2.2418,
-          "de00_p90": 4.7958,
-          "de00_mean": 2.5525,
-          "flat_mae_rgb_255": [
-            3.976,
-            3.917,
-            5.287
-          ],
-          "flat_mae_mean_255": 4.393,
-          "valid_mae_mean_255": 9.594,
-          "edge_rmse_255": 21.789,
-          "luma_ssim_valid": 0.92413
+        "full_scene_flare": {
+          "de00_median": 2.2047,
+          "de00_p90": 4.2758,
+          "flat_mae_255": 4.059,
+          "edge_rmse_255": 21.773,
+          "luma_ssim": 0.92328
         }
       },
-      "pairB_409p_native_orig_scale": {
-        "0_original": {
+      "pairB_409p_native": {
+        "original": {
           "de00_median": 4.4256,
-          "de00_p90": 11.4824,
-          "de00_mean": 5.6283,
-          "flat_mae_rgb_255": [
-            8.305,
-            12.162,
-            13.65
-          ],
-          "flat_mae_mean_255": 11.372,
-          "valid_mae_mean_255": 26.664,
-          "edge_rmse_255": 28.764,
-          "luma_ssim_valid": 0.81706
+          "de00_p90": 11.4847,
+          "flat_mae_255": 11.372,
+          "edge_rmse_255": 23.791,
+          "luma_ssim": 0.89579
         },
-        "1_cc_only": {
-          "de00_median": 5.7029,
-          "de00_p90": 9.8688,
-          "de00_mean": 5.6169,
-          "flat_mae_rgb_255": [
-            11.917,
-            14.059,
-            14.309
-          ],
-          "flat_mae_mean_255": 13.428,
-          "valid_mae_mean_255": 33.117,
-          "edge_rmse_255": 38.928,
-          "luma_ssim_valid": 0.80578
+        "full_default_flare": {
+          "de00_median": 2.1142,
+          "de00_p90": 4.0724,
+          "flat_mae_255": 3.831,
+          "edge_rmse_255": 17.61,
+          "luma_ssim": 0.93097
         },
-        "2_cc_plus_gradient": {
-          "de00_median": 2.5541,
-          "de00_p90": 5.323,
-          "de00_mean": 2.9432,
-          "flat_mae_rgb_255": [
-            4.148,
-            5.386,
-            7.127
-          ],
-          "flat_mae_mean_255": 5.554,
-          "valid_mae_mean_255": 23.308,
-          "edge_rmse_255": 27.936,
-          "luma_ssim_valid": 0.81086
-        },
-        "3_cc_grad_plus_unsharp": {
-          "de00_median": 2.5541,
-          "de00_p90": 5.323,
-          "de00_mean": 2.9432,
-          "flat_mae_rgb_255": [
-            4.148,
-            5.386,
-            7.127
-          ],
-          "flat_mae_mean_255": 5.554,
-          "valid_mae_mean_255": 21.771,
-          "edge_rmse_255": 23.829,
-          "luma_ssim_valid": 0.84839
-        },
-        "4_full_composite_shared_flare": {
-          "de00_median": 2.5426,
-          "de00_p90": 5.6259,
-          "de00_mean": 3.0472,
-          "flat_mae_rgb_255": [
-            4.899,
-            4.464,
-            5.461
-          ],
-          "flat_mae_mean_255": 4.941,
-          "valid_mae_mean_255": 21.727,
-          "edge_rmse_255": 23.829,
-          "luma_ssim_valid": 0.84891
-        },
-        "5_full_composite_scene_flare": {
-          "de00_median": 2.0343,
-          "de00_p90": 4.1804,
-          "de00_mean": 2.3509,
-          "flat_mae_rgb_255": [
-            3.625,
-            3.403,
-            4.823
-          ],
-          "flat_mae_mean_255": 3.95,
-          "valid_mae_mean_255": 21.311,
-          "edge_rmse_255": 23.878,
-          "luma_ssim_valid": 0.84904
+        "full_scene_flare": {
+          "de00_median": 2.0665,
+          "de00_p90": 3.9483,
+          "flat_mae_255": 3.758,
+          "edge_rmse_255": 17.612,
+          "luma_ssim": 0.931
         }
-      }
-    },
-    "alignment": {
-      "pairA": {
-        "resolution": [
-          1278,
-          720
-        ],
-        "translation_shift_px": {
-          "dx": 0.1046,
-          "dy": -0.046,
-          "norm": 0.1143
-        },
-        "affine_displacement_px": {
-          "median": 0.122,
-          "p95": 0.278,
-          "max": 0.3265
-        },
-        "affine_matrix_ed_to_or": [
-          [
-            1.000364,
-            -5.8e-05,
-            -0.150566
-          ],
-          [
-            -6.5e-05,
-            1.000099,
-            -0.020881
-          ]
-        ],
-        "edge_corr_full_unmasked_before": 0.96316,
-        "edge_corr_valid_before": 0.97401,
-        "edge_corr_valid_after_translation": 0.97478,
-        "edge_corr_valid_after_affine": 0.97636,
-        "threshold_px": 0.5,
-        "re_warped_used": false
-      },
-      "pairB": {
-        "resolution_edit": [
-          1291,
-          720
-        ],
-        "resolution_orig": [
-          720,
-          409
-        ],
-        "scale_orig_to_edit": {
-          "sx": 1.791749,
-          "sy": 1.781151,
-          "anisotropy_pct": 0.593
-        },
-        "scale_edit_to_orig": {
-          "sx": 0.558114,
-          "sy": 0.561435
-        },
-        "affine_orig_to_edit": [
-          [
-            1.791748,
-            0.000439,
-            5.937686
-          ],
-          [
-            -0.002034,
-            1.781151,
-            -3.063022
-          ]
-        ],
-        "affine_edit_to_orig": [
-          [
-            0.558114,
-            -0.000138,
-            -3.314328
-          ],
-          [
-            0.000637,
-            0.561435,
-            1.715902
-          ]
-        ],
-        "ecc_refinement_over_sift_px": {
-          "median": 0.4017,
-          "p95": 0.5433,
-          "max": 0.5846,
-          "chosen_mask": "faithful_character_mask_x_lt_775"
-        },
-        "edge_corr_720p_naive_before": 0.45454,
-        "edge_corr_720p_sift_interim": 0.91484,
-        "edge_corr_720p_ecc_after": 0.93525,
-        "edge_corr_720p_ecc_faithful_x_lt_775": 0.93424,
-        "edge_corr_409p_naive_before": 0.53392,
-        "edge_corr_409p_ecc_after": 0.96198,
-        "threshold_px": 1.0,
-        "re_warped_used": true,
-        "aligned_files": [
-          "outputs/aligned/pairB_orig_aligned_720p.png",
-          "outputs/aligned/pairB_edit_aligned_409p.png"
-        ]
       }
     }
   },
@@ -749,24 +167,24 @@
     "Q4",
     "Q5",
     "Q6",
-    "Q7"
+    "Q7",
+    "Q8"
   ],
-  "next_steps": [
-    "Generate Q8 final deliverables: look_params.json, look_apply.py, LOOK_SPEC.md, look.cube verification, and REPORT.md with side-by-side images",
-    "Verify every unit test vector in LOOK_SPEC.md against look_apply.py and push final complete repository"
-  ],
+  "next_steps": [],
   "decisions": [
-    "Discarded prior repository contents completely per explicit instruction and re-initialized clean repository history.",
-    "Verified all four attached PNGs visually rather than trusting attachment order: attachment 1 (720x409) is pairB_original_matched.png; attachment 2 (1278x720) is pairA_edited.png; attachment 3 (1278x720) is pairA_original_matched.png; attachment 4 (1291x720) is pairB_edited.png.",
-    "Noted that pairB_edited.png is a 1291x720 NewPipe screenshot from the same letterboxed 720p AMV export as pairA_edited.png (with top/bottom letterbox bars at rows 0-34 and 686-719, soft transitions at 35-36 and 684-685, left/right pillarbox strips at cols 0-6 and 1287-1290, and no burned-in subtitle), whereas pairB_original_matched.png is 720x409 covering the full un-letterboxed 16:9 frame. Saved all 4 inputs byte-for-byte losslessly without resizing or re-encoding; scale/alignment difference for Pair B is handled cleanly via internal warped copies in Q2.",
-    "Observed during Q1 visual inspection that AI reconstruction in pairB_original_matched hallucinated yellow foliage ([224,201,100]) for a green bush ([157,201,115]) and smooth folds instead of the cel highlight on the right cloak; will use cluster-balanced robust loss in Q3 so AI-redraw outliers cannot skew colour parameters while keeping flat_interior masks strictly objective."
+    "Verified all four attached PNGs visually rather than trusting attachment order and saved byte-for-byte losslessly.",
+    "Bridged pairB_edited.png (1291x720 letterboxed NewPipe capture) and pairB_original_matched.png (720x409 un-letterboxed reconstruction) via sub-pixel SIFT+ECC affine alignment without modifying input files.",
+    "Incorporated Magic Bullet Looks 'Dade' properties into a closed-form, zero-texture opponent-polar hue-chroma shaper (M2_Dade_srgb) using a smoothstep(56, 68) * (1 - smoothstep(138, 172)) foliage gate (+43.412 deg rotation into bluish-green/teal) plus 3 smooth von-Mises lobes (162 deg teal, 198 deg sky cyan, 315 deg blue-violet) and a cool slate-blue shadow toe (luma < 0.28), guaranteeing zero leakage onto H <= 56 deg warm skin, straw gold, and yellow clothing/hair.",
+    "Selected pipeline order USM -> CC -> GRAD -> FLARE because it achieves the lowest Edge RMSE (18.125) and highest SSIM (0.94028) while allowing all 25 USM texture taps to sample raw u_tex in a single-pass GLSL shader.",
+    "Provided both a cross-clip shared default flare preset (which monotonically improves every metric on both pairs) and per-scene pairA/pairB flare presets in look_params.json, recommending flare intensity and tint as user controls in Keyflaw."
   ],
   "known_issues": [
-    "pairB_edited.png (1291x720) and pairB_original_matched.png (720x409) have different pixel resolutions (~1.79x scale) and letterbox/pillarbox bars on the edit only; Q2 computes sub-pixel affine alignment to bridge them without altering inputs."
+    "In pairB_original_matched.png, the AI reconstruction hallucinated the green bush (Edited RGB [172,218,98]) as golden-yellow RGB [250,213,79] (H=47.0 deg), which is warmer than Nami's yellow shirt [245,219,65] (H=51.3 deg) and Sanji's blonde hair [247,231,127] (H=52.0 deg); any spatially-invariant shader must keep H <= 52 deg yellow while rotating real ungraded yellow-green grass (H >= 65 deg) into Dade bluish-green/teal.",
+    "Haze flare peak intensity and tint vary between Pair A (0.34 warm sunlight) and Pair B (0.13 cool sky)."
   ],
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-01T17:03:19.907820+00:00",
-  "last_session_note": "Completed Q7 order-of-operations test and joint composite refinement; full composite beats CC-only and Original on all metrics across both pairs."
+  "last_updated": "2026-11-01T21:00:00Z",
+  "last_session_note": "All Q1-Q8 queue items complete, Dade closed-form colour specification verified against look_apply.py and look.cube (< 1.5e-6 diff), and all deliverables pushed to motionssalt/keyflaw-look-fit."
 }
