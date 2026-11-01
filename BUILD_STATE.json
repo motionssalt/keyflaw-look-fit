@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q3",
+  "current_phase": "Q4",
   "queue": [
     {
       "id": "Q1",
@@ -20,13 +20,13 @@
     {
       "id": "Q3",
       "title": "Colour correction fit",
-      "status": "in_progress",
-      "notes": ""
+      "status": "done",
+      "notes": "Tested M1/M2/M3 in sRGB and linear light on cluster-balanced flat samples with dark/bright anchors and Huber loss. Selected M2_srgb: held-out DE00 = 3.703 vs in-sample 3.864 (gap -0.161 <= 1.0), beating M1_srgb (5.043) and M2_linear (3.806) while generalizing better cross-pair A->B than M3_srgb (7.136 vs 7.701 DE00) with 22 vs 73 params. Recorded Joint and per-pair params, observed channel ranges, and exported 33^3 look.cube (will update after joint refit with spatial stages)."
     },
     {
       "id": "Q4",
       "title": "Gradient / lower-area darkening",
-      "status": "pending",
+      "status": "in_progress",
       "notes": ""
     },
     {
@@ -55,8 +55,233 @@
     }
   ],
   "results": {
-    "cc_model": "",
-    "cc_params": {},
+    "cc_model": "M2_srgb (per-channel Levels + neutral-preserving 3x3 colour matrix in gamma-encoded sRGB)",
+    "cc_params": {
+      "initial_uncoupled_joint": {
+        "model_type": "M2",
+        "colour_space": "srgb",
+        "levels": {
+          "in_black": [
+            -0.009464,
+            -0.065177,
+            -0.029242
+          ],
+          "in_white": [
+            1.017475,
+            1.01935,
+            1.020232
+          ],
+          "gamma": [
+            0.755364,
+            0.723837,
+            0.64428
+          ],
+          "out_black": [
+            -0.01063,
+            -0.12,
+            -0.12
+          ],
+          "out_white": [
+            0.975927,
+            0.973488,
+            0.969754
+          ]
+        },
+        "observed_input_range_srgb_0_255": [
+          {
+            "channel": "R",
+            "min_255": 16.0,
+            "max_255": 251.0,
+            "extrapolated_below_255": 16.0,
+            "extrapolated_above_255": 251.0
+          },
+          {
+            "channel": "G",
+            "min_255": 21.0,
+            "max_255": 253.0,
+            "extrapolated_below_255": 21.0,
+            "extrapolated_above_255": 253.0
+          },
+          {
+            "channel": "B",
+            "min_255": 25.0,
+            "max_255": 254.0,
+            "extrapolated_below_255": 25.0,
+            "extrapolated_above_255": 254.0
+          }
+        ],
+        "saturation_equiv": 1.176982,
+        "matrix_3x3": [
+          [
+            1.242544,
+            0.097383,
+            -0.339928
+          ],
+          [
+            -0.171098,
+            1.412476,
+            -0.241378
+          ],
+          [
+            -0.082432,
+            -0.080991,
+            1.163424
+          ]
+        ]
+      },
+      "pairA_only": {
+        "model_type": "M2",
+        "colour_space": "srgb",
+        "levels": {
+          "in_black": [
+            0.050395,
+            -0.020552,
+            -0.012445
+          ],
+          "in_white": [
+            1.023687,
+            1.026854,
+            1.027675
+          ],
+          "gamma": [
+            0.548812,
+            0.567619,
+            0.573077
+          ],
+          "out_black": [
+            0.040716,
+            -0.12,
+            -0.12
+          ],
+          "out_white": [
+            0.906347,
+            0.901157,
+            0.915079
+          ]
+        },
+        "observed_input_range_srgb_0_255": [
+          {
+            "channel": "R",
+            "min_255": 16.0,
+            "max_255": 243.0,
+            "extrapolated_below_255": 16.0,
+            "extrapolated_above_255": 243.0
+          },
+          {
+            "channel": "G",
+            "min_255": 21.0,
+            "max_255": 250.0,
+            "extrapolated_below_255": 21.0,
+            "extrapolated_above_255": 250.0
+          },
+          {
+            "channel": "B",
+            "min_255": 25.0,
+            "max_255": 253.0,
+            "extrapolated_below_255": 25.0,
+            "extrapolated_above_255": 253.0
+          }
+        ],
+        "saturation_equiv": 1.053682,
+        "matrix_3x3": [
+          [
+            1.501232,
+            -0.147357,
+            -0.353876
+          ],
+          [
+            -0.261192,
+            1.615068,
+            -0.353876
+          ],
+          [
+            -0.361413,
+            0.311606,
+            1.049807
+          ]
+        ]
+      },
+      "pairB_only": {
+        "model_type": "M2",
+        "colour_space": "srgb",
+        "levels": {
+          "in_black": [
+            -0.076235,
+            -0.028212,
+            0.000487
+          ],
+          "in_white": [
+            1.00416,
+            1.005306,
+            1.008608
+          ],
+          "gamma": [
+            0.799477,
+            0.730431,
+            0.638652
+          ],
+          "out_black": [
+            -0.12,
+            -0.12,
+            -0.12
+          ],
+          "out_white": [
+            0.994958,
+            0.993256,
+            0.987735
+          ]
+        },
+        "observed_input_range_srgb_0_255": [
+          {
+            "channel": "R",
+            "min_255": 21.0,
+            "max_255": 251.0,
+            "extrapolated_below_255": 21.0,
+            "extrapolated_above_255": 251.0
+          },
+          {
+            "channel": "G",
+            "min_255": 24.0,
+            "max_255": 253.0,
+            "extrapolated_below_255": 24.0,
+            "extrapolated_above_255": 253.0
+          },
+          {
+            "channel": "B",
+            "min_255": 32.0,
+            "max_255": 254.0,
+            "extrapolated_below_255": 32.0,
+            "extrapolated_above_255": 254.0
+          }
+        ],
+        "saturation_equiv": 1.157947,
+        "matrix_3x3": [
+          [
+            1.208659,
+            0.028871,
+            -0.237531
+          ],
+          [
+            -0.155605,
+            1.305029,
+            -0.149424
+          ],
+          [
+            -0.179561,
+            0.033797,
+            1.145763
+          ]
+        ]
+      },
+      "uncoupled_metrics": {
+        "in_sample_median_de00": 3.8639,
+        "held_out_median_de00": 3.7033,
+        "pairA_clean_mid_de00": 4.5073,
+        "pairB_clean_mid_de00": 3.7543,
+        "pairA_full_flat_pre_spatial_de00": 8.1338,
+        "pairB_full_flat_pre_spatial_de00": 6.5067
+      }
+    },
     "gradient": {},
     "unsharp": {},
     "flare": {},
@@ -162,12 +387,13 @@
   },
   "completed": [
     "Q1",
-    "Q2"
+    "Q2",
+    "Q3"
   ],
   "next_steps": [
-    "Fit candidate colour correction models M1 (Levels), M2 (Levels + 3x3 matrix), M3 (M2 + regularized monotonic 17-knot curve) in sRGB vs linear light",
-    "Account for spatial effects coupling (fit initial CC on upper/mid un-flared flat clusters, then jointly iterate in later stages)",
-    "Cross-validate A->B, B->A, and Joint; export look.cube and record CIEDE2000 in results"
+    "Fit 2D polynomial residual surface on Pair A and Pair B flat_interior after CC",
+    "Test H1 (vertical spatial gradient: multiply vs subtract, falloff curve, optional tint), H2 (1D luma-to-RGB ramp), horizontal, and radial vignette",
+    "Verify row-mean residual correlation with y drops below |r| < 0.1 on both pairs"
   ],
   "decisions": [
     "Discarded prior repository contents completely per explicit instruction and re-initialized clean repository history.",
@@ -181,6 +407,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-01T16:16:31.854567+00:00",
-  "last_session_note": "Completed Q2 sub-pixel ECC alignment audit and refreshed Pair B masks with sub-pixel warp; starting Q3 colour correction fit."
+  "last_updated": "2026-11-01T16:28:21.409949+00:00",
+  "last_session_note": "Completed Q3 colour correction model selection (M2_srgb) and look.cube export; starting Q4 gradient analysis."
 }

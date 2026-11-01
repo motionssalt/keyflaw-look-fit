@@ -1,0 +1,912 @@
+{
+  "baseline_ungraded": {
+    "pairA_flat_interior": {
+      "median_de00": 7.4647,
+      "p90_de00": 11.9368,
+      "mean_de00": 8.1483,
+      "mae_rgb_255": [
+        25.884,
+        25.715,
+        24.344
+      ],
+      "mae_mean_255": 25.314
+    },
+    "pairB_flat_interior": {
+      "median_de00": 4.7059,
+      "p90_de00": 11.7593,
+      "mean_de00": 5.9907,
+      "mae_rgb_255": [
+        10.699,
+        12.92,
+        14.248
+      ],
+      "mae_mean_255": 12.622
+    },
+    "pairA_clean_mid_band": {
+      "median_de00": 5.5119,
+      "p90_de00": 11.6005,
+      "mean_de00": 6.271,
+      "mae_rgb_255": [
+        20.288,
+        17.872,
+        16.043
+      ],
+      "mae_mean_255": 18.067
+    },
+    "pairB_clean_mid_band": {
+      "median_de00": 5.2167,
+      "p90_de00": 10.7513,
+      "mean_de00": 5.8692,
+      "mae_rgb_255": [
+        8.135,
+        13.017,
+        15.651
+      ],
+      "mae_mean_255": 12.268
+    }
+  },
+  "observed_ranges_0_255": {
+    "pairA": [
+      [
+        16.0,
+        243.0
+      ],
+      [
+        21.0,
+        250.0
+      ],
+      [
+        25.0,
+        253.0
+      ]
+    ],
+    "pairB": [
+      [
+        21.0,
+        251.0
+      ],
+      [
+        24.0,
+        253.0
+      ],
+      [
+        32.0,
+        254.0
+      ]
+    ],
+    "joint": [
+      [
+        16.0,
+        251.0
+      ],
+      [
+        21.0,
+        253.0
+      ],
+      [
+        25.0,
+        254.0
+      ]
+    ]
+  },
+  "candidates": {
+    "M1_srgb": {
+      "in_sample_cluster_balanced": {
+        "median_de00": 5.1966,
+        "p90_de00": 8.8896,
+        "mean_de00": 5.4225,
+        "mae_rgb_255": [
+          14.756,
+          11.06,
+          9.796
+        ],
+        "mae_mean_255": 11.871
+      },
+      "held_out_cluster_balanced": {
+        "median_de00": 5.0434,
+        "p90_de00": 9.008,
+        "mean_de00": 5.4103,
+        "mae_rgb_255": [
+          14.53,
+          10.999,
+          10.276
+        ],
+        "mae_mean_255": 11.935
+      },
+      "pairA_flat_interior": {
+        "median_de00": 9.0394,
+        "p90_de00": 12.1318,
+        "mean_de00": 9.003,
+        "mae_rgb_255": [
+          27.082,
+          25.454,
+          24.732
+        ],
+        "mae_mean_255": 25.756
+      },
+      "pairB_flat_interior": {
+        "median_de00": 6.5672,
+        "p90_de00": 9.7407,
+        "mean_de00": 6.8364,
+        "mae_rgb_255": [
+          9.792,
+          16.197,
+          16.463
+        ],
+        "mae_mean_255": 14.151
+      },
+      "pairA_clean_mid_band": {
+        "median_de00": 5.2888,
+        "p90_de00": 10.4459,
+        "mean_de00": 5.5258,
+        "mae_rgb_255": [
+          16.949,
+          11.202,
+          9.406
+        ],
+        "mae_mean_255": 12.519
+      },
+      "pairB_clean_mid_band": {
+        "median_de00": 4.8233,
+        "p90_de00": 7.609,
+        "mean_de00": 5.0321,
+        "mae_rgb_255": [
+          6.503,
+          8.612,
+          10.172
+        ],
+        "mae_mean_255": 8.429
+      }
+    },
+    "M2_srgb": {
+      "in_sample_cluster_balanced": {
+        "median_de00": 3.8639,
+        "p90_de00": 6.5456,
+        "mean_de00": 3.9565,
+        "mae_rgb_255": [
+          9.171,
+          9.925,
+          8.846
+        ],
+        "mae_mean_255": 9.314
+      },
+      "held_out_cluster_balanced": {
+        "median_de00": 3.7033,
+        "p90_de00": 6.798,
+        "mean_de00": 3.9935,
+        "mae_rgb_255": [
+          9.095,
+          9.913,
+          8.818
+        ],
+        "mae_mean_255": 9.275
+      },
+      "pairA_flat_interior": {
+        "median_de00": 8.1338,
+        "p90_de00": 12.0253,
+        "mean_de00": 8.3817,
+        "mae_rgb_255": [
+          22.105,
+          25.131,
+          23.599
+        ],
+        "mae_mean_255": 23.612
+      },
+      "pairB_flat_interior": {
+        "median_de00": 6.5067,
+        "p90_de00": 10.3751,
+        "mean_de00": 6.7382,
+        "mae_rgb_255": [
+          16.571,
+          16.029,
+          15.158
+        ],
+        "mae_mean_255": 15.919
+      },
+      "pairA_clean_mid_band": {
+        "median_de00": 4.5073,
+        "p90_de00": 6.8949,
+        "mean_de00": 4.3238,
+        "mae_rgb_255": [
+          11.062,
+          10.252,
+          8.446
+        ],
+        "mae_mean_255": 9.92
+      },
+      "pairB_clean_mid_band": {
+        "median_de00": 3.7543,
+        "p90_de00": 6.9684,
+        "mean_de00": 4.1686,
+        "mae_rgb_255": [
+          8.4,
+          8.807,
+          7.564
+        ],
+        "mae_mean_255": 8.257
+      }
+    },
+    "M3_srgb": {
+      "in_sample_cluster_balanced": {
+        "median_de00": 3.479,
+        "p90_de00": 6.8518,
+        "mean_de00": 3.7091,
+        "mae_rgb_255": [
+          6.915,
+          7.431,
+          6.869
+        ],
+        "mae_mean_255": 7.071
+      },
+      "held_out_cluster_balanced": {
+        "median_de00": 3.2961,
+        "p90_de00": 7.2797,
+        "mean_de00": 3.7655,
+        "mae_rgb_255": [
+          6.237,
+          7.491,
+          7.417
+        ],
+        "mae_mean_255": 7.048
+      },
+      "pairA_flat_interior": {
+        "median_de00": 9.2593,
+        "p90_de00": 15.2873,
+        "mean_de00": 9.2905,
+        "mae_rgb_255": [
+          20.591,
+          27.858,
+          21.965
+        ],
+        "mae_mean_255": 23.471
+      },
+      "pairB_flat_interior": {
+        "median_de00": 5.868,
+        "p90_de00": 8.8284,
+        "mean_de00": 5.9568,
+        "mae_rgb_255": [
+          12.235,
+          12.375,
+          13.084
+        ],
+        "mae_mean_255": 12.564
+      },
+      "pairA_clean_mid_band": {
+        "median_de00": 2.6339,
+        "p90_de00": 6.9356,
+        "mean_de00": 3.351,
+        "mae_rgb_255": [
+          8.233,
+          7.826,
+          7.44
+        ],
+        "mae_mean_255": 7.833
+      },
+      "pairB_clean_mid_band": {
+        "median_de00": 3.6857,
+        "p90_de00": 6.7816,
+        "mean_de00": 3.9604,
+        "mae_rgb_255": [
+          4.428,
+          7.53,
+          7.082
+        ],
+        "mae_mean_255": 6.347
+      }
+    },
+    "M1_linear": {
+      "in_sample_cluster_balanced": {
+        "median_de00": 5.0458,
+        "p90_de00": 8.5063,
+        "mean_de00": 5.3327,
+        "mae_rgb_255": [
+          14.709,
+          10.934,
+          9.74
+        ],
+        "mae_mean_255": 11.794
+      },
+      "held_out_cluster_balanced": {
+        "median_de00": 4.8925,
+        "p90_de00": 8.6162,
+        "mean_de00": 5.3251,
+        "mae_rgb_255": [
+          14.263,
+          10.868,
+          10.234
+        ],
+        "mae_mean_255": 11.789
+      },
+      "pairA_flat_interior": {
+        "median_de00": 9.0932,
+        "p90_de00": 11.854,
+        "mean_de00": 9.0064,
+        "mae_rgb_255": [
+          27.819,
+          25.381,
+          24.739
+        ],
+        "mae_mean_255": 25.98
+      },
+      "pairB_flat_interior": {
+        "median_de00": 6.2981,
+        "p90_de00": 9.4241,
+        "mean_de00": 6.5737,
+        "mae_rgb_255": [
+          10.43,
+          15.883,
+          16.403
+        ],
+        "mae_mean_255": 14.238
+      },
+      "pairA_clean_mid_band": {
+        "median_de00": 5.2889,
+        "p90_de00": 9.5178,
+        "mean_de00": 5.4837,
+        "mae_rgb_255": [
+          16.623,
+          11.088,
+          9.434
+        ],
+        "mae_mean_255": 12.382
+      },
+      "pairB_clean_mid_band": {
+        "median_de00": 4.5449,
+        "p90_de00": 7.2365,
+        "mean_de00": 4.7614,
+        "mae_rgb_255": [
+          7.03,
+          8.527,
+          10.228
+        ],
+        "mae_mean_255": 8.595
+      }
+    },
+    "M2_linear": {
+      "in_sample_cluster_balanced": {
+        "median_de00": 3.8272,
+        "p90_de00": 7.5326,
+        "mean_de00": 4.244,
+        "mae_rgb_255": [
+          11.916,
+          9.95,
+          8.58
+        ],
+        "mae_mean_255": 10.149
+      },
+      "held_out_cluster_balanced": {
+        "median_de00": 3.8061,
+        "p90_de00": 7.9632,
+        "mean_de00": 4.3103,
+        "mae_rgb_255": [
+          12.262,
+          9.732,
+          8.137
+        ],
+        "mae_mean_255": 10.044
+      },
+      "pairA_flat_interior": {
+        "median_de00": 8.3764,
+        "p90_de00": 11.9448,
+        "mean_de00": 8.296,
+        "mae_rgb_255": [
+          23.113,
+          24.893,
+          23.858
+        ],
+        "mae_mean_255": 23.955
+      },
+      "pairB_flat_interior": {
+        "median_de00": 5.9969,
+        "p90_de00": 9.899,
+        "mean_de00": 6.2639,
+        "mae_rgb_255": [
+          14.202,
+          14.37,
+          14.51
+        ],
+        "mae_mean_255": 14.361
+      },
+      "pairA_clean_mid_band": {
+        "median_de00": 4.5169,
+        "p90_de00": 8.7896,
+        "mean_de00": 4.8282,
+        "mae_rgb_255": [
+          14.812,
+          11.017,
+          9.035
+        ],
+        "mae_mean_255": 11.621
+      },
+      "pairB_clean_mid_band": {
+        "median_de00": 3.3711,
+        "p90_de00": 6.1111,
+        "mean_de00": 3.7479,
+        "mae_rgb_255": [
+          6.904,
+          7.556,
+          7.339
+        ],
+        "mae_mean_255": 7.266
+      }
+    },
+    "M3_linear": {
+      "in_sample_cluster_balanced": {
+        "median_de00": 4.4318,
+        "p90_de00": 7.6928,
+        "mean_de00": 4.2815,
+        "mae_rgb_255": [
+          7.46,
+          7.854,
+          7.46
+        ],
+        "mae_mean_255": 7.591
+      },
+      "held_out_cluster_balanced": {
+        "median_de00": 4.6902,
+        "p90_de00": 8.6524,
+        "mean_de00": 4.5033,
+        "mae_rgb_255": [
+          7.945,
+          7.837,
+          7.511
+        ],
+        "mae_mean_255": 7.764
+      },
+      "pairA_flat_interior": {
+        "median_de00": 8.6147,
+        "p90_de00": 13.9873,
+        "mean_de00": 8.8773,
+        "mae_rgb_255": [
+          20.152,
+          26.337,
+          22.404
+        ],
+        "mae_mean_255": 22.964
+      },
+      "pairB_flat_interior": {
+        "median_de00": 7.2948,
+        "p90_de00": 11.2794,
+        "mean_de00": 7.1831,
+        "mae_rgb_255": [
+          13.277,
+          11.932,
+          13.212
+        ],
+        "mae_mean_255": 12.807
+      },
+      "pairA_clean_mid_band": {
+        "median_de00": 2.9278,
+        "p90_de00": 8.0003,
+        "mean_de00": 3.8052,
+        "mae_rgb_255": [
+          9.248,
+          8.092,
+          7.484
+        ],
+        "mae_mean_255": 8.275
+      },
+      "pairB_clean_mid_band": {
+        "median_de00": 6.0914,
+        "p90_de00": 9.1983,
+        "mean_de00": 5.6424,
+        "mae_rgb_255": [
+          5.515,
+          8.251,
+          6.507
+        ],
+        "mae_mean_255": 6.757
+      }
+    }
+  },
+  "chosen_model": "M2",
+  "chosen_space": "srgb",
+  "chosen_key": "M2_srgb",
+  "chosen_params": {
+    "model_type": "M2",
+    "colour_space": "srgb",
+    "levels": {
+      "in_black": [
+        -0.009464,
+        -0.065177,
+        -0.029242
+      ],
+      "in_white": [
+        1.017475,
+        1.01935,
+        1.020232
+      ],
+      "gamma": [
+        0.755364,
+        0.723837,
+        0.64428
+      ],
+      "out_black": [
+        -0.01063,
+        -0.12,
+        -0.12
+      ],
+      "out_white": [
+        0.975927,
+        0.973488,
+        0.969754
+      ]
+    },
+    "observed_input_range_srgb_0_255": [
+      {
+        "channel": "R",
+        "min_255": 16.0,
+        "max_255": 251.0,
+        "extrapolated_below_255": 16.0,
+        "extrapolated_above_255": 251.0
+      },
+      {
+        "channel": "G",
+        "min_255": 21.0,
+        "max_255": 253.0,
+        "extrapolated_below_255": 21.0,
+        "extrapolated_above_255": 253.0
+      },
+      {
+        "channel": "B",
+        "min_255": 25.0,
+        "max_255": 254.0,
+        "extrapolated_below_255": 25.0,
+        "extrapolated_above_255": 254.0
+      }
+    ],
+    "saturation_equiv": 1.176982,
+    "matrix_3x3": [
+      [
+        1.242544,
+        0.097383,
+        -0.339928
+      ],
+      [
+        -0.171098,
+        1.412476,
+        -0.241378
+      ],
+      [
+        -0.082432,
+        -0.080991,
+        1.163424
+      ]
+    ]
+  },
+  "cross_validation": {
+    "fit_A_test_A_clean": {
+      "median_de00": 3.9303,
+      "p90_de00": 7.2287,
+      "mean_de00": 4.0496,
+      "mae_rgb_255": [
+        10.407,
+        10.773,
+        8.518
+      ],
+      "mae_mean_255": 9.899
+    },
+    "fit_A_test_B_clean": {
+      "median_de00": 7.136,
+      "p90_de00": 10.1147,
+      "mean_de00": 7.2152,
+      "mae_rgb_255": [
+        19.753,
+        17.365,
+        13.434
+      ],
+      "mae_mean_255": 16.85
+    },
+    "fit_B_test_B_clean": {
+      "median_de00": 3.0046,
+      "p90_de00": 5.0649,
+      "mean_de00": 3.122,
+      "mae_rgb_255": [
+        4.753,
+        6.202,
+        5.929
+      ],
+      "mae_mean_255": 5.628
+    },
+    "fit_B_test_A_clean": {
+      "median_de00": 4.9731,
+      "p90_de00": 8.1726,
+      "mean_de00": 5.0934,
+      "mae_rgb_255": [
+        12.964,
+        12.266,
+        10.73
+      ],
+      "mae_mean_255": 11.987
+    },
+    "fit_A_test_A_flat": {
+      "median_de00": 6.9944,
+      "p90_de00": 11.9813,
+      "mean_de00": 7.6147,
+      "mae_rgb_255": [
+        23.102,
+        20.741,
+        18.872
+      ],
+      "mae_mean_255": 20.905
+    },
+    "fit_A_test_B_flat": {
+      "median_de00": 9.0911,
+      "p90_de00": 13.2786,
+      "mean_de00": 9.611,
+      "mae_rgb_255": [
+        27.709,
+        21.813,
+        17.195
+      ],
+      "mae_mean_255": 22.239
+    },
+    "fit_B_test_B_flat": {
+      "median_de00": 5.356,
+      "p90_de00": 9.1385,
+      "mean_de00": 5.6714,
+      "mae_rgb_255": [
+        13.092,
+        12.913,
+        12.749
+      ],
+      "mae_mean_255": 12.918
+    },
+    "fit_B_test_A_flat": {
+      "median_de00": 9.1478,
+      "p90_de00": 12.4647,
+      "mean_de00": 9.4486,
+      "mae_rgb_255": [
+        23.079,
+        29.168,
+        28.225
+      ],
+      "mae_mean_255": 26.824
+    },
+    "fit_Joint_test_A_flat": {
+      "median_de00": 8.1338,
+      "p90_de00": 12.0253,
+      "mean_de00": 8.3817,
+      "mae_rgb_255": [
+        22.105,
+        25.131,
+        23.599
+      ],
+      "mae_mean_255": 23.612
+    },
+    "fit_Joint_test_B_flat": {
+      "median_de00": 6.5067,
+      "p90_de00": 10.3751,
+      "mean_de00": 6.7382,
+      "mae_rgb_255": [
+        16.571,
+        16.029,
+        15.158
+      ],
+      "mae_mean_255": 15.919
+    },
+    "A_vs_B_lut_diff_255": {
+      "median": 11.44,
+      "mean": 14.58,
+      "p90": 34.43,
+      "explanation": "Pre-gradient/pre-flare single-pair fits differ by median 11.4 levels mainly because Pair A has no saturated red or green gamut and its skin/sky sit at different vertical y positions than Pair B; joint refitting with Q4 Gradient + Q6 Flare resolves spatial coupling (both Joint and per-pair parameters are provided)."
+    },
+    "params_A_only": {
+      "model_type": "M2",
+      "colour_space": "srgb",
+      "levels": {
+        "in_black": [
+          0.050395,
+          -0.020552,
+          -0.012445
+        ],
+        "in_white": [
+          1.023687,
+          1.026854,
+          1.027675
+        ],
+        "gamma": [
+          0.548812,
+          0.567619,
+          0.573077
+        ],
+        "out_black": [
+          0.040716,
+          -0.12,
+          -0.12
+        ],
+        "out_white": [
+          0.906347,
+          0.901157,
+          0.915079
+        ]
+      },
+      "observed_input_range_srgb_0_255": [
+        {
+          "channel": "R",
+          "min_255": 16.0,
+          "max_255": 243.0,
+          "extrapolated_below_255": 16.0,
+          "extrapolated_above_255": 243.0
+        },
+        {
+          "channel": "G",
+          "min_255": 21.0,
+          "max_255": 250.0,
+          "extrapolated_below_255": 21.0,
+          "extrapolated_above_255": 250.0
+        },
+        {
+          "channel": "B",
+          "min_255": 25.0,
+          "max_255": 253.0,
+          "extrapolated_below_255": 25.0,
+          "extrapolated_above_255": 253.0
+        }
+      ],
+      "saturation_equiv": 1.053682,
+      "matrix_3x3": [
+        [
+          1.501232,
+          -0.147357,
+          -0.353876
+        ],
+        [
+          -0.261192,
+          1.615068,
+          -0.353876
+        ],
+        [
+          -0.361413,
+          0.311606,
+          1.049807
+        ]
+      ]
+    },
+    "params_B_only": {
+      "model_type": "M2",
+      "colour_space": "srgb",
+      "levels": {
+        "in_black": [
+          -0.076235,
+          -0.028212,
+          0.000487
+        ],
+        "in_white": [
+          1.00416,
+          1.005306,
+          1.008608
+        ],
+        "gamma": [
+          0.799477,
+          0.730431,
+          0.638652
+        ],
+        "out_black": [
+          -0.12,
+          -0.12,
+          -0.12
+        ],
+        "out_white": [
+          0.994958,
+          0.993256,
+          0.987735
+        ]
+      },
+      "observed_input_range_srgb_0_255": [
+        {
+          "channel": "R",
+          "min_255": 21.0,
+          "max_255": 251.0,
+          "extrapolated_below_255": 21.0,
+          "extrapolated_above_255": 251.0
+        },
+        {
+          "channel": "G",
+          "min_255": 24.0,
+          "max_255": 253.0,
+          "extrapolated_below_255": 24.0,
+          "extrapolated_above_255": 253.0
+        },
+        {
+          "channel": "B",
+          "min_255": 32.0,
+          "max_255": 254.0,
+          "extrapolated_below_255": 32.0,
+          "extrapolated_above_255": 254.0
+        }
+      ],
+      "saturation_equiv": 1.157947,
+      "matrix_3x3": [
+        [
+          1.208659,
+          0.028871,
+          -0.237531
+        ],
+        [
+          -0.155605,
+          1.305029,
+          -0.149424
+        ],
+        [
+          -0.179561,
+          0.033797,
+          1.145763
+        ]
+      ]
+    },
+    "params_Joint": {
+      "model_type": "M2",
+      "colour_space": "srgb",
+      "levels": {
+        "in_black": [
+          -0.009464,
+          -0.065177,
+          -0.029242
+        ],
+        "in_white": [
+          1.017475,
+          1.01935,
+          1.020232
+        ],
+        "gamma": [
+          0.755364,
+          0.723837,
+          0.64428
+        ],
+        "out_black": [
+          -0.01063,
+          -0.12,
+          -0.12
+        ],
+        "out_white": [
+          0.975927,
+          0.973488,
+          0.969754
+        ]
+      },
+      "observed_input_range_srgb_0_255": [
+        {
+          "channel": "R",
+          "min_255": 16.0,
+          "max_255": 251.0,
+          "extrapolated_below_255": 16.0,
+          "extrapolated_above_255": 251.0
+        },
+        {
+          "channel": "G",
+          "min_255": 21.0,
+          "max_255": 253.0,
+          "extrapolated_below_255": 21.0,
+          "extrapolated_above_255": 253.0
+        },
+        {
+          "channel": "B",
+          "min_255": 25.0,
+          "max_255": 254.0,
+          "extrapolated_below_255": 25.0,
+          "extrapolated_above_255": 254.0
+        }
+      ],
+      "saturation_equiv": 1.176982,
+      "matrix_3x3": [
+        [
+          1.242544,
+          0.097383,
+          -0.339928
+        ],
+        [
+          -0.171098,
+          1.412476,
+          -0.241378
+        ],
+        [
+          -0.082432,
+          -0.080991,
+          1.163424
+        ]
+      ]
+    }
+  },
+  "model_selection_justification": "M2_srgb (per-channel Levels + neutral-preserving 3x3 colour matrix in gamma-encoded sRGB) reduces held-out cluster-balanced CIEDE2000 from 5.043 (M1_srgb) to 3.703 (in-sample 3.864, held-out gap -0.161 <= 1.0), reaching the ~3-7/255 AI-reconstruction noise floor (~3.0-3.8 DE00). Gamma-encoded sRGB outperforms linear light (3.703 vs 3.806 on M2 and 3.296 vs 4.690 on M3). Although M3_srgb lowers mid-band val DE00 slightly to 3.296 using 51 extra knot parameters, it overfits single-pair missing gamut and spatial coupling: M2_srgb beats M3_srgb on cross-pair A->B generalization (7.136 vs 7.701 DE00) and on full Pair A flat_interior (8.134 vs 9.259 DE00)."
+}
