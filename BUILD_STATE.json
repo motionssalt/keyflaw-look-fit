@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q7",
+  "current_phase": "Q8",
   "queue": [
     {
       "id": "Q1",
@@ -44,344 +44,118 @@
     {
       "id": "Q7",
       "title": "Order of operations and the full composite",
-      "status": "in_progress",
+      "status": "done",
       "notes": ""
     },
     {
       "id": "Q8",
       "title": "Deliverables",
-      "status": "pending",
+      "status": "in_progress",
       "notes": ""
     }
   ],
   "results": {
     "cc_model": "M2_srgb (per-channel Levels + neutral-preserving 3x3 colour matrix in gamma-encoded sRGB)",
     "cc_params": {
-      "initial_uncoupled_joint": {
-        "model_type": "M2",
-        "colour_space": "srgb",
-        "levels": {
-          "in_black": [
-            -0.009464,
-            -0.065177,
-            -0.029242
-          ],
-          "in_white": [
-            1.017475,
-            1.01935,
-            1.020232
-          ],
-          "gamma": [
-            0.755364,
-            0.723837,
-            0.64428
-          ],
-          "out_black": [
-            -0.01063,
-            -0.12,
-            -0.12
-          ],
-          "out_white": [
-            0.975927,
-            0.973488,
-            0.969754
-          ]
-        },
-        "observed_input_range_srgb_0_255": [
-          {
-            "channel": "R",
-            "min_255": 16.0,
-            "max_255": 251.0,
-            "extrapolated_below_255": 16.0,
-            "extrapolated_above_255": 251.0
-          },
-          {
-            "channel": "G",
-            "min_255": 21.0,
-            "max_255": 253.0,
-            "extrapolated_below_255": 21.0,
-            "extrapolated_above_255": 253.0
-          },
-          {
-            "channel": "B",
-            "min_255": 25.0,
-            "max_255": 254.0,
-            "extrapolated_below_255": 25.0,
-            "extrapolated_above_255": 254.0
-          }
+      "model_type": "M2",
+      "colour_space": "srgb",
+      "levels": {
+        "in_black": [
+          -0.105873,
+          -0.091134,
+          0.016481
         ],
-        "saturation_equiv": 1.176982,
-        "matrix_3x3": [
-          [
-            1.242544,
-            0.097383,
-            -0.339928
-          ],
-          [
-            -0.171098,
-            1.412476,
-            -0.241378
-          ],
-          [
-            -0.082432,
-            -0.080991,
-            1.163424
-          ]
+        "in_white": [
+          0.946858,
+          0.937232,
+          0.964706
+        ],
+        "gamma": [
+          0.789845,
+          0.802537,
+          0.902941
+        ],
+        "out_black": [
+          -0.174205,
+          -0.179963,
+          0.046905
+        ],
+        "out_white": [
+          1.021549,
+          1.025685,
+          1.098564
         ]
       },
-      "pairA_only": {
-        "model_type": "M2",
-        "colour_space": "srgb",
-        "levels": {
-          "in_black": [
-            0.050395,
-            -0.020552,
-            -0.012445
-          ],
-          "in_white": [
-            1.023687,
-            1.026854,
-            1.027675
-          ],
-          "gamma": [
-            0.548812,
-            0.567619,
-            0.573077
-          ],
-          "out_black": [
-            0.040716,
-            -0.12,
-            -0.12
-          ],
-          "out_white": [
-            0.906347,
-            0.901157,
-            0.915079
-          ]
+      "observed_input_range_srgb_0_255": [
+        {
+          "channel": "R",
+          "min_255": 16.0,
+          "max_255": 251.0,
+          "extrapolated_below_255": 16.0,
+          "extrapolated_above_255": 251.0
         },
-        "observed_input_range_srgb_0_255": [
-          {
-            "channel": "R",
-            "min_255": 16.0,
-            "max_255": 243.0,
-            "extrapolated_below_255": 16.0,
-            "extrapolated_above_255": 243.0
-          },
-          {
-            "channel": "G",
-            "min_255": 21.0,
-            "max_255": 250.0,
-            "extrapolated_below_255": 21.0,
-            "extrapolated_above_255": 250.0
-          },
-          {
-            "channel": "B",
-            "min_255": 25.0,
-            "max_255": 253.0,
-            "extrapolated_below_255": 25.0,
-            "extrapolated_above_255": 253.0
-          }
-        ],
-        "saturation_equiv": 1.053682,
-        "matrix_3x3": [
-          [
-            1.501232,
-            -0.147357,
-            -0.353876
-          ],
-          [
-            -0.261192,
-            1.615068,
-            -0.353876
-          ],
-          [
-            -0.361413,
-            0.311606,
-            1.049807
-          ]
-        ]
-      },
-      "pairB_only": {
-        "model_type": "M2",
-        "colour_space": "srgb",
-        "levels": {
-          "in_black": [
-            -0.076235,
-            -0.028212,
-            0.000487
-          ],
-          "in_white": [
-            1.00416,
-            1.005306,
-            1.008608
-          ],
-          "gamma": [
-            0.799477,
-            0.730431,
-            0.638652
-          ],
-          "out_black": [
-            -0.12,
-            -0.12,
-            -0.12
-          ],
-          "out_white": [
-            0.994958,
-            0.993256,
-            0.987735
-          ]
+        {
+          "channel": "G",
+          "min_255": 21.0,
+          "max_255": 253.0,
+          "extrapolated_below_255": 21.0,
+          "extrapolated_above_255": 253.0
         },
-        "observed_input_range_srgb_0_255": [
-          {
-            "channel": "R",
-            "min_255": 21.0,
-            "max_255": 251.0,
-            "extrapolated_below_255": 21.0,
-            "extrapolated_above_255": 251.0
-          },
-          {
-            "channel": "G",
-            "min_255": 24.0,
-            "max_255": 253.0,
-            "extrapolated_below_255": 24.0,
-            "extrapolated_above_255": 253.0
-          },
-          {
-            "channel": "B",
-            "min_255": 32.0,
-            "max_255": 254.0,
-            "extrapolated_below_255": 32.0,
-            "extrapolated_above_255": 254.0
-          }
+        {
+          "channel": "B",
+          "min_255": 25.0,
+          "max_255": 254.0,
+          "extrapolated_below_255": 25.0,
+          "extrapolated_above_255": 254.0
+        }
+      ],
+      "saturation_equiv": 1.106893,
+      "matrix_3x3": [
+        [
+          1.253076,
+          -0.079521,
+          -0.173555
         ],
-        "saturation_equiv": 1.157947,
-        "matrix_3x3": [
-          [
-            1.208659,
-            0.028871,
-            -0.237531
-          ],
-          [
-            -0.155605,
-            1.305029,
-            -0.149424
-          ],
-          [
-            -0.179561,
-            0.033797,
-            1.145763
-          ]
-        ]
-      },
-      "uncoupled_metrics": {
-        "in_sample_median_de00": 3.8639,
-        "held_out_median_de00": 3.7033,
-        "pairA_clean_mid_de00": 4.5073,
-        "pairB_clean_mid_de00": 3.7543,
-        "pairA_full_flat_pre_spatial_de00": 8.1338,
-        "pairB_full_flat_pre_spatial_de00": 6.5067
-      },
-      "reanchored_with_gradient_q4": {
-        "model_type": "M2",
-        "colour_space": "srgb",
-        "levels": {
-          "in_black": [
-            -0.000202,
-            -0.041524,
-            -0.016252
-          ],
-          "in_white": [
-            0.913727,
-            0.932827,
-            0.968627
-          ],
-          "gamma": [
-            0.820494,
-            0.716164,
-            0.789946
-          ],
-          "out_black": [
-            -0.013882,
-            -0.179906,
-            -0.059223
-          ],
-          "out_white": [
-            1.013997,
-            1.009132,
-            1.092186
-          ]
-        },
-        "observed_input_range_srgb_0_255": [
-          {
-            "channel": "R",
-            "min_255": 16.0,
-            "max_255": 251.0,
-            "extrapolated_below_255": 16.0,
-            "extrapolated_above_255": 251.0
-          },
-          {
-            "channel": "G",
-            "min_255": 21.0,
-            "max_255": 253.0,
-            "extrapolated_below_255": 21.0,
-            "extrapolated_above_255": 253.0
-          },
-          {
-            "channel": "B",
-            "min_255": 25.0,
-            "max_255": 254.0,
-            "extrapolated_below_255": 25.0,
-            "extrapolated_above_255": 254.0
-          }
+        [
+          -0.1643,
+          1.26228,
+          -0.09798
         ],
-        "saturation_equiv": 1.130909,
-        "matrix_3x3": [
-          [
-            1.222422,
-            -0.003011,
-            -0.219411
-          ],
-          [
-            -0.162349,
-            1.263782,
-            -0.101433
-          ],
-          [
-            -0.243105,
-            0.131438,
-            1.111667
-          ]
+        [
+          -0.241388,
+          0.126996,
+          1.114391
         ]
-      }
+      ]
     },
     "gradient": {
       "hypothesis": "H1_vertical_spatial_multiply_gradient (smoothstep falloff with subtle RGB shadow tint)",
       "coordinate_reference": "Full frame height including letterbox bars (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
-      "y0_norm": 0.173325,
-      "y1_norm": 0.728093,
+      "y0_norm": 0.14,
+      "y1_norm": 0.749458,
       "pixel_rows_at_resolutions": {
         "pairA_1278x720": {
-          "y0_px": 124.79,
-          "y1_px": 524.23
+          "y0_px": 100.8,
+          "y1_px": 539.61
         },
         "pairB_edit_1291x720": {
-          "y0_px": 124.79,
-          "y1_px": 524.23
+          "y0_px": 100.8,
+          "y1_px": 539.61
         },
         "pairB_orig_720x409": {
-          "y0_px": 70.89,
-          "y1_px": 297.79
+          "y0_px": 57.26,
+          "y1_px": 306.53
         }
       },
       "falloff_curve": "smoothstep",
       "blend_mode": "multiply",
       "blend_formula": "out = clamp(cc * (1.0 - smoothstep(y0, y1, y_norm) * strength_rgb), 0.0, 1.0)",
       "strength_rgb": [
-        0.250636,
-        0.255053,
-        0.292137
+        0.233803,
+        0.256836,
+        0.294552
       ],
-      "strength_luma_equiv": 0.256792
+      "strength_luma_equiv": 0.254663
     },
     "unsharp": {
       "mode": "rgb",
@@ -395,7 +169,7 @@
         "pairB_orig_720x409": 1.4205,
         "fhd_1920x1080": 3.751
       },
-      "amount": 1.2563,
+      "amount": 0.82,
       "threshold_01": 0.01433,
       "threshold_255": 3.654,
       "formula": "d = rgb - blur25(rgb, sigma_frac_h * H); d_t = sign(d) * max(abs(d) - threshold, 0.0); out = clamp(rgb + amount * d_t, 0.0, 1.0)",
@@ -409,7 +183,8 @@
         "pairA_720p_vs_no_sharpening": 38.92,
         "pairB_720p_vs_no_sharpening": 39.31,
         "pairB_409p_vs_no_sharpening": 33.56
-      }
+      },
+      "amount_1d_with_nuisance_preblur": 1.2563
     },
     "flare": {
       "model": "2D anisotropic rotated Gaussian radial glow with Screen blend",
@@ -522,8 +297,353 @@
         "pairB_top_right_quadrant_pct": 94.71
       }
     },
-    "order_of_operations": "",
-    "metrics": {},
+    "order_of_operations": "USM_CC_GRAD_FLARE",
+    "metrics": {
+      "pairA_720p": {
+        "0_original": {
+          "de00_median": 7.4888,
+          "de00_p90": 11.9587,
+          "de00_mean": 8.1524,
+          "flat_mae_rgb_255": [
+            25.884,
+            25.715,
+            24.344
+          ],
+          "flat_mae_mean_255": 25.314,
+          "valid_mae_mean_255": 24.341,
+          "edge_rmse_255": 27.716,
+          "luma_ssim_valid": 0.92053
+        },
+        "1_cc_only": {
+          "de00_median": 12.7204,
+          "de00_p90": 16.4299,
+          "de00_mean": 11.4744,
+          "flat_mae_rgb_255": [
+            26.219,
+            36.871,
+            30.268
+          ],
+          "flat_mae_mean_255": 31.119,
+          "valid_mae_mean_255": 28.668,
+          "edge_rmse_255": 31.289,
+          "luma_ssim_valid": 0.92222
+        },
+        "2_cc_plus_gradient": {
+          "de00_median": 2.1994,
+          "de00_p90": 7.2006,
+          "de00_mean": 4.3131,
+          "flat_mae_rgb_255": [
+            8.681,
+            8.683,
+            7.012
+          ],
+          "flat_mae_mean_255": 8.125,
+          "valid_mae_mean_255": 9.876,
+          "edge_rmse_255": 19.565,
+          "luma_ssim_valid": 0.93788
+        },
+        "3_cc_grad_plus_unsharp": {
+          "de00_median": 2.1994,
+          "de00_p90": 7.2006,
+          "de00_mean": 4.3131,
+          "flat_mae_rgb_255": [
+            8.681,
+            8.683,
+            7.012
+          ],
+          "flat_mae_mean_255": 8.125,
+          "valid_mae_mean_255": 9.099,
+          "edge_rmse_255": 16.296,
+          "luma_ssim_valid": 0.94722
+        },
+        "4_full_composite_shared_flare": {
+          "de00_median": 2.1925,
+          "de00_p90": 6.7574,
+          "de00_mean": 3.5769,
+          "flat_mae_rgb_255": [
+            7.366,
+            6.66,
+            6.409
+          ],
+          "flat_mae_mean_255": 6.812,
+          "valid_mae_mean_255": 8.049,
+          "edge_rmse_255": 15.148,
+          "luma_ssim_valid": 0.95927
+        },
+        "5_full_composite_scene_flare": {
+          "de00_median": 2.0558,
+          "de00_p90": 5.1676,
+          "de00_mean": 2.6465,
+          "flat_mae_rgb_255": [
+            5.132,
+            5.022,
+            6.067
+          ],
+          "flat_mae_mean_255": 5.407,
+          "valid_mae_mean_255": 7.003,
+          "edge_rmse_255": 14.66,
+          "luma_ssim_valid": 0.9633
+        }
+      },
+      "pairB_720p_all_flat": {
+        "0_original": {
+          "de00_median": 4.7071,
+          "de00_p90": 11.7559,
+          "de00_mean": 5.9913,
+          "flat_mae_rgb_255": [
+            10.699,
+            12.92,
+            14.248
+          ],
+          "flat_mae_mean_255": 12.622,
+          "valid_mae_mean_255": 18.029,
+          "edge_rmse_255": 27.967,
+          "luma_ssim_valid": 0.87459
+        },
+        "1_cc_only": {
+          "de00_median": 6.126,
+          "de00_p90": 10.8069,
+          "de00_mean": 6.2553,
+          "flat_mae_rgb_255": [
+            15.866,
+            15.095,
+            14.613
+          ],
+          "flat_mae_mean_255": 15.192,
+          "valid_mae_mean_255": 23.171,
+          "edge_rmse_255": 37.859,
+          "luma_ssim_valid": 0.86618
+        },
+        "2_cc_plus_gradient": {
+          "de00_median": 2.7576,
+          "de00_p90": 5.9129,
+          "de00_mean": 3.4296,
+          "flat_mae_rgb_255": [
+            6.192,
+            5.751,
+            7.486
+          ],
+          "flat_mae_mean_255": 6.477,
+          "valid_mae_mean_255": 14.364,
+          "edge_rmse_255": 28.205,
+          "luma_ssim_valid": 0.87231
+        },
+        "3_cc_grad_plus_unsharp": {
+          "de00_median": 2.7576,
+          "de00_p90": 5.9132,
+          "de00_mean": 3.4296,
+          "flat_mae_rgb_255": [
+            6.192,
+            5.751,
+            7.486
+          ],
+          "flat_mae_mean_255": 6.477,
+          "valid_mae_mean_255": 12.616,
+          "edge_rmse_255": 21.704,
+          "luma_ssim_valid": 0.91614
+        },
+        "4_full_composite_shared_flare": {
+          "de00_median": 2.7693,
+          "de00_p90": 6.176,
+          "de00_mean": 3.5285,
+          "flat_mae_rgb_255": [
+            6.858,
+            4.967,
+            6.095
+          ],
+          "flat_mae_mean_255": 5.974,
+          "valid_mae_mean_255": 12.444,
+          "edge_rmse_255": 21.704,
+          "luma_ssim_valid": 0.91687
+        },
+        "5_full_composite_scene_flare": {
+          "de00_median": 2.2809,
+          "de00_p90": 5.0469,
+          "de00_mean": 2.9301,
+          "flat_mae_rgb_255": [
+            5.75,
+            4.078,
+            5.462
+          ],
+          "flat_mae_mean_255": 5.097,
+          "valid_mae_mean_255": 11.929,
+          "edge_rmse_255": 21.789,
+          "luma_ssim_valid": 0.91704
+        }
+      },
+      "pairB_720p_excluding_ai_bush": {
+        "0_original": {
+          "de00_median": 4.7212,
+          "de00_p90": 11.4746,
+          "de00_mean": 5.7873,
+          "flat_mae_rgb_255": [
+            9.203,
+            13.403,
+            14.747
+          ],
+          "flat_mae_mean_255": 12.451,
+          "valid_mae_mean_255": 16.623,
+          "edge_rmse_255": 27.967,
+          "luma_ssim_valid": 0.87863
+        },
+        "1_cc_only": {
+          "de00_median": 5.7832,
+          "de00_p90": 10.0788,
+          "de00_mean": 5.7655,
+          "flat_mae_rgb_255": [
+            13.919,
+            14.101,
+            14.058
+          ],
+          "flat_mae_mean_255": 14.026,
+          "valid_mae_mean_255": 20.727,
+          "edge_rmse_255": 37.859,
+          "luma_ssim_valid": 0.87397
+        },
+        "2_cc_plus_gradient": {
+          "de00_median": 2.7367,
+          "de00_p90": 5.6427,
+          "de00_mean": 3.0883,
+          "flat_mae_rgb_255": [
+            4.493,
+            5.738,
+            7.342
+          ],
+          "flat_mae_mean_255": 5.858,
+          "valid_mae_mean_255": 12.185,
+          "edge_rmse_255": 28.205,
+          "luma_ssim_valid": 0.87734
+        },
+        "3_cc_grad_plus_unsharp": {
+          "de00_median": 2.7367,
+          "de00_p90": 5.6427,
+          "de00_mean": 3.0883,
+          "flat_mae_rgb_255": [
+            4.493,
+            5.738,
+            7.342
+          ],
+          "flat_mae_mean_255": 5.858,
+          "valid_mae_mean_255": 10.3,
+          "edge_rmse_255": 21.704,
+          "luma_ssim_valid": 0.92263
+        },
+        "4_full_composite_shared_flare": {
+          "de00_median": 2.7518,
+          "de00_p90": 5.9752,
+          "de00_mean": 3.2026,
+          "flat_mae_rgb_255": [
+            5.214,
+            4.908,
+            5.843
+          ],
+          "flat_mae_mean_255": 5.321,
+          "valid_mae_mean_255": 10.106,
+          "edge_rmse_255": 21.704,
+          "luma_ssim_valid": 0.92349
+        },
+        "5_full_composite_scene_flare": {
+          "de00_median": 2.2418,
+          "de00_p90": 4.7958,
+          "de00_mean": 2.5525,
+          "flat_mae_rgb_255": [
+            3.976,
+            3.917,
+            5.287
+          ],
+          "flat_mae_mean_255": 4.393,
+          "valid_mae_mean_255": 9.594,
+          "edge_rmse_255": 21.789,
+          "luma_ssim_valid": 0.92413
+        }
+      },
+      "pairB_409p_native_orig_scale": {
+        "0_original": {
+          "de00_median": 4.4256,
+          "de00_p90": 11.4824,
+          "de00_mean": 5.6283,
+          "flat_mae_rgb_255": [
+            8.305,
+            12.162,
+            13.65
+          ],
+          "flat_mae_mean_255": 11.372,
+          "valid_mae_mean_255": 26.664,
+          "edge_rmse_255": 28.764,
+          "luma_ssim_valid": 0.81706
+        },
+        "1_cc_only": {
+          "de00_median": 5.7029,
+          "de00_p90": 9.8688,
+          "de00_mean": 5.6169,
+          "flat_mae_rgb_255": [
+            11.917,
+            14.059,
+            14.309
+          ],
+          "flat_mae_mean_255": 13.428,
+          "valid_mae_mean_255": 33.117,
+          "edge_rmse_255": 38.928,
+          "luma_ssim_valid": 0.80578
+        },
+        "2_cc_plus_gradient": {
+          "de00_median": 2.5541,
+          "de00_p90": 5.323,
+          "de00_mean": 2.9432,
+          "flat_mae_rgb_255": [
+            4.148,
+            5.386,
+            7.127
+          ],
+          "flat_mae_mean_255": 5.554,
+          "valid_mae_mean_255": 23.308,
+          "edge_rmse_255": 27.936,
+          "luma_ssim_valid": 0.81086
+        },
+        "3_cc_grad_plus_unsharp": {
+          "de00_median": 2.5541,
+          "de00_p90": 5.323,
+          "de00_mean": 2.9432,
+          "flat_mae_rgb_255": [
+            4.148,
+            5.386,
+            7.127
+          ],
+          "flat_mae_mean_255": 5.554,
+          "valid_mae_mean_255": 21.771,
+          "edge_rmse_255": 23.829,
+          "luma_ssim_valid": 0.84839
+        },
+        "4_full_composite_shared_flare": {
+          "de00_median": 2.5426,
+          "de00_p90": 5.6259,
+          "de00_mean": 3.0472,
+          "flat_mae_rgb_255": [
+            4.899,
+            4.464,
+            5.461
+          ],
+          "flat_mae_mean_255": 4.941,
+          "valid_mae_mean_255": 21.727,
+          "edge_rmse_255": 23.829,
+          "luma_ssim_valid": 0.84891
+        },
+        "5_full_composite_scene_flare": {
+          "de00_median": 2.0343,
+          "de00_p90": 4.1804,
+          "de00_mean": 2.3509,
+          "flat_mae_rgb_255": [
+            3.625,
+            3.403,
+            4.823
+          ],
+          "flat_mae_mean_255": 3.95,
+          "valid_mae_mean_255": 21.311,
+          "edge_rmse_255": 23.878,
+          "luma_ssim_valid": 0.84904
+        }
+      }
+    },
     "alignment": {
       "pairA": {
         "resolution": [
@@ -628,11 +748,12 @@
     "Q3",
     "Q4",
     "Q5",
-    "Q6"
+    "Q6",
+    "Q7"
   ],
   "next_steps": [
-    "Run Q7 stage-order comparison (CC->Grad->USM->Flare vs permutations) and joint composite coordinate-descent refit",
-    "Compute full per-stage metrics table (CIEDE2000 median/p90, per-channel MAE, edge RMSE, luma SSIM) and residual heatmaps"
+    "Generate Q8 final deliverables: look_params.json, look_apply.py, LOOK_SPEC.md, look.cube verification, and REPORT.md with side-by-side images",
+    "Verify every unit test vector in LOOK_SPEC.md against look_apply.py and push final complete repository"
   ],
   "decisions": [
     "Discarded prior repository contents completely per explicit instruction and re-initialized clean repository history.",
@@ -646,6 +767,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-01T16:57:37.654884+00:00",
-  "last_session_note": "Completed Q6 haze flare fit (Gaussian Screen glow at top-right; -78.2% LP energy on Pair A, -94.7% top-right LP energy on Pair B); starting Q7 composite."
+  "last_updated": "2026-11-01T17:03:19.907820+00:00",
+  "last_session_note": "Completed Q7 order-of-operations test and joint composite refinement; full composite beats CC-only and Original on all metrics across both pairs."
 }
