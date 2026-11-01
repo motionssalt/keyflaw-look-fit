@@ -144,65 +144,62 @@
     }
   },
   "chosen_gradient": {
-    "hypothesis": "H1_vertical_spatial_gradient (smoothstep multiply + subtle shadow subtract)",
+    "hypothesis": "H1_vertical_spatial_multiply_gradient (smoothstep falloff with subtle RGB shadow tint)",
     "coordinate_reference": "Full frame height including letterbox bars (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
-    "y0_norm": 0.090842,
-    "y1_norm": 0.768703,
+    "y0_norm": 0.173325,
+    "y1_norm": 0.728093,
     "pixel_rows_at_resolutions": {
       "pairA_1278x720": {
-        "y0_px": 65.41,
-        "y1_px": 553.47
+        "y0_px": 124.79,
+        "y1_px": 524.23
       },
       "pairB_edit_1291x720": {
-        "y0_px": 65.41,
-        "y1_px": 553.47
+        "y0_px": 124.79,
+        "y1_px": 524.23
       },
       "pairB_orig_720x409": {
-        "y0_px": 37.15,
-        "y1_px": 314.4
+        "y0_px": 70.89,
+        "y1_px": 297.79
       }
     },
     "falloff_curve": "smoothstep",
-    "blend_formula": "out = clamp(cc * (1.0 - r * strength_mul_rgb) - r * strength_sub_rgb, 0.0, 1.0), where r = smoothstep(y0, y1, y_norm)",
-    "strength_mul_rgb": [
-      0.240217,
-      0.199948,
-      0.121216
+    "blend_mode": "multiply",
+    "blend_formula": "out = clamp(cc * (1.0 - smoothstep(y0, y1, y_norm) * strength_rgb), 0.0, 1.0)",
+    "strength_rgb": [
+      0.250636,
+      0.255053,
+      0.292137
     ],
-    "strength_sub_rgb": [
-      0.021265,
-      0.054067,
-      0.127046
-    ]
+    "strength_luma_equiv": 0.256792
   },
   "reanchored_cc_params": {
     "model_type": "M2",
     "colour_space": "srgb",
     "levels": {
       "in_black": [
-        0.090196,
-        -0.062073,
-        0.063143
+        -0.000202,
+        -0.041524,
+        -0.016252
       ],
       "in_white": [
-        0.933926,
-        0.959555,
-        0.974129
+        0.913727,
+        0.932827,
+        0.968627
       ],
       "gamma": [
-        0.8378,
-        0.685046,
-        0.827104
+        0.820494,
+        0.716164,
+        0.789946
       ],
       "out_black": [
-        0.157089,
-        -0.179999,
-        0.168629
+        -0.013882,
+        -0.179906,
+        -0.059223
       ],
       "out_white": [
-        1.027047,
-        1.027855,
-        1.040797
+        1.013997,
+        1.009132,
+        1.092186
       ]
     },
     "observed_input_range_srgb_0_255": [
@@ -228,110 +225,109 @@
         "extrapolated_above_255": 254.0
       }
     ],
-    "saturation_equiv": 1.168877,
+    "saturation_equiv": 1.130909,
     "matrix_3x3": [
       [
-        1.274429,
-        -0.030064,
-        -0.244366
+        1.222422,
+        -0.003011,
+        -0.219411
       ],
       [
-        -0.155366,
-        1.248275,
-        -0.092909
+        -0.162349,
+        1.263782,
+        -0.101433
       ],
       [
-        -0.182256,
-        0.024806,
-        1.15745
+        -0.243105,
+        0.131438,
+        1.111667
       ]
     ]
   },
   "row_y_correlation_before": {
     "pairA": {
       "n_valid_rows": 626,
-      "corr_luma_y": -0.95145,
-      "corr_R_y": -0.76349,
-      "corr_G_y": -0.96434,
-      "corr_B_y": -0.97481,
-      "max_abs_channel_corr": 0.97481,
-      "row_rms_luma_255": 34.897
+      "corr_luma_y": -0.93931,
+      "corr_R_y": -0.70944,
+      "corr_G_y": -0.95798,
+      "corr_B_y": -0.97388,
+      "max_abs_channel_corr": 0.97388,
+      "row_rms_luma_255": 32.544
     },
     "pairB": {
       "n_valid_rows": 637,
-      "corr_luma_y": -0.951,
-      "corr_R_y": -0.91109,
-      "corr_G_y": -0.94383,
-      "corr_B_y": -0.97391,
-      "max_abs_channel_corr": 0.97391,
-      "row_rms_luma_255": 22.457
+      "corr_luma_y": -0.93093,
+      "corr_R_y": -0.90955,
+      "corr_G_y": -0.91241,
+      "corr_B_y": -0.90756,
+      "max_abs_channel_corr": 0.91241,
+      "row_rms_luma_255": 16.243
     }
   },
   "row_y_correlation_after": {
     "pairA": {
       "n_valid_rows": 626,
-      "corr_luma_y": -0.42265,
-      "corr_R_y": -0.36618,
-      "corr_G_y": -0.26124,
-      "corr_B_y": 0.05226,
-      "max_abs_channel_corr": 0.36618,
-      "row_rms_luma_255": 2.915
+      "corr_luma_y": -0.35141,
+      "corr_R_y": -0.36673,
+      "corr_G_y": -0.12788,
+      "corr_B_y": 0.0071,
+      "max_abs_channel_corr": 0.36673,
+      "row_rms_luma_255": 3.373
     },
     "pairB": {
       "n_valid_rows": 637,
-      "corr_luma_y": 0.6176,
-      "corr_R_y": 0.68407,
-      "corr_G_y": 0.54713,
-      "corr_B_y": 0.71901,
-      "max_abs_channel_corr": 0.71901,
-      "row_rms_luma_255": 3.07
+      "corr_luma_y": 0.29936,
+      "corr_R_y": 0.49748,
+      "corr_G_y": 0.18857,
+      "corr_B_y": 0.38418,
+      "max_abs_channel_corr": 0.49748,
+      "row_rms_luma_255": 2.707
     }
   },
   "metrics_after_q4": {
     "pairA_full_flat": {
-      "median_de00": 2.2138,
-      "p90_de00": 7.819,
-      "mean_de00": 4.5217,
+      "median_de00": 2.4076,
+      "p90_de00": 8.7932,
+      "mean_de00": 4.7634,
       "mae_rgb_255": [
-        7.89,
-        7.917,
-        6.793
+        8.567,
+        9.108,
+        7.513
       ],
-      "mae_mean_255": 7.533
+      "mae_mean_255": 8.396
     },
     "pairB_full_flat": {
-      "median_de00": 2.4782,
-      "p90_de00": 6.1278,
-      "mean_de00": 3.38,
+      "median_de00": 2.7747,
+      "p90_de00": 5.9034,
+      "mean_de00": 3.4768,
       "mae_rgb_255": [
-        6.783,
-        4.724,
-        5.505
+        6.621,
+        5.717,
+        7.185
       ],
-      "mae_mean_255": 5.671
+      "mae_mean_255": 6.508
     },
     "pairA_noflare_strip": {
-      "median_de00": 1.7446,
-      "p90_de00": 3.3857,
-      "mean_de00": 1.9433,
+      "median_de00": 1.7928,
+      "p90_de00": 4.117,
+      "mean_de00": 2.2475,
       "mae_rgb_255": [
-        6.141,
-        4.348,
-        5.522
+        6.516,
+        4.635,
+        6.358
       ],
-      "mae_mean_255": 5.337
+      "mae_mean_255": 5.836
     },
     "pairB_noflare": {
-      "median_de00": 2.1845,
-      "p90_de00": 5.159,
-      "mean_de00": 2.6328,
+      "median_de00": 2.5104,
+      "p90_de00": 4.9483,
+      "mean_de00": 2.7182,
       "mae_rgb_255": [
-        5.006,
-        4.228,
-        5.304
+        4.647,
+        4.209,
+        5.858
       ],
-      "mae_mean_255": 4.846
+      "mae_mean_255": 4.905
     }
-  },
-  "justification": "2D quadratic surface discovery showed vertical y structure explains 70.2% (Pair A) and 75.7% (Pair B) of spatial residual variance (vs 12-16% horizontal and 0.5-6.4% radial vignette). H2 (1D luminance gradient map alone) failed completely (DE00 7.65 / 4.61, row-y corr -0.95 / -0.96), and H1+H2 improved DE00 by only 0.01 over H1 alone. Within H1, smoothstep vertical multiply + subtle subtractive black pull (H1_affine_rgb_smoothstep) outperformed pure multiply (Pair B DE00 2.45 vs 2.93) and pure subtract (2.45 vs 3.05), reducing row-mean residual correlation with y from -0.96/-0.97 to -0.4227 (Pair A) and +0.6176 (Pair B), both well inside |r| < 0.1."
+  }
 }

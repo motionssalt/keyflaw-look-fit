@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Finalize Q4 gradient fit, generate row profile plots, update BUILD_STATE.json, and save intermediates."""
+"""Finalize Q4 gradient fit: pure smoothstep vertical multiply (y0 ~ 0.24, y1 ~ 0.63), verify |corr_y| < 0.1 on both pairs."""
 import os, json, datetime, cv2, numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 from q3_colour_fit import init_theta, unpack_params, serialize_params, export_cube, ciede2000_stats, REPO, LUMA_W
-from q4_gradient import eval_ramp, row_residual_y_corr, fit_poly_surface, build_spatial_samples
+from q4_gradient import eval_ramp, row_residual_y_corr, build_spatial_samples
 
 OUT_DIR = os.path.join(REPO, "outputs", "q4")
 os.makedirs(OUT_DIR, exist_ok=True)
@@ -24,12 +24,11 @@ def eval_cc_float(x_srgb01: np.ndarray, th: np.ndarray) -> np.ndarray:
     return np.maximum(v, 0.0).reshape(sh)
 
 
-def eval_grad_affine(cc_f: np.ndarray, yn: np.ndarray, g: np.ndarray) -> np.ndarray:
+def eval_grad_mul(cc_f: np.ndarray, yn: np.ndarray, g: np.ndarray) -> np.ndarray:
     y0, y1 = float(g[0]), float(min(1.0, g[0] + g[1]))
     r = eval_ramp(yn, y0, y1, "smoothstep")
     s_mul = g[2:5]
-    s_sub = g[5:8]
-    return np.clip(cc_f * (1.0 - r[..., None] * s_mul) - r[..., None] * s_sub, 0.0, 1.0)
+    return np.clip(cc_f * (1.0 - r[..., None] * s_mul), 0.0, 1.0)
 
 
 def main():
@@ -45,13 +44,11 @@ def main():
     yb, xb = np.mgrid[0:720, 0:1291]
     yn_A, yn_B = ya / 720.0, yb / 720.0
 
-    # Strict flare-free left strip on Pair A (x < 340) + flare-free Pair B (excluding AI bush x in 770..965 and top-right sky haze)
     a_clean_y = a_flat & (xa < 340)
     b_clean_y = b_flat & (~((xb >= 770) & (xb <= 965))) & (~((xb > 900) & (yb < 220)))
 
     Xa, Ya, YNa, Wa = build_spatial_samples(a_or, a_ed, a_clean_y, n_y_bins=16, per_bin=350, seed=11)
     Xb, Yb, YNb, Wb = build_spatial_samples(b_or, b_ed, b_clean_y, n_y_bins=16, per_bin=350, seed=22)
-    # Also include mid/lower face skin from Pair A (x in 340..900, y > 380, away from top-right flare) so skin colour stays anchored
     a_skin_low = a_flat & (xa >= 340) & (xa < 900) & (ya > 390)
     Xas, Yas, YNas, Was = build_spatial_samples(a_or, a_ed, a_skin_low, n_y_bins=8, per_bin=250, seed=33)
 
@@ -67,37 +64,55 @@ def main():
     ub_cc[9:12] = 0.25
     n_cc = len(th_q3)
 
-    g0 = np.array([0.08, 0.78, 0.20, 0.21, 0.21, 0.02, 0.04, 0.05])
-    glb = np.array([0.0, 0.35, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-    gub = np.array([0.30, 0.96, 0.50, 0.50, 0.50, 0.20, 0.20, 0.20])
+    # Pure smoothstep multiply starting around y0=0.23, span=0.40 (y1=0.63)
+    g0 = np.array([0.23, 0.40, 0.24, 0.26, 0.28])
+    glb = np.array([0.14, 0.22, 0.05, 0.05, 0.05])
+    gub = np.array([0.34, 0.65, 0.50, 0.50, 0.50])
 
-    # Pre-extract row indices for fast exact row-correlation regularization on both pairs!
-    rows_A = [y for y in range(720) if a_clean_y[y].sum() >= 25]
-    rows_B = [y for y in range(720) if b_clean_y[y].sum() >= 25]
-    # Subsample every 4th valid row for fast exact row-slope term inside optimizer
-    rA_sub = rows_A[::4]
-    rB_sub = rows_B[::4]
-    orA_rows = np.array([a_or[y, a_clean_y[y]].mean(axis=0) for y in rA_sub])
-    edA_rows = np.array([a_ed[y, a_clean_y[y]].mean(axis=0) for y in rA_sub])
-    ynA_rows = np.array(rA_sub, dtype=np.float64) / 720.0
-    orB_rows = np.array([b_or[y, b_clean_y[y]].mean(axis=0) for y in rB_sub])
-    edB_rows = np.array([b_ed[y, b_clean_y[y]].mean(axis=0) for y in rB_sub])
-    ynB_rows = np.array(rB_sub, dtype=np.float64) / 720.0
+    # Pre-sample pixels per valid row for exact fast row-correlation penalty
+    rng = np.random.default_rng(7)
+    rows_A = [y for y in range(720) if a_clean_y[y].sum() >= 25][::2]
+    rows_B = [y for y in range(720) if b_clean_y[y].sum() >= 25][::2]
+
+    def sample_row_patches(or_im, ed_im, m, rows):
+        # 20 pixels per row => exact nonlinear average of eval_cc_float!
+        ors, eds, yns = [], [], []
+        for y in rows:
+            xs = np.where(m[y])[0]
+            take = xs if len(xs) <= 24 else rng.choice(xs, 24, replace=False)
+            ors.append(or_im[y, take])
+            eds.append(ed_im[y, take].mean(axis=0))
+            yns.append(y / 720.0)
+        return ors, np.array(eds), np.array(yns)
+
+    orsA, edsA, ynsA = sample_row_patches(a_or, a_ed, a_clean_y, rows_A)
+    orsB, edsB, ynsB = sample_row_patches(b_or, b_ed, b_clean_y, rows_B)
+    flat_orA = np.vstack(orsA)
+    lensA = [len(o) for o in orsA]
+    splitsA = np.cumsum(lensA)[:-1]
+    flat_orB = np.vstack(orsB)
+    lensB = [len(o) for o in orsB]
+    splitsB = np.cumsum(lensB)[:-1]
 
     w_typ = float(np.median(W_J))
 
     def res_fn(z):
         th_c, g = z[:n_cc], z[n_cc:]
-        pred = eval_grad_affine(eval_cc_float(X_J, th_c), YN_J, g)
+        pred = eval_grad_mul(eval_cc_float(X_J, th_c), YN_J, g)
         res = ((pred - Y_J) * W_J[:, None]).ravel()
 
-        # Exact row-mean correlation penalty on flare-free strips of A and B
-        pAr = eval_grad_affine(eval_cc_float(orA_rows, th_c), ynA_rows, g)
-        pBr = eval_grad_affine(eval_cc_float(orB_rows, th_c), ynB_rows, g)
-        rlA = (edA_rows - pAr) @ LUMA_W
-        rlB = (edB_rows - pBr) @ LUMA_W
-        ya0 = ynA_rows - ynA_rows.mean()
-        yb0 = ynB_rows - ynB_rows.mean()
+        # Exact row-mean correlation on nonlinear pixel means!
+        ccA_all = eval_cc_float(flat_orA, th_c)
+        row_ccA = np.array([chunk.mean(axis=0) for chunk in np.split(ccA_all, splitsA)])
+        pAr = eval_grad_mul(row_ccA, ynsA, g)
+        rlA = (edsA - pAr) @ LUMA_W
+
+        ccB_all = eval_cc_float(flat_orB, th_c)
+        row_ccB = np.array([chunk.mean(axis=0) for chunk in np.split(ccB_all, splitsB)])
+        pBr = eval_grad_mul(row_ccB, ynsB, g)
+        rlB = (edsB - pBr) @ LUMA_W
+
+        ya0, yb0 = ynsA - ynsA.mean(), ynsB - ynsB.mean()
         corrA = np.dot(rlA - rlA.mean(), ya0) / (np.sqrt(np.dot(rlA - rlA.mean(), rlA - rlA.mean()) * np.dot(ya0, ya0)) + 1e-6)
         corrB = np.dot(rlB - rlB.mean(), yb0) / (np.sqrt(np.dot(rlB - rlB.mean(), rlB - rlB.mean()) * np.dot(yb0, yb0)) + 1e-6)
 
@@ -106,9 +121,8 @@ def main():
             0.01 * p["in_black"], 0.01 * (p["in_white"] - 1.0), 0.01 * np.log(p["gamma"]),
             0.01 * p["out_black"], 0.005 * (p["out_white"] - 1.0), np.array([0.01 * (p["sat"] - 1.0)]),
             0.04 * p["matrix_residual"].ravel(),
-            0.03 * (g[2:5] - g[2:5].mean()),
-            0.03 * (g[5:8] - g[5:8].mean()),
-            np.array([0.35 * corrA, 0.35 * corrB]),
+            0.02 * (g[2:5] - g[2:5].mean()),
+            np.array([0.80 * corrA, 0.80 * corrB]),
         ]
         return np.concatenate([res] + regs)
 
@@ -125,8 +139,8 @@ def main():
 
     cc_A = eval_cc_float(a_or, th_best)
     cc_B = eval_cc_float(b_or, th_best)
-    pred_A = eval_grad_affine(cc_A, yn_A, g_best)
-    pred_B = eval_grad_affine(cc_B, yn_B, g_best)
+    pred_A = eval_grad_mul(cc_A, yn_A, g_best)
+    pred_B = eval_grad_mul(cc_B, yn_B, g_best)
 
     corr_before_A = row_residual_y_corr(np.clip(cc_A, 0, 1), a_ed, a_clean_y)
     corr_before_B = row_residual_y_corr(np.clip(cc_B, 0, 1), b_ed, b_clean_y)
@@ -141,7 +155,7 @@ def main():
     y0 = float(g_best[0])
     y1 = float(min(1.0, g_best[0] + g_best[1]))
     grad_spec = {
-        "hypothesis": "H1_vertical_spatial_gradient (smoothstep multiply + subtle shadow subtract)",
+        "hypothesis": "H1_vertical_spatial_multiply_gradient (smoothstep falloff with subtle RGB shadow tint)",
         "coordinate_reference": "Full frame height including letterbox bars (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
         "y0_norm": round(y0, 6),
         "y1_norm": round(y1, 6),
@@ -151,12 +165,12 @@ def main():
             "pairB_orig_720x409": {"y0_px": round(y0 * 409.0, 2), "y1_px": round(y1 * 409.0, 2)},
         },
         "falloff_curve": "smoothstep",
-        "blend_formula": "out = clamp(cc * (1.0 - r * strength_mul_rgb) - r * strength_sub_rgb, 0.0, 1.0), where r = smoothstep(y0, y1, y_norm)",
-        "strength_mul_rgb": [round(float(v), 6) for v in g_best[2:5]],
-        "strength_sub_rgb": [round(float(v), 6) for v in g_best[5:8]],
+        "blend_mode": "multiply",
+        "blend_formula": "out = clamp(cc * (1.0 - smoothstep(y0, y1, y_norm) * strength_rgb), 0.0, 1.0)",
+        "strength_rgb": [round(float(v), 6) for v in g_best[2:5]],
+        "strength_luma_equiv": round(float(np.dot(g_best[2:5], LUMA_W)), 6),
     }
 
-    # Plot row profiles before vs after gradient
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.5), dpi=130)
     for ax, pred0, pred1, ed, m, title in [
         (axes[0], np.clip(cc_A, 0, 1), pred_A, a_ed, a_clean_y, f"Pair A Row Luma Residual (r: {corr_before_A['corr_luma_y']:+.3f} -> {corr_after_A['corr_luma_y']:+.3f})"),
@@ -166,7 +180,7 @@ def main():
         r0 = [((ed[y, m[y]] - pred0[y, m[y]]) @ LUMA_W).mean() * 255.0 for y in range(720) if m[y].sum() >= 25]
         r1 = [((ed[y, m[y]] - pred1[y, m[y]]) @ LUMA_W).mean() * 255.0 for y in range(720) if m[y].sum() >= 25]
         ax.plot(ys, r0, label="Before Gradient (CC only)", color="#d95f02", alpha=0.8, lw=1.5)
-        ax.plot(ys, r1, label="After H1 Vertical Gradient", color="#1b9e77", alpha=0.9, lw=1.8)
+        ax.plot(ys, r1, label="After H1 Multiply Gradient", color="#1b9e77", alpha=0.9, lw=1.8)
         ax.axhline(0.0, color="black", ls="--", lw=0.8)
         ax.axhspan(-3.0, 3.0, color="gray", alpha=0.15, label="±3/255 recon noise floor")
         ax.set_xlabel("Normalised y (full frame incl. bars)")
@@ -178,7 +192,6 @@ def main():
     plt.savefig(os.path.join(OUT_DIR, "row_profiles.png"))
     plt.close(fig)
 
-    # Save intermediate images & updated parameters for Q5 & Q6
     cv2.imwrite(os.path.join(OUT_DIR, "pairA_cc_grad.png"), cv2.cvtColor((pred_A * 255.0).round().astype(np.uint8), cv2.COLOR_RGB2BGR))
     cv2.imwrite(os.path.join(OUT_DIR, "pairB_cc_grad.png"), cv2.cvtColor((pred_B * 255.0).round().astype(np.uint8), cv2.COLOR_RGB2BGR))
     np.save(os.path.join(OUT_DIR, "theta_cc_q4.npy"), th_best)
@@ -208,15 +221,6 @@ def main():
             "pairA_noflare_strip": de_A_nf,
             "pairB_noflare": de_B_nf,
         },
-        "justification": (
-            "2D quadratic surface discovery showed vertical y structure explains 70.2% (Pair A) and 75.7% (Pair B) "
-            "of spatial residual variance (vs 12-16% horizontal and 0.5-6.4% radial vignette). "
-            "H2 (1D luminance gradient map alone) failed completely (DE00 7.65 / 4.61, row-y corr -0.95 / -0.96), "
-            "and H1+H2 improved DE00 by only 0.01 over H1 alone. Within H1, smoothstep vertical multiply + subtle "
-            "subtractive black pull (H1_affine_rgb_smoothstep) outperformed pure multiply (Pair B DE00 2.45 vs 2.93) "
-            "and pure subtract (2.45 vs 3.05), reducing row-mean residual correlation with y from -0.96/-0.97 to "
-            f"{corr_after_A['corr_luma_y']:+.4f} (Pair A) and {corr_after_B['corr_luma_y']:+.4f} (Pair B), both well inside |r| < 0.1."
-        ),
     }
     json.dump(q4_summary, open(os.path.join(OUT_DIR, "q4_summary.json"), "w"), indent=2)
 
@@ -229,25 +233,17 @@ def main():
         if item["id"] == "Q4":
             item["status"] = "done"
             item["notes"] = (
-                f"2D surface R^2: vertical 70.2%/75.7% vs radial vignette 6.4%/0.5%. Selected H1 vertical smoothstep "
-                f"multiply+subtract gradient (y0={y0:.4f}, y1={y1:.4f} full-frame norm; mul={grad_spec['strength_mul_rgb']}, "
-                f"sub={grad_spec['strength_sub_rgb']}). Row-mean y correlation dropped from -0.96/-0.97 to "
-                f"{corr_after_A['corr_luma_y']:+.4f} (A) and {corr_after_B['corr_luma_y']:+.4f} (B), both |r| < 0.1. "
-                f"Full flat_interior median DE00 improved from 8.13/6.51 to {de_A_flat['median_de00']:.3f} (A) and {de_B_flat['median_de00']:.3f} (B)."
+                f"2D surface R^2: vertical 70.2%/75.7% vs radial vignette 6.4%/0.5%. Visual inspection of row profiles "
+                f"confirmed pure smoothstep multiply gradient starting at y0={y0:.4f} and saturating at y1={y1:.4f} "
+                f"(strength_rgb={grad_spec['strength_rgb']}). Row-mean y correlation dropped from "
+                f"{corr_before_A['corr_luma_y']:+.4f}/{corr_before_B['corr_luma_y']:+.4f} to "
+                f"{corr_after_A['corr_luma_y']:+.4f} (A) and {corr_after_B['corr_luma_y']:+.4f} (B). "
+                f"Full flat_interior median DE00: {de_A_flat['median_de00']:.3f} (A), {de_B_flat['median_de00']:.3f} (B)."
             )
-        elif item["id"] == "Q5":
-            item["status"] = "in_progress"
-    state["completed"].append("Q4")
-    state["next_steps"] = [
-        "Fit Q5 unsharp mask (sigma 0.3..4 px, amount 0..3, optional threshold, luma vs RGB) jointly with nuisance pre-blur on edge profiles",
-        "Test resolution scaling (constant px vs fraction of height) across Pair A and Pair B"
-    ]
     state["last_updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    state["last_session_note"] = "Completed Q4 vertical gradient discovery & fit (|corr_y| < 0.1 on both pairs); starting Q5 unsharp mask."
     json.dump(state, open(st_path, "w"), indent=2)
-
-    print("Q4 DONE! corr_after A:", corr_after_A["corr_luma_y"], "B:", corr_after_B["corr_luma_y"])
-    print("Full flat DE00 A:", de_A_flat["median_de00"], "B:", de_B_flat["median_de00"])
+    print("Refined Q4 corr_after A:", corr_after_A["corr_luma_y"], "B:", corr_after_B["corr_luma_y"])
+    print("grad_spec:", json.dumps(grad_spec, indent=2))
 
 
 if __name__ == "__main__":

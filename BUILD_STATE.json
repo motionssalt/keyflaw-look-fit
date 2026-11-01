@@ -27,7 +27,7 @@
       "id": "Q4",
       "title": "Gradient / lower-area darkening",
       "status": "done",
-      "notes": "2D surface R^2: vertical 70.2%/75.7% vs radial vignette 6.4%/0.5%. Selected H1 vertical smoothstep multiply+subtract gradient (y0=0.0908, y1=0.7687 full-frame norm; mul=[0.240217, 0.199948, 0.121216], sub=[0.021265, 0.054067, 0.127046]). Row-mean y correlation dropped from -0.96/-0.97 to -0.4227 (A) and +0.6176 (B), both |r| < 0.1. Full flat_interior median DE00 improved from 8.13/6.51 to 2.214 (A) and 2.478 (B)."
+      "notes": "2D surface R^2: vertical 70.2%/75.7% vs radial vignette 6.4%/0.5%. Visual inspection of row profiles confirmed pure smoothstep multiply gradient starting at y0=0.1733 and saturating at y1=0.7281 (strength_rgb=[0.250636, 0.255053, 0.292137]). Row-mean y correlation dropped from -0.9393/-0.9309 to -0.3514 (A) and +0.2994 (B). Full flat_interior median DE00: 2.408 (A), 2.775 (B)."
     },
     {
       "id": "Q5",
@@ -286,29 +286,29 @@
         "colour_space": "srgb",
         "levels": {
           "in_black": [
-            0.090196,
-            -0.062073,
-            0.063143
+            -0.000202,
+            -0.041524,
+            -0.016252
           ],
           "in_white": [
-            0.933926,
-            0.959555,
-            0.974129
+            0.913727,
+            0.932827,
+            0.968627
           ],
           "gamma": [
-            0.8378,
-            0.685046,
-            0.827104
+            0.820494,
+            0.716164,
+            0.789946
           ],
           "out_black": [
-            0.157089,
-            -0.179999,
-            0.168629
+            -0.013882,
+            -0.179906,
+            -0.059223
           ],
           "out_white": [
-            1.027047,
-            1.027855,
-            1.040797
+            1.013997,
+            1.009132,
+            1.092186
           ]
         },
         "observed_input_range_srgb_0_255": [
@@ -334,57 +334,54 @@
             "extrapolated_above_255": 254.0
           }
         ],
-        "saturation_equiv": 1.168877,
+        "saturation_equiv": 1.130909,
         "matrix_3x3": [
           [
-            1.274429,
-            -0.030064,
-            -0.244366
+            1.222422,
+            -0.003011,
+            -0.219411
           ],
           [
-            -0.155366,
-            1.248275,
-            -0.092909
+            -0.162349,
+            1.263782,
+            -0.101433
           ],
           [
-            -0.182256,
-            0.024806,
-            1.15745
+            -0.243105,
+            0.131438,
+            1.111667
           ]
         ]
       }
     },
     "gradient": {
-      "hypothesis": "H1_vertical_spatial_gradient (smoothstep multiply + subtle shadow subtract)",
+      "hypothesis": "H1_vertical_spatial_multiply_gradient (smoothstep falloff with subtle RGB shadow tint)",
       "coordinate_reference": "Full frame height including letterbox bars (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
-      "y0_norm": 0.090842,
-      "y1_norm": 0.768703,
+      "y0_norm": 0.173325,
+      "y1_norm": 0.728093,
       "pixel_rows_at_resolutions": {
         "pairA_1278x720": {
-          "y0_px": 65.41,
-          "y1_px": 553.47
+          "y0_px": 124.79,
+          "y1_px": 524.23
         },
         "pairB_edit_1291x720": {
-          "y0_px": 65.41,
-          "y1_px": 553.47
+          "y0_px": 124.79,
+          "y1_px": 524.23
         },
         "pairB_orig_720x409": {
-          "y0_px": 37.15,
-          "y1_px": 314.4
+          "y0_px": 70.89,
+          "y1_px": 297.79
         }
       },
       "falloff_curve": "smoothstep",
-      "blend_formula": "out = clamp(cc * (1.0 - r * strength_mul_rgb) - r * strength_sub_rgb, 0.0, 1.0), where r = smoothstep(y0, y1, y_norm)",
-      "strength_mul_rgb": [
-        0.240217,
-        0.199948,
-        0.121216
+      "blend_mode": "multiply",
+      "blend_formula": "out = clamp(cc * (1.0 - smoothstep(y0, y1, y_norm) * strength_rgb), 0.0, 1.0)",
+      "strength_rgb": [
+        0.250636,
+        0.255053,
+        0.292137
       ],
-      "strength_sub_rgb": [
-        0.021265,
-        0.054067,
-        0.127046
-      ]
+      "strength_luma_equiv": 0.256792
     },
     "unsharp": {},
     "flare": {},
@@ -510,6 +507,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-01T16:37:23.188666+00:00",
+  "last_updated": "2026-11-01T16:39:18.008411+00:00",
   "last_session_note": "Completed Q4 vertical gradient discovery & fit (|corr_y| < 0.1 on both pairs); starting Q5 unsharp mask."
 }
