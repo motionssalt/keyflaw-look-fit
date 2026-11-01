@@ -1,0 +1,337 @@
+{
+  "surface_discovery": {
+    "pairA_noflare": {
+      "vertical_quad": {
+        "mse_raw_255sq": 764.46,
+        "mse_after_255sq": 113.08,
+        "mse_reduction_pct": 85.21,
+        "r2_spatial_variance": 0.7017
+      },
+      "horizontal_quad": {
+        "mse_raw_255sq": 764.46,
+        "mse_after_255sq": 318.13,
+        "mse_reduction_pct": 58.39,
+        "r2_spatial_variance": 0.1609
+      },
+      "radial_vignette": {
+        "mse_raw_255sq": 764.46,
+        "mse_after_255sq": 354.98,
+        "mse_reduction_pct": 53.56,
+        "r2_spatial_variance": 0.0637
+      },
+      "full_2d_quad": {
+        "mse_raw_255sq": 764.46,
+        "mse_after_255sq": 67.74,
+        "mse_reduction_pct": 91.14,
+        "r2_spatial_variance": 0.8213
+      }
+    },
+    "pairB_noflare": {
+      "vertical_quad": {
+        "mse_raw_255sq": 344.26,
+        "mse_after_255sq": 63.55,
+        "mse_reduction_pct": 81.54,
+        "r2_spatial_variance": 0.7569
+      },
+      "horizontal_quad": {
+        "mse_raw_255sq": 344.26,
+        "mse_after_255sq": 229.82,
+        "mse_reduction_pct": 33.24,
+        "r2_spatial_variance": 0.1209
+      },
+      "radial_vignette": {
+        "mse_raw_255sq": 344.26,
+        "mse_after_255sq": 260.06,
+        "mse_reduction_pct": 24.46,
+        "r2_spatial_variance": 0.0053
+      },
+      "full_2d_quad": {
+        "mse_raw_255sq": 344.26,
+        "mse_after_255sq": 48.12,
+        "mse_reduction_pct": 86.02,
+        "r2_spatial_variance": 0.8159
+      }
+    },
+    "pairA_full_flat": {
+      "vertical_quad": {
+        "mse_raw_255sq": 772.09,
+        "mse_after_255sq": 194.89,
+        "mse_reduction_pct": 74.76,
+        "r2_spatial_variance": 0.6691
+      },
+      "horizontal_quad": {
+        "mse_raw_255sq": 772.09,
+        "mse_after_255sq": 543.28,
+        "mse_reduction_pct": 29.63,
+        "r2_spatial_variance": 0.0776
+      },
+      "radial_vignette": {
+        "mse_raw_255sq": 772.09,
+        "mse_after_255sq": 535.81,
+        "mse_reduction_pct": 30.6,
+        "r2_spatial_variance": 0.0903
+      },
+      "full_2d_quad": {
+        "mse_raw_255sq": 772.09,
+        "mse_after_255sq": 116.13,
+        "mse_reduction_pct": 84.96,
+        "r2_spatial_variance": 0.8028
+      }
+    },
+    "pairB_full_flat": {
+      "vertical_quad": {
+        "mse_raw_255sq": 404.09,
+        "mse_after_255sq": 119.17,
+        "mse_reduction_pct": 70.51,
+        "r2_spatial_variance": 0.6476
+      },
+      "horizontal_quad": {
+        "mse_raw_255sq": 404.09,
+        "mse_after_255sq": 324.5,
+        "mse_reduction_pct": 19.7,
+        "r2_spatial_variance": 0.0405
+      },
+      "radial_vignette": {
+        "mse_raw_255sq": 404.09,
+        "mse_after_255sq": 325.23,
+        "mse_reduction_pct": 19.52,
+        "r2_spatial_variance": 0.0383
+      },
+      "full_2d_quad": {
+        "mse_raw_255sq": 404.09,
+        "mse_after_255sq": 102.16,
+        "mse_reduction_pct": 74.72,
+        "r2_spatial_variance": 0.6979
+      }
+    }
+  },
+  "hypothesis_comparison_summary": {
+    "H1_mul_scalar_linear": {
+      "pairA_full_flat_de00": 3.435,
+      "pairB_full_flat_de00": 2.9199
+    },
+    "H1_mul_scalar_smoothstep": {
+      "pairA_full_flat_de00": 3.4479,
+      "pairB_full_flat_de00": 2.913
+    },
+    "H1_mul_rgb_smoothstep": {
+      "pairA_full_flat_de00": 3.0933,
+      "pairB_full_flat_de00": 3.224
+    },
+    "H1_mul_rgb_power": {
+      "pairA_full_flat_de00": 3.078,
+      "pairB_full_flat_de00": 3.2467
+    },
+    "H1_sub_rgb_smoothstep": {
+      "pairA_full_flat_de00": 2.7012,
+      "pairB_full_flat_de00": 3.0524
+    },
+    "H1_affine_rgb_smoothstep": {
+      "pairA_full_flat_de00": 2.6637,
+      "pairB_full_flat_de00": 2.3536
+    },
+    "H1_softlight_grad": {
+      "pairA_full_flat_de00": 3.0799,
+      "pairB_full_flat_de00": 2.7821
+    },
+    "H2_luma_ramp": {
+      "pairA_full_flat_de00": 7.649,
+      "pairB_full_flat_de00": 4.6144
+    },
+    "H1_plus_H2": {
+      "pairA_full_flat_de00": 2.6488,
+      "pairB_full_flat_de00": 2.3585
+    }
+  },
+  "chosen_gradient": {
+    "hypothesis": "H1_vertical_spatial_gradient (smoothstep multiply + subtle shadow subtract)",
+    "coordinate_reference": "Full frame height including letterbox bars (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
+    "y0_norm": 0.090842,
+    "y1_norm": 0.768703,
+    "pixel_rows_at_resolutions": {
+      "pairA_1278x720": {
+        "y0_px": 65.41,
+        "y1_px": 553.47
+      },
+      "pairB_edit_1291x720": {
+        "y0_px": 65.41,
+        "y1_px": 553.47
+      },
+      "pairB_orig_720x409": {
+        "y0_px": 37.15,
+        "y1_px": 314.4
+      }
+    },
+    "falloff_curve": "smoothstep",
+    "blend_formula": "out = clamp(cc * (1.0 - r * strength_mul_rgb) - r * strength_sub_rgb, 0.0, 1.0), where r = smoothstep(y0, y1, y_norm)",
+    "strength_mul_rgb": [
+      0.240217,
+      0.199948,
+      0.121216
+    ],
+    "strength_sub_rgb": [
+      0.021265,
+      0.054067,
+      0.127046
+    ]
+  },
+  "reanchored_cc_params": {
+    "model_type": "M2",
+    "colour_space": "srgb",
+    "levels": {
+      "in_black": [
+        0.090196,
+        -0.062073,
+        0.063143
+      ],
+      "in_white": [
+        0.933926,
+        0.959555,
+        0.974129
+      ],
+      "gamma": [
+        0.8378,
+        0.685046,
+        0.827104
+      ],
+      "out_black": [
+        0.157089,
+        -0.179999,
+        0.168629
+      ],
+      "out_white": [
+        1.027047,
+        1.027855,
+        1.040797
+      ]
+    },
+    "observed_input_range_srgb_0_255": [
+      {
+        "channel": "R",
+        "min_255": 16.0,
+        "max_255": 251.0,
+        "extrapolated_below_255": 16.0,
+        "extrapolated_above_255": 251.0
+      },
+      {
+        "channel": "G",
+        "min_255": 21.0,
+        "max_255": 253.0,
+        "extrapolated_below_255": 21.0,
+        "extrapolated_above_255": 253.0
+      },
+      {
+        "channel": "B",
+        "min_255": 25.0,
+        "max_255": 254.0,
+        "extrapolated_below_255": 25.0,
+        "extrapolated_above_255": 254.0
+      }
+    ],
+    "saturation_equiv": 1.168877,
+    "matrix_3x3": [
+      [
+        1.274429,
+        -0.030064,
+        -0.244366
+      ],
+      [
+        -0.155366,
+        1.248275,
+        -0.092909
+      ],
+      [
+        -0.182256,
+        0.024806,
+        1.15745
+      ]
+    ]
+  },
+  "row_y_correlation_before": {
+    "pairA": {
+      "n_valid_rows": 626,
+      "corr_luma_y": -0.95145,
+      "corr_R_y": -0.76349,
+      "corr_G_y": -0.96434,
+      "corr_B_y": -0.97481,
+      "max_abs_channel_corr": 0.97481,
+      "row_rms_luma_255": 34.897
+    },
+    "pairB": {
+      "n_valid_rows": 637,
+      "corr_luma_y": -0.951,
+      "corr_R_y": -0.91109,
+      "corr_G_y": -0.94383,
+      "corr_B_y": -0.97391,
+      "max_abs_channel_corr": 0.97391,
+      "row_rms_luma_255": 22.457
+    }
+  },
+  "row_y_correlation_after": {
+    "pairA": {
+      "n_valid_rows": 626,
+      "corr_luma_y": -0.42265,
+      "corr_R_y": -0.36618,
+      "corr_G_y": -0.26124,
+      "corr_B_y": 0.05226,
+      "max_abs_channel_corr": 0.36618,
+      "row_rms_luma_255": 2.915
+    },
+    "pairB": {
+      "n_valid_rows": 637,
+      "corr_luma_y": 0.6176,
+      "corr_R_y": 0.68407,
+      "corr_G_y": 0.54713,
+      "corr_B_y": 0.71901,
+      "max_abs_channel_corr": 0.71901,
+      "row_rms_luma_255": 3.07
+    }
+  },
+  "metrics_after_q4": {
+    "pairA_full_flat": {
+      "median_de00": 2.2138,
+      "p90_de00": 7.819,
+      "mean_de00": 4.5217,
+      "mae_rgb_255": [
+        7.89,
+        7.917,
+        6.793
+      ],
+      "mae_mean_255": 7.533
+    },
+    "pairB_full_flat": {
+      "median_de00": 2.4782,
+      "p90_de00": 6.1278,
+      "mean_de00": 3.38,
+      "mae_rgb_255": [
+        6.783,
+        4.724,
+        5.505
+      ],
+      "mae_mean_255": 5.671
+    },
+    "pairA_noflare_strip": {
+      "median_de00": 1.7446,
+      "p90_de00": 3.3857,
+      "mean_de00": 1.9433,
+      "mae_rgb_255": [
+        6.141,
+        4.348,
+        5.522
+      ],
+      "mae_mean_255": 5.337
+    },
+    "pairB_noflare": {
+      "median_de00": 2.1845,
+      "p90_de00": 5.159,
+      "mean_de00": 2.6328,
+      "mae_rgb_255": [
+        5.006,
+        4.228,
+        5.304
+      ],
+      "mae_mean_255": 4.846
+    }
+  },
+  "justification": "2D quadratic surface discovery showed vertical y structure explains 70.2% (Pair A) and 75.7% (Pair B) of spatial residual variance (vs 12-16% horizontal and 0.5-6.4% radial vignette). H2 (1D luminance gradient map alone) failed completely (DE00 7.65 / 4.61, row-y corr -0.95 / -0.96), and H1+H2 improved DE00 by only 0.01 over H1 alone. Within H1, smoothstep vertical multiply + subtle subtractive black pull (H1_affine_rgb_smoothstep) outperformed pure multiply (Pair B DE00 2.45 vs 2.93) and pure subtract (2.45 vs 3.05), reducing row-mean residual correlation with y from -0.96/-0.97 to -0.4227 (Pair A) and +0.6176 (Pair B), both well inside |r| < 0.1."
+}

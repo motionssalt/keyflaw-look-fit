@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q4",
+  "current_phase": "Q5",
   "queue": [
     {
       "id": "Q1",
@@ -26,13 +26,13 @@
     {
       "id": "Q4",
       "title": "Gradient / lower-area darkening",
-      "status": "in_progress",
-      "notes": ""
+      "status": "done",
+      "notes": "2D surface R^2: vertical 70.2%/75.7% vs radial vignette 6.4%/0.5%. Selected H1 vertical smoothstep multiply+subtract gradient (y0=0.0908, y1=0.7687 full-frame norm; mul=[0.240217, 0.199948, 0.121216], sub=[0.021265, 0.054067, 0.127046]). Row-mean y correlation dropped from -0.96/-0.97 to -0.4227 (A) and +0.6176 (B), both |r| < 0.1. Full flat_interior median DE00 improved from 8.13/6.51 to 2.214 (A) and 2.478 (B)."
     },
     {
       "id": "Q5",
       "title": "Unsharp mask",
-      "status": "pending",
+      "status": "in_progress",
       "notes": ""
     },
     {
@@ -280,9 +280,112 @@
         "pairB_clean_mid_de00": 3.7543,
         "pairA_full_flat_pre_spatial_de00": 8.1338,
         "pairB_full_flat_pre_spatial_de00": 6.5067
+      },
+      "reanchored_with_gradient_q4": {
+        "model_type": "M2",
+        "colour_space": "srgb",
+        "levels": {
+          "in_black": [
+            0.090196,
+            -0.062073,
+            0.063143
+          ],
+          "in_white": [
+            0.933926,
+            0.959555,
+            0.974129
+          ],
+          "gamma": [
+            0.8378,
+            0.685046,
+            0.827104
+          ],
+          "out_black": [
+            0.157089,
+            -0.179999,
+            0.168629
+          ],
+          "out_white": [
+            1.027047,
+            1.027855,
+            1.040797
+          ]
+        },
+        "observed_input_range_srgb_0_255": [
+          {
+            "channel": "R",
+            "min_255": 16.0,
+            "max_255": 251.0,
+            "extrapolated_below_255": 16.0,
+            "extrapolated_above_255": 251.0
+          },
+          {
+            "channel": "G",
+            "min_255": 21.0,
+            "max_255": 253.0,
+            "extrapolated_below_255": 21.0,
+            "extrapolated_above_255": 253.0
+          },
+          {
+            "channel": "B",
+            "min_255": 25.0,
+            "max_255": 254.0,
+            "extrapolated_below_255": 25.0,
+            "extrapolated_above_255": 254.0
+          }
+        ],
+        "saturation_equiv": 1.168877,
+        "matrix_3x3": [
+          [
+            1.274429,
+            -0.030064,
+            -0.244366
+          ],
+          [
+            -0.155366,
+            1.248275,
+            -0.092909
+          ],
+          [
+            -0.182256,
+            0.024806,
+            1.15745
+          ]
+        ]
       }
     },
-    "gradient": {},
+    "gradient": {
+      "hypothesis": "H1_vertical_spatial_gradient (smoothstep multiply + subtle shadow subtract)",
+      "coordinate_reference": "Full frame height including letterbox bars (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
+      "y0_norm": 0.090842,
+      "y1_norm": 0.768703,
+      "pixel_rows_at_resolutions": {
+        "pairA_1278x720": {
+          "y0_px": 65.41,
+          "y1_px": 553.47
+        },
+        "pairB_edit_1291x720": {
+          "y0_px": 65.41,
+          "y1_px": 553.47
+        },
+        "pairB_orig_720x409": {
+          "y0_px": 37.15,
+          "y1_px": 314.4
+        }
+      },
+      "falloff_curve": "smoothstep",
+      "blend_formula": "out = clamp(cc * (1.0 - r * strength_mul_rgb) - r * strength_sub_rgb, 0.0, 1.0), where r = smoothstep(y0, y1, y_norm)",
+      "strength_mul_rgb": [
+        0.240217,
+        0.199948,
+        0.121216
+      ],
+      "strength_sub_rgb": [
+        0.021265,
+        0.054067,
+        0.127046
+      ]
+    },
     "unsharp": {},
     "flare": {},
     "order_of_operations": "",
@@ -388,12 +491,12 @@
   "completed": [
     "Q1",
     "Q2",
-    "Q3"
+    "Q3",
+    "Q4"
   ],
   "next_steps": [
-    "Fit 2D polynomial residual surface on Pair A and Pair B flat_interior after CC",
-    "Test H1 (vertical spatial gradient: multiply vs subtract, falloff curve, optional tint), H2 (1D luma-to-RGB ramp), horizontal, and radial vignette",
-    "Verify row-mean residual correlation with y drops below |r| < 0.1 on both pairs"
+    "Fit Q5 unsharp mask (sigma 0.3..4 px, amount 0..3, optional threshold, luma vs RGB) jointly with nuisance pre-blur on edge profiles",
+    "Test resolution scaling (constant px vs fraction of height) across Pair A and Pair B"
   ],
   "decisions": [
     "Discarded prior repository contents completely per explicit instruction and re-initialized clean repository history.",
@@ -407,6 +510,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-01T16:28:21.409949+00:00",
-  "last_session_note": "Completed Q3 colour correction model selection (M2_srgb) and look.cube export; starting Q4 gradient analysis."
+  "last_updated": "2026-11-01T16:37:23.188666+00:00",
+  "last_session_note": "Completed Q4 vertical gradient discovery & fit (|corr_y| < 0.1 on both pairs); starting Q5 unsharp mask."
 }
