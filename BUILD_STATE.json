@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q5",
+  "current_phase": "Q6",
   "queue": [
     {
       "id": "Q1",
@@ -32,13 +32,13 @@
     {
       "id": "Q5",
       "title": "Unsharp mask",
-      "status": "in_progress",
+      "status": "done",
       "notes": ""
     },
     {
       "id": "Q6",
       "title": "Haze flare",
-      "status": "pending",
+      "status": "in_progress",
       "notes": ""
     },
     {
@@ -383,7 +383,34 @@
       ],
       "strength_luma_equiv": 0.256792
     },
-    "unsharp": {},
+    "unsharp": {
+      "mode": "rgb",
+      "colour_space": "gamma-encoded sRGB [0..1] (post-gradient)",
+      "kernel": "single-pass 25-tap (5x5 separable [1,4,6,4,1]/16 with bilinear UV offset = vec2(i,j) * sigma_px / resolution)",
+      "scaling_law": "constant_fraction_of_height",
+      "sigma_frac_h": 0.003473,
+      "sigma_px_at_resolutions": {
+        "pairA_1278x720": 2.5007,
+        "pairB_edit_1291x720": 2.5007,
+        "pairB_orig_720x409": 1.4205,
+        "fhd_1920x1080": 3.751
+      },
+      "amount": 1.2563,
+      "threshold_01": 0.01433,
+      "threshold_255": 3.654,
+      "formula": "d = rgb - blur25(rgb, sigma_frac_h * H); d_t = sign(d) * max(abs(d) - threshold, 0.0); out = clamp(rgb + amount * d_t, 0.0, 1.0)",
+      "nuisance_pre_blur_excluded_from_spec": {
+        "pairA_720p_px": 0.7228,
+        "pairB_720p_px": 0.0683,
+        "pairB_409p_px": 0.0029,
+        "note": "Accounts solely for AI-reconstruction sharpness vs export recompression/upscaling; NOT applied in look_apply.py or shader."
+      },
+      "edge_profile_rmse_reduction_pct": {
+        "pairA_720p_vs_no_sharpening": 38.92,
+        "pairB_720p_vs_no_sharpening": 39.31,
+        "pairB_409p_vs_no_sharpening": 33.56
+      }
+    },
     "flare": {},
     "order_of_operations": "",
     "metrics": {},
@@ -489,11 +516,12 @@
     "Q1",
     "Q2",
     "Q3",
-    "Q4"
+    "Q4",
+    "Q5"
   ],
   "next_steps": [
-    "Fit Q5 unsharp mask (sigma 0.3..4 px, amount 0..3, optional threshold, luma vs RGB) jointly with nuisance pre-blur on edge profiles",
-    "Test resolution scaling (constant px vs fraction of height) across Pair A and Pair B"
+    "Fit Q6 haze flare on low-passed residual (sigma ~3% of frame height) per pair",
+    "Compare radial falloffs (Gaussian, exponential, power) and blend modes (screen, add, soft_light, lighten) + veil test"
   ],
   "decisions": [
     "Discarded prior repository contents completely per explicit instruction and re-initialized clean repository history.",
@@ -507,6 +535,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-01T16:39:18.008411+00:00",
-  "last_session_note": "Completed Q4 vertical gradient discovery & fit (|corr_y| < 0.1 on both pairs); starting Q5 unsharp mask."
+  "last_updated": "2026-11-01T16:53:22.949311+00:00",
+  "last_session_note": "Completed Q5 unsharp mask fit (25-tap RGB USM, sigma=0.347%H, amount=1.256, >=33-39% edge RMSE drop across 720p/409p); starting Q6 haze flare."
 }
