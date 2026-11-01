@@ -1,0 +1,84 @@
+{
+  "project": "keyflaw-look-fit",
+  "repo": "motionssalt/keyflaw-look-fit",
+  "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
+  "status": "in_progress",
+  "current_phase": "Q1",
+  "queue": [
+    {
+      "id": "Q1",
+      "title": "Setup, inputs, masks",
+      "status": "in_progress",
+      "notes": "Repo scaffold created; 4 input images verified visually and copied losslessly as opaque 8-bit RGB PNGs."
+    },
+    {
+      "id": "Q2",
+      "title": "Alignment audit",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q3",
+      "title": "Colour correction fit",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q4",
+      "title": "Gradient / lower-area darkening",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q5",
+      "title": "Unsharp mask",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q6",
+      "title": "Haze flare",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q7",
+      "title": "Order of operations and the full composite",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q8",
+      "title": "Deliverables",
+      "status": "pending",
+      "notes": ""
+    }
+  ],
+  "results": {
+    "cc_model": "",
+    "cc_params": {},
+    "gradient": {},
+    "unsharp": {},
+    "flare": {},
+    "order_of_operations": "",
+    "metrics": {}
+  },
+  "completed": [],
+  "next_steps": [
+    "Generate Q1 masks and overlay previews for Pair A and Pair B",
+    "Inspect overlays visually and write docs/manifest.md"
+  ],
+  "decisions": [
+    "Discarded prior repository contents completely per explicit instruction and re-initialized clean repository history.",
+    "Verified all four attached PNGs visually rather than trusting attachment order: attachment 1 (720x409) is pairB_original_matched.png; attachment 2 (1278x720) is pairA_edited.png; attachment 3 (1278x720) is pairA_original_matched.png; attachment 4 (1291x720) is pairB_edited.png.",
+    "Noted that pairB_edited.png is a 1291x720 NewPipe screenshot from the same letterboxed 720p AMV export as pairA_edited.png (with top/bottom letterbox bars at rows 0-34 and 686-719, soft transitions at 35-36 and 684-685, left/right pillarbox strips at cols 0-6 and 1287-1290, and no burned-in subtitle), whereas pairB_original_matched.png is 720x409 covering the full un-letterboxed 16:9 frame. Saved all 4 inputs byte-for-byte losslessly without resizing or re-encoding; scale/alignment difference for Pair B is handled cleanly via internal warped copies in Q2."
+  ],
+  "known_issues": [
+    "pairB_edited.png (1291x720) and pairB_original_matched.png (720x409) have different pixel resolutions (~1.79x scale) and letterbox/pillarbox bars on the edit only; Q2 computes sub-pixel affine alignment to bridge them without altering inputs."
+  ],
+  "secrets_expected": [
+    "GITHUB_PAT"
+  ],
+  "last_updated": "2026-11-01T16:09:48.112364+00:00",
+  "last_session_note": "Initialized clean repo scaffold, verified and saved 4 lossless RGB inputs, starting Q1 mask generation."
+}
