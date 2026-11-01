@@ -3,18 +3,18 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q1",
+  "current_phase": "Q2",
   "queue": [
     {
       "id": "Q1",
       "title": "Setup, inputs, masks",
-      "status": "in_progress",
-      "notes": "Repo scaffold created; 4 input images verified visually and copied losslessly as opaque 8-bit RGB PNGs."
+      "status": "done",
+      "notes": "Saved 4 lossless RGB inputs after visual verification (fixed attach order; documented 1291x720 letterboxed NewPipe capture for pairB_edited). Generated bars, caption (dilated >=8px), invalid_border, line_edges (sigma=1, dilated 3px), and flat_interior (low grad in both, eroded 3px) masks + overlays for Pair A and Pair B (both 720p and 409p grids). Visually inspected all 3 overlays and wrote docs/manifest.md."
     },
     {
       "id": "Q2",
       "title": "Alignment audit",
-      "status": "pending",
+      "status": "in_progress",
       "notes": ""
     },
     {
@@ -63,15 +63,18 @@
     "order_of_operations": "",
     "metrics": {}
   },
-  "completed": [],
+  "completed": [
+    "Q1"
+  ],
   "next_steps": [
-    "Generate Q1 masks and overlay previews for Pair A and Pair B",
-    "Inspect overlays visually and write docs/manifest.md"
+    "Run Q2 sub-pixel ECC alignment audit on edge maps for Pair A and Pair B",
+    "Record alignment shifts and edge correlations before/after in BUILD_STATE.json"
   ],
   "decisions": [
     "Discarded prior repository contents completely per explicit instruction and re-initialized clean repository history.",
     "Verified all four attached PNGs visually rather than trusting attachment order: attachment 1 (720x409) is pairB_original_matched.png; attachment 2 (1278x720) is pairA_edited.png; attachment 3 (1278x720) is pairA_original_matched.png; attachment 4 (1291x720) is pairB_edited.png.",
-    "Noted that pairB_edited.png is a 1291x720 NewPipe screenshot from the same letterboxed 720p AMV export as pairA_edited.png (with top/bottom letterbox bars at rows 0-34 and 686-719, soft transitions at 35-36 and 684-685, left/right pillarbox strips at cols 0-6 and 1287-1290, and no burned-in subtitle), whereas pairB_original_matched.png is 720x409 covering the full un-letterboxed 16:9 frame. Saved all 4 inputs byte-for-byte losslessly without resizing or re-encoding; scale/alignment difference for Pair B is handled cleanly via internal warped copies in Q2."
+    "Noted that pairB_edited.png is a 1291x720 NewPipe screenshot from the same letterboxed 720p AMV export as pairA_edited.png (with top/bottom letterbox bars at rows 0-34 and 686-719, soft transitions at 35-36 and 684-685, left/right pillarbox strips at cols 0-6 and 1287-1290, and no burned-in subtitle), whereas pairB_original_matched.png is 720x409 covering the full un-letterboxed 16:9 frame. Saved all 4 inputs byte-for-byte losslessly without resizing or re-encoding; scale/alignment difference for Pair B is handled cleanly via internal warped copies in Q2.",
+    "Observed during Q1 visual inspection that AI reconstruction in pairB_original_matched hallucinated yellow foliage ([224,201,100]) for a green bush ([157,201,115]) and smooth folds instead of the cel highlight on the right cloak; will use cluster-balanced robust loss in Q3 so AI-redraw outliers cannot skew colour parameters while keeping flat_interior masks strictly objective."
   ],
   "known_issues": [
     "pairB_edited.png (1291x720) and pairB_original_matched.png (720x409) have different pixel resolutions (~1.79x scale) and letterbox/pillarbox bars on the edit only; Q2 computes sub-pixel affine alignment to bridge them without altering inputs."
@@ -79,6 +82,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-01T16:09:48.112364+00:00",
-  "last_session_note": "Initialized clean repo scaffold, verified and saved 4 lossless RGB inputs, starting Q1 mask generation."
+  "last_updated": "2026-11-01T16:14:27.342806+00:00",
+  "last_session_note": "Completed and visually verified Q1 masks and manifest.md; starting Q2 sub-pixel ECC alignment audit."
 }
