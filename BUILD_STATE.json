@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q2",
+  "current_phase": "Q3",
   "queue": [
     {
       "id": "Q1",
@@ -14,13 +14,13 @@
     {
       "id": "Q2",
       "title": "Alignment audit",
-      "status": "in_progress",
-      "notes": ""
+      "status": "done",
+      "notes": "Pair A: translation shift 0.1143 px, max affine disp 0.3265 px <= 0.5 px (no re-warp needed); valid edge corr 0.97401 -> 0.97636. Pair B: SIFT+RANSAC + sub-pixel ECC affine warp (sx=1.79175, sy=1.78115, 0.593% anisotropy; ECC refined SIFT by median 0.40 px); 720p valid edge corr 0.45454 (naive) -> 0.91484 (SIFT) -> 0.93525 (ECC), 409p 0.53392 -> 0.96198. Saved internal aligned copies in outputs/aligned/."
     },
     {
       "id": "Q3",
       "title": "Colour correction fit",
-      "status": "pending",
+      "status": "in_progress",
       "notes": ""
     },
     {
@@ -61,14 +61,113 @@
     "unsharp": {},
     "flare": {},
     "order_of_operations": "",
-    "metrics": {}
+    "metrics": {},
+    "alignment": {
+      "pairA": {
+        "resolution": [
+          1278,
+          720
+        ],
+        "translation_shift_px": {
+          "dx": 0.1046,
+          "dy": -0.046,
+          "norm": 0.1143
+        },
+        "affine_displacement_px": {
+          "median": 0.122,
+          "p95": 0.278,
+          "max": 0.3265
+        },
+        "affine_matrix_ed_to_or": [
+          [
+            1.000364,
+            -5.8e-05,
+            -0.150566
+          ],
+          [
+            -6.5e-05,
+            1.000099,
+            -0.020881
+          ]
+        ],
+        "edge_corr_full_unmasked_before": 0.96316,
+        "edge_corr_valid_before": 0.97401,
+        "edge_corr_valid_after_translation": 0.97478,
+        "edge_corr_valid_after_affine": 0.97636,
+        "threshold_px": 0.5,
+        "re_warped_used": false
+      },
+      "pairB": {
+        "resolution_edit": [
+          1291,
+          720
+        ],
+        "resolution_orig": [
+          720,
+          409
+        ],
+        "scale_orig_to_edit": {
+          "sx": 1.791749,
+          "sy": 1.781151,
+          "anisotropy_pct": 0.593
+        },
+        "scale_edit_to_orig": {
+          "sx": 0.558114,
+          "sy": 0.561435
+        },
+        "affine_orig_to_edit": [
+          [
+            1.791748,
+            0.000439,
+            5.937686
+          ],
+          [
+            -0.002034,
+            1.781151,
+            -3.063022
+          ]
+        ],
+        "affine_edit_to_orig": [
+          [
+            0.558114,
+            -0.000138,
+            -3.314328
+          ],
+          [
+            0.000637,
+            0.561435,
+            1.715902
+          ]
+        ],
+        "ecc_refinement_over_sift_px": {
+          "median": 0.4017,
+          "p95": 0.5433,
+          "max": 0.5846,
+          "chosen_mask": "faithful_character_mask_x_lt_775"
+        },
+        "edge_corr_720p_naive_before": 0.45454,
+        "edge_corr_720p_sift_interim": 0.91484,
+        "edge_corr_720p_ecc_after": 0.93525,
+        "edge_corr_720p_ecc_faithful_x_lt_775": 0.93424,
+        "edge_corr_409p_naive_before": 0.53392,
+        "edge_corr_409p_ecc_after": 0.96198,
+        "threshold_px": 1.0,
+        "re_warped_used": true,
+        "aligned_files": [
+          "outputs/aligned/pairB_orig_aligned_720p.png",
+          "outputs/aligned/pairB_edit_aligned_409p.png"
+        ]
+      }
+    }
   },
   "completed": [
-    "Q1"
+    "Q1",
+    "Q2"
   ],
   "next_steps": [
-    "Run Q2 sub-pixel ECC alignment audit on edge maps for Pair A and Pair B",
-    "Record alignment shifts and edge correlations before/after in BUILD_STATE.json"
+    "Fit candidate colour correction models M1 (Levels), M2 (Levels + 3x3 matrix), M3 (M2 + regularized monotonic 17-knot curve) in sRGB vs linear light",
+    "Account for spatial effects coupling (fit initial CC on upper/mid un-flared flat clusters, then jointly iterate in later stages)",
+    "Cross-validate A->B, B->A, and Joint; export look.cube and record CIEDE2000 in results"
   ],
   "decisions": [
     "Discarded prior repository contents completely per explicit instruction and re-initialized clean repository history.",
@@ -82,6 +181,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-01T16:14:27.342806+00:00",
-  "last_session_note": "Completed and visually verified Q1 masks and manifest.md; starting Q2 sub-pixel ECC alignment audit."
+  "last_updated": "2026-11-01T16:16:31.854567+00:00",
+  "last_session_note": "Completed Q2 sub-pixel ECC alignment audit and refreshed Pair B masks with sub-pixel warp; starting Q3 colour correction fit."
 }

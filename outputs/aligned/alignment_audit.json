@@ -1,0 +1,97 @@
+{
+  "pairA": {
+    "resolution": [
+      1278,
+      720
+    ],
+    "translation_shift_px": {
+      "dx": 0.1046,
+      "dy": -0.046,
+      "norm": 0.1143
+    },
+    "affine_displacement_px": {
+      "median": 0.122,
+      "p95": 0.278,
+      "max": 0.3265
+    },
+    "affine_matrix_ed_to_or": [
+      [
+        1.000364,
+        -5.8e-05,
+        -0.150566
+      ],
+      [
+        -6.5e-05,
+        1.000099,
+        -0.020881
+      ]
+    ],
+    "edge_corr_full_unmasked_before": 0.96316,
+    "edge_corr_valid_before": 0.97401,
+    "edge_corr_valid_after_translation": 0.97478,
+    "edge_corr_valid_after_affine": 0.97636,
+    "threshold_px": 0.5,
+    "re_warped_used": false
+  },
+  "pairB": {
+    "resolution_edit": [
+      1291,
+      720
+    ],
+    "resolution_orig": [
+      720,
+      409
+    ],
+    "scale_orig_to_edit": {
+      "sx": 1.791749,
+      "sy": 1.781151,
+      "anisotropy_pct": 0.593
+    },
+    "scale_edit_to_orig": {
+      "sx": 0.558114,
+      "sy": 0.561435
+    },
+    "affine_orig_to_edit": [
+      [
+        1.791748,
+        0.000439,
+        5.937686
+      ],
+      [
+        -0.002034,
+        1.781151,
+        -3.063022
+      ]
+    ],
+    "affine_edit_to_orig": [
+      [
+        0.558114,
+        -0.000138,
+        -3.314328
+      ],
+      [
+        0.000637,
+        0.561435,
+        1.715902
+      ]
+    ],
+    "ecc_refinement_over_sift_px": {
+      "median": 0.4017,
+      "p95": 0.5433,
+      "max": 0.5846,
+      "chosen_mask": "faithful_character_mask_x_lt_775"
+    },
+    "edge_corr_720p_naive_before": 0.45454,
+    "edge_corr_720p_sift_interim": 0.91484,
+    "edge_corr_720p_ecc_after": 0.93525,
+    "edge_corr_720p_ecc_faithful_x_lt_775": 0.93424,
+    "edge_corr_409p_naive_before": 0.53392,
+    "edge_corr_409p_ecc_after": 0.96198,
+    "threshold_px": 1.0,
+    "re_warped_used": true,
+    "aligned_files": [
+      "outputs/aligned/pairB_orig_aligned_720p.png",
+      "outputs/aligned/pairB_edit_aligned_409p.png"
+    ]
+  }
+}
