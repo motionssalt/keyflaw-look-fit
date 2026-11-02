@@ -1,0 +1,11 @@
+# Roadmap — Xenoz look-fit run (resumed 2026-11-02)
+- [x] Q1 setup, inputs, masks (from previous session)
+- [x] Q2 alignment audit (from previous session)
+- [x] Q3 colour correction fit (M3_linear chosen, held-out DE00 1.96)
+- [ ] Q4 gradient / lower-area darkening
+- [ ] Q5 unsharp mask
+- [ ] Q6 haze flare (may be absent)
+- [ ] Q6b other effects
+- [ ] Q7 order of operations + joint composite
+- [ ] Q8 deliverables (LOOK_SPEC.md, look_params.json, look_apply.py, look.cube, REPORT.md)
+- [ ] Q9 build Keyflaw effect "Xenoz's CC" + rebuild releases/MotionSalt_CC.kfpack

@@ -33,7 +33,7 @@ from q7_dade_refine import (
 )
 from q4_gradient import row_residual_y_corr
 
-OUT_Q8 = os.path.join(REPO, "analysis", "outputs", "q8")
+OUT_Q8 = os.path.join(OWNER_DIR, "analysis", "outputs", "q8")
 os.makedirs(OUT_Q8, exist_ok=True)
 
 
@@ -99,10 +99,10 @@ def add_px_equivs(fp: dict) -> dict:
 
 
 def main():
-    th = np.load(os.path.join(REPO, "owners/xenoz/analysis/outputs/q7/theta_cc_final.npy"))
-    g = np.load(os.path.join(REPO, "owners/xenoz/analysis/outputs/q7/grad_final.npy"))
-    q7_sum = json.load(open(os.path.join(REPO, "owners/xenoz/analysis/outputs/q7/q7_summary.json")))
-    usm_q5 = json.load(open(os.path.join(REPO, "owners/xenoz/analysis/outputs/q5/usm_q5.json")))
+    th = np.load(os.path.join(OWNER_DIR, "analysis", "outputs/q7/theta_cc_final.npy"))
+    g = np.load(os.path.join(OWNER_DIR, "analysis", "outputs/q7/grad_final.npy"))
+    q7_sum = json.load(open(os.path.join(OWNER_DIR, "analysis", "outputs/q7/q7_summary.json")))
+    usm_q5 = json.load(open(os.path.join(OWNER_DIR, "analysis", "outputs/q5/usm_q5.json")))
 
     p = unpack_dade_params(th)
     y0_f = round(float(g[0]), 6)
@@ -112,20 +112,20 @@ def main():
     # so default zero-flag `look_apply.py` has physically intuitive coordinates AND beats CC-only & Original on both pairs!
     a_ed = load_rgb01("owners/xenoz/inputs/pairA_edited.png")
     a_or = load_rgb01("owners/xenoz/inputs/pairA_original_matched.png")
-    a_flat = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_flat_interior.png"), 0) > 0
-    a_bars = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_bars.png"), 0) > 0
-    a_cap = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_caption.png"), 0) > 0
-    a_inv = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_invalid_border.png"), 0) > 0
-    a_line = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_line_edges.png"), 0) > 0
+    a_flat = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_flat_interior.png"), 0) > 0
+    a_bars = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_bars.png"), 0) > 0
+    a_cap = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_caption.png"), 0) > 0
+    a_inv = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_invalid_border.png"), 0) > 0
+    a_line = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_line_edges.png"), 0) > 0
     a_val = ~(a_bars | a_cap | a_inv)
     a_edge = a_line & a_val
 
     b_ed = load_rgb01("owners/xenoz/inputs/pairB_edited.png")
     b_or = load_rgb01("owners/xenoz/analysis/outputs/aligned/pairB_orig_aligned_720p.png")
-    b_flat = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_flat_interior.png"), 0) > 0
-    b_bars = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_bars.png"), 0) > 0
-    b_inv = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_invalid_border.png"), 0) > 0
-    b_line = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_line_edges.png"), 0) > 0
+    b_flat = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_flat_interior.png"), 0) > 0
+    b_bars = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_bars.png"), 0) > 0
+    b_inv = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_invalid_border.png"), 0) > 0
+    b_line = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_line_edges.png"), 0) > 0
     b_val = ~(b_bars | b_inv)
     yb, xb = np.mgrid[0:720, 0:1291]
     b_edge = b_line & b_val & (xb < 760)
@@ -133,10 +133,10 @@ def main():
 
     b4_ed = load_rgb01("owners/xenoz/analysis/outputs/aligned/pairB_edit_aligned_409p.png")
     b4_or = load_rgb01("owners/xenoz/inputs/pairB_original_matched.png")
-    b4_flat = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_409p_flat_interior.png"), 0) > 0
-    b4_bars = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_409p_bars.png"), 0) > 0
-    b4_inv = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_409p_invalid_border.png"), 0) > 0
-    b4_line = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_409p_line_edges.png"), 0) > 0
+    b4_flat = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_409p_flat_interior.png"), 0) > 0
+    b4_bars = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_409p_bars.png"), 0) > 0
+    b4_inv = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_409p_invalid_border.png"), 0) > 0
+    b4_line = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_409p_line_edges.png"), 0) > 0
     b4_val = ~(b4_bars | b4_inv)
     yb4, xb4 = np.mgrid[0:409, 0:720]
     b4_edge = b4_line & b4_val & (xb4 < 425)
@@ -326,7 +326,7 @@ def main():
         },
     }
 
-    params_path = os.path.join(REPO, "spec", "look_params.json")
+    params_path = os.path.join(OWNER_DIR, "spec", "look_params.json")
     with open(params_path, "w", encoding="utf-8") as f:
         json.dump(look_params, f, indent=2)
 
@@ -335,7 +335,7 @@ def main():
     B_g, G_g, R_g = np.meshgrid(grid, grid, grid, indexing="ij")
     lut_in = np.stack([R_g.ravel(), G_g.ravel(), B_g.ravel()], axis=1).astype(np.float32)
     lut_out = look_apply.stage2_colour_correction(lut_in, cc_dict, dade_strength=1.0, clamp_output=True)
-    with open(os.path.join(REPO, "spec", "look.cube"), "w", encoding="utf-8") as f:
+    with open(os.path.join(OWNER_DIR, "spec", "look.cube"), "w", encoding="utf-8") as f:
         f.write('TITLE "MOTIONSALT_Keyflaw_Look_Dade_CC"\n')
         f.write("LUT_3D_SIZE 33\n")
         f.write("DOMAIN_MIN 0.0 0.0 0.0\n")
@@ -353,7 +353,7 @@ def main():
         ("owners/xenoz/analysis/outputs/aligned/pairB_orig_aligned_720p.png", "owners/xenoz/analysis/outputs/q8/pairB_720p_pred_scene.png", "pairB"),
     ]
     for inp_rel, out_rel, preset in cli_runs:
-        cmd = [sys.executable, os.path.join(REPO, "spec", "look_apply.py"), os.path.join(REPO, inp_rel), os.path.join(REPO, out_rel), "--flare-preset", preset]
+        cmd = [sys.executable, os.path.join(OWNER_DIR, "spec", "look_apply.py"), os.path.join(REPO, inp_rel), os.path.join(REPO, out_rel), "--flare-preset", preset]
         subprocess.run(cmd, check=True)
 
     # Re-evaluate complete stage progression metrics using exact look_apply functions + CLI outputs!

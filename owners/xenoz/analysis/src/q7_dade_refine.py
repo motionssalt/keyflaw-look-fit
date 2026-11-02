@@ -35,7 +35,7 @@ from q4_gradient import eval_ramp, row_residual_y_corr
 from q5_unsharp import apply_usm_25tap_2d
 from q6_flare import apply_flare_2d, norm_lowpass
 
-OUT_Q7 = os.path.join(REPO, "analysis", "outputs", "q7")
+OUT_Q7 = os.path.join(OWNER_DIR, "analysis", "outputs", "q7")
 os.makedirs(OUT_Q7, exist_ok=True)
 
 LUMA_W = np.array([0.2126, 0.7152, 0.0722], dtype=np.float64)
@@ -361,20 +361,20 @@ def load_rgb01(rel_path: str) -> np.ndarray:
 def main():
     a_ed = load_rgb01("owners/xenoz/inputs/pairA_edited.png")
     a_or = load_rgb01("owners/xenoz/inputs/pairA_original_matched.png")
-    a_flat = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_flat_interior.png"), 0) > 0
-    a_bars = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_bars.png"), 0) > 0
-    a_cap = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_caption.png"), 0) > 0
-    a_inv = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_invalid_border.png"), 0) > 0
-    a_line = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_line_edges.png"), 0) > 0
+    a_flat = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_flat_interior.png"), 0) > 0
+    a_bars = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_bars.png"), 0) > 0
+    a_cap = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_caption.png"), 0) > 0
+    a_inv = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_invalid_border.png"), 0) > 0
+    a_line = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_line_edges.png"), 0) > 0
     a_val = ~(a_bars | a_cap | a_inv)
     a_edge = a_line & a_val
 
     b_ed = load_rgb01("owners/xenoz/inputs/pairB_edited.png")
     b_or = load_rgb01("owners/xenoz/analysis/outputs/aligned/pairB_orig_aligned_720p.png")
-    b_flat = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_flat_interior.png"), 0) > 0
-    b_bars = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_bars.png"), 0) > 0
-    b_inv = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_invalid_border.png"), 0) > 0
-    b_line = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_line_edges.png"), 0) > 0
+    b_flat = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_flat_interior.png"), 0) > 0
+    b_bars = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_bars.png"), 0) > 0
+    b_inv = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_invalid_border.png"), 0) > 0
+    b_line = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_line_edges.png"), 0) > 0
     b_val = ~(b_bars | b_inv)
     yb, xb = np.mgrid[0:720, 0:1291]
     b_edge = b_line & b_val & (xb < 760)
@@ -382,15 +382,15 @@ def main():
 
     b4_ed = load_rgb01("owners/xenoz/analysis/outputs/aligned/pairB_edit_aligned_409p.png")
     b4_or = load_rgb01("owners/xenoz/inputs/pairB_original_matched.png")
-    b4_flat = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_409p_flat_interior.png"), 0) > 0
-    b4_inv = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_409p_invalid_border.png"), 0) > 0
-    b4_line = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_409p_line_edges.png"), 0) > 0
+    b4_flat = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_409p_flat_interior.png"), 0) > 0
+    b4_inv = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_409p_invalid_border.png"), 0) > 0
+    b4_line = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_409p_line_edges.png"), 0) > 0
     b4_val = ~b4_inv
     yb4, xb4 = np.mgrid[0:409, 0:720]
     b4_edge = b4_line & b4_val & (xb4 < 425)
 
-    usm_q5 = json.load(open(os.path.join(REPO, "owners/xenoz/analysis/outputs/q5/usm_q5.json")))
-    fl_q6 = json.load(open(os.path.join(REPO, "owners/xenoz/analysis/outputs/q6/flare_q6.json")))
+    usm_q5 = json.load(open(os.path.join(OWNER_DIR, "analysis", "outputs/q5/usm_q5.json")))
+    fl_q6 = json.load(open(os.path.join(OWNER_DIR, "analysis", "outputs/q6/flare_q6.json")))
 
     rng = np.random.default_rng(101)
 
@@ -723,7 +723,7 @@ def main():
     }
 
     # Export updated 33^3 look.cube!
-    export_dade_cube(os.path.join(REPO, "spec", "look.cube"), th_cur, size=33)
+    export_dade_cube(os.path.join(OWNER_DIR, "spec", "look.cube"), th_cur, size=33)
 
     # Save refined composite predictions & stage progression heatmaps
     cv2.imwrite(os.path.join(OUT_Q7, "pairA_composite_shared.png"), cv2.cvtColor(np.round(imgs_A["4_full_composite_shared_flare"] * 255.0).astype(np.uint8), cv2.COLOR_RGB2BGR))

@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 from q3_colour_fit import REPO, LUMA_W
 
-OUT_DIR = os.path.join(REPO, "analysis", "outputs", "q6")
+OUT_DIR = os.path.join(OWNER_DIR, "analysis", "outputs", "q6")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 
@@ -148,11 +148,11 @@ def fit_flare_grid(base_ds: np.ndarray, target_lp_ds: np.ndarray, mask_ds: np.nd
 def main():
     a_ed = load_rgb01("owners/xenoz/inputs/pairA_edited.png")
     a_cg = load_rgb01("owners/xenoz/analysis/outputs/q4/pairA_cc_grad.png")
-    a_flat = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_flat_interior.png"), 0) > 0
+    a_flat = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_flat_interior.png"), 0) > 0
 
     b_ed = load_rgb01("owners/xenoz/inputs/pairB_edited.png")
     b_cg = load_rgb01("owners/xenoz/analysis/outputs/q4/pairB_cc_grad.png")
-    b_flat = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_flat_interior.png"), 0) > 0
+    b_flat = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_flat_interior.png"), 0) > 0
     yb, xb = np.mgrid[0:720, 0:1291]
     # Exclude AI-hallucinated yellow-vs-green bush [770..965] when fitting smooth optical flare
     b_fit_mask = b_flat & (~((xb >= 770) & (xb <= 965)))

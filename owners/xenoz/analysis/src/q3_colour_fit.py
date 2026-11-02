@@ -13,7 +13,7 @@ from skimage.color import rgb2lab, deltaE_ciede2000
 
 OWNER_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 REPO = os.path.abspath(os.path.join(OWNER_DIR, "..", ".."))
-OUT_DIR = os.path.join(REPO, "analysis", "outputs", "q3")
+OUT_DIR = os.path.join(OWNER_DIR, "analysis", "outputs", "q3")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 N_KNOTS = 17
@@ -58,13 +58,13 @@ def ciede2000_stats(pred_rgb01: np.ndarray, target_rgb01: np.ndarray) -> dict:
 
 
 def load_pair_data():
-    a_ed = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/xenoz/inputs/pairA_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    a_or = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/xenoz/inputs/pairA_original_matched.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    a_flat = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairA_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
+    a_ed = cv2.cvtColor(cv2.imread(os.path.join(OWNER_DIR, "inputs", "pairA_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    a_or = cv2.cvtColor(cv2.imread(os.path.join(OWNER_DIR, "analysis", "outputs", "aligned", "pairA_orig_aligned_720p.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    a_flat = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairA_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
 
-    b_ed = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/xenoz/inputs/pairB_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    b_or = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/xenoz/analysis/outputs/aligned/pairB_orig_aligned_720p.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    b_flat = cv2.imread(os.path.join(REPO, "owners/xenoz/masks/pairB_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
+    b_ed = cv2.cvtColor(cv2.imread(os.path.join(OWNER_DIR, "inputs", "pairB_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    b_or = cv2.cvtColor(cv2.imread(os.path.join(OWNER_DIR, "analysis", "outputs/aligned/pairB_orig_aligned_720p.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    b_flat = cv2.imread(os.path.join(OWNER_DIR, "masks", "pairB_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
 
     # Least-coupled flat pixels for initial uncoupled Q3 fit:
     # - Outside top-right flare in Pair A (x_norm > 0.58 & y_norm < 0.50)
@@ -423,7 +423,7 @@ def main():
         "p90": round(float(np.percentile(diff_AB_levels, 90)), 2),
     }
 
-    export_cube(os.path.join(REPO, "spec", "look.cube"), th_J, best_model, best_space, size=33)
+    export_cube(os.path.join(OWNER_DIR, "spec", "look.cube"), th_J, best_model, best_space, size=33)
 
     cc_A = (eval_cc(data["A"]["or"], th_J, best_model, best_space) * 255.0).round().astype(np.uint8)
     cc_B = (eval_cc(data["B"]["or"], th_J, best_model, best_space) * 255.0).round().astype(np.uint8)
