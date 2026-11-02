@@ -1,0 +1,26 @@
+{
+  "hypothesis": "H1_vertical_spatial_multiply_gradient (smoothstep falloff with subtle RGB shadow tint)",
+  "type": "H1_mul_rgb_smoothstep",
+  "coordinate_reference": "Full frame height (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
+  "y0_norm": 0.226816,
+  "y1_norm": 0.775967,
+  "pixel_rows_at_resolutions": {
+    "pairA_1280x720": {
+      "y0_px": 163.31,
+      "y1_px": 558.7
+    },
+    "pairB_1280x720": {
+      "y0_px": 163.31,
+      "y1_px": 558.7
+    }
+  },
+  "falloff_curve": "smoothstep",
+  "blend_mode": "multiply",
+  "blend_formula": "out = clamp(cc * (1.0 - smoothstep(y0, y1, y_norm) * strength_rgb), 0.0, 1.0)",
+  "strength_rgb": [
+    0.089249,
+    0.109361,
+    0.101978
+  ],
+  "strength_luma_equiv": 0.104552
+}
