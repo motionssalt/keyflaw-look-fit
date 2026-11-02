@@ -1,0 +1,55 @@
+{
+  "project": "keyflaw-look-fit/floby",
+  "repo": "motionssalt/keyflaw-look-fit",
+  "owner": "floby",
+  "effect_id": "MS_floby_cc",
+  "effect_name": "Floby's CC",
+  "status": "in_progress",
+  "current_task": "F1",
+  "queue": [
+    {
+      "id": "F1",
+      "title": "Redo the colour fit on all scenes",
+      "status": "in_progress",
+      "notes": "Fit direct 3D LUT (17^3 / 25^3) via sparse least squares with block CV, evaluate gamma/linear, compress for single-pass GLSL ES 1.00 shader, export look.cube."
+    },
+    {
+      "id": "F2",
+      "title": "Fit the unsharp mask and sharpen properly",
+      "status": "pending",
+      "notes": "Perpendicular edge profile fitting across line art, overshoot/undershoot halos, U1/U2/S1 models with nuisance pre-blur."
+    },
+    {
+      "id": "F3",
+      "title": "Gradient / vignette check",
+      "status": "pending",
+      "notes": "Analyze low-frequency residual after F1+F2 for vertical multiply gradient, vignette, or veil."
+    },
+    {
+      "id": "F4",
+      "title": "Haze flare: real bloom vs overlay",
+      "status": "pending",
+      "notes": "Test highlight-driven bloom vs positional envelope vs absent; verify counterfactual test on black frame and other scene."
+    },
+    {
+      "id": "F5",
+      "title": "Rebuild the Keyflaw effect",
+      "status": "pending",
+      "notes": "Single-pass GLSL ES 1.00 shader, switches only (BOOL), <= 60 taps, validator check, glslangValidator check, parity test."
+    },
+    {
+      "id": "F6",
+      "title": "Deliverables and reports",
+      "status": "pending",
+      "notes": "LOOK_SPEC.md, look_params.json, look_apply.py, look.cube, REPORT.md with before/after table per scene and residual imagery."
+    }
+  ],
+  "decisions": [
+    "Use direct 3D colour table with trilinear/tetrahedral interpolation and Laplacian smoothness regularization.",
+    "Use 5-fold spatial block cross-validation (96px blocks) to prevent overfitting."
+  ],
+  "results": {},
+  "known_issues": [],
+  "last_session_note": "Starting F1 colour fit redo.",
+  "last_updated": "2026-11-02T12:55:00Z"
+}
