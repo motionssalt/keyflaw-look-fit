@@ -204,8 +204,11 @@ class UnsharpMaskPlugin(Plugin):
             dc_sigma = max(8.0, 0.035 * h)
             pl = luma_rec709(p_im)
             tl = luma_rec709(t_im)
-            p_band = pl - cv2.GaussianBlur(pl, (0, 0), dc_sigma)
-            t_band = tl - cv2.GaussianBlur(tl, (0, 0), dc_sigma)
+            sh, sw = max(16, pl.shape[0] // 4), max(16, pl.shape[1] // 4)
+            p_lp = cv2.resize(cv2.GaussianBlur(cv2.resize(pl, (sw, sh), interpolation=cv2.INTER_AREA), (0, 0), dc_sigma * 0.25), (pl.shape[1], pl.shape[0]), interpolation=cv2.INTER_LINEAR)
+            t_lp = cv2.resize(cv2.GaussianBlur(cv2.resize(tl, (sw, sh), interpolation=cv2.INTER_AREA), (0, 0), dc_sigma * 0.25), (tl.shape[1], tl.shape[0]), interpolation=cv2.INTER_LINEAR)
+            p_band = pl - p_lp
+            t_band = tl - t_lp
 
             edge_band_rmse = float(np.sqrt(np.mean(((p_band[em] - t_band[em]) * 255.0) ** 2)))
             rgb_edge_rmse = float(np.sqrt(np.mean(((p_im[em] - t_im[em]) * 255.0) ** 2)))
@@ -240,11 +243,15 @@ class UnsharpMaskPlugin(Plugin):
         best_coarse_cfg: Dict[str, Any] = self.initial_guess(ref_in, tgt, ctx)
         best_nuis = 0.0
 
-        eval_masks = [c.masks.edge_mask | c.masks.flat_mask for c in ctxs]
+        edge_masks = [c.masks.edge_mask for c in ctxs]
+        flat_masks = [c.masks.flat_mask for c in ctxs]
+        fast_candidates = []
         for space in ("srgb", "linear"):
             works = [srgb_to_linear(r) if space == "linear" else r for r in refs]
             tgts_sp = [srgb_to_linear(t) if space == "linear" else t for t in tgts]
             deltas_sp = [tw - w for tw, w in zip(tgts_sp, works)]
+            edge_d = [d[em] for d, em in zip(deltas_sp, edge_masks)]
+            flat_d = [d[fm] for d, fm in zip(deltas_sp, flat_masks)]
             for s_eff in eff_sigma_grid:
                 blurs_rgb = [cv2.GaussianBlur(w, (0, 0), max(0.25, float(s_eff * w.shape[0]))) for w in works]
                 for cmode in ("rgb", "luma"):
@@ -252,41 +259,59 @@ class UnsharpMaskPlugin(Plugin):
                         raw_diffs = [np.broadcast_to((luma_rec709(w) - luma_rec709(b))[..., None], w.shape) for w, b in zip(works, blurs_rgb)]
                     else:
                         raw_diffs = [w - b for w, b in zip(works, blurs_rgb)]
+                    raw_edge = [rd[em] for rd, em in zip(raw_diffs, edge_masks)]
+                    raw_flat = [rd[fm] for rd, fm in zip(raw_diffs, flat_masks)]
                     for gmode in ("hard", "soft"):
                         for thr in thresholds_grid:
-                            gated = [_apply_gate(d, thr / 255.0, gmode) for d in raw_diffs]
-                            # Closed-form optimal amount across pairs on (edge_mask | flat_mask)
+                            thr_01 = thr / 255.0
+                            g_edge = [_apply_gate(re, thr_01, gmode) for re in raw_edge]
+                            g_flat = [_apply_gate(rf, thr_01, gmode) for rf in raw_flat]
                             num = 0.0
                             den = 0.0
-                            for g_arr, d_arr, em in zip(gated, deltas_sp, eval_masks):
-                                gv = g_arr[em]
-                                dv = d_arr[em]
-                                num += float(np.sum(gv * dv))
-                                den += float(np.sum(gv * gv))
+                            for ge, de, gf, df in zip(g_edge, edge_d, g_flat, flat_d):
+                                num += float(np.sum(ge * de)) + 1.5 * float(np.sum(gf * df))
+                                den += float(np.sum(ge * ge)) + 1.5 * float(np.sum(gf * gf))
                             if den < 1e-8:
                                 continue
                             amt_opt = float(np.clip(100.0 * (num / den), 0.0, 500.0))
                             if amt_opt < 1.0:
                                 continue
                             scale = amt_opt / 100.0
-                            preds_w = [np.clip(w + scale * g, 0.0, 1.0) for w, g in zip(works, gated)]
-                            preds = [linear_to_srgb(pw) if space == "linear" else pw for pw in preds_w]
-                            for nuis in nuisance_sigmas:
-                                eval_preds = (
-                                    [cv2.GaussianBlur(p, (0, 0), nuis) for p in preds] if nuis > 0.0 else preds
-                                )
-                                val = self.loss(eval_preds, tgts, ctxs, fold=None, train=True)
-                                if val < best_coarse_loss:
-                                    best_coarse_loss = val
-                                    best_nuis = nuis
-                                    best_coarse_cfg = {
-                                        "amount": amt_opt,
-                                        "eff_sigma_frac": float(s_eff),
-                                        "threshold": float(thr),
-                                        "gate_mode": gmode,
-                                        "channel_mode": cmode,
-                                        "space": space,
-                                    }
+                            proxy_err = 0.0
+                            for ge, de, gf, df in zip(g_edge, edge_d, g_flat, flat_d):
+                                e_rmse = float(np.sqrt(np.mean((scale * ge - de) ** 2))) if ge.size else 0.0
+                                f_rmse = float(np.sqrt(np.mean((scale * gf - df) ** 2))) if gf.size else 0.0
+                                proxy_err += e_rmse + 0.45 * f_rmse
+                            fast_candidates.append((proxy_err, {
+                                "amount": amt_opt,
+                                "eff_sigma_frac": float(s_eff),
+                                "threshold": float(thr),
+                                "gate_mode": gmode,
+                                "channel_mode": cmode,
+                                "space": space,
+                            }))
+        fast_candidates.sort(key=lambda item: item[0])
+        for _, cand in fast_candidates[:24]:
+            prm_c = {
+                "amount": cand["amount"],
+                "radius_frac": cand["eff_sigma_frac"],
+                "sigma_mult": 1.0,
+                "threshold": cand["threshold"],
+                "gate_mode": cand["gate_mode"],
+                "channel_mode": cand["channel_mode"],
+                "space": cand["space"],
+                "stage2_amount": 0.0,
+                "stage2_radius_frac": 0.02,
+                "stage2_threshold": 2.0,
+            }
+            preds = [self.render(r, prm_c) for r in refs]
+            for nuis in nuisance_sigmas:
+                eval_preds = [cv2.GaussianBlur(p, (0, 0), nuis) for p in preds] if nuis > 0.0 else preds
+                val = self.loss(eval_preds, tgts, ctxs, fold=None, train=True)
+                if val < best_coarse_loss:
+                    best_coarse_loss = val
+                    best_nuis = nuis
+                    best_coarse_cfg = cand
 
         # Test sigma_mult convention (0.5x, 1.0x, 2.0x) around winning effective sigma with continuous Nelder-Mead refinement
         eff_s = float(best_coarse_cfg.get("eff_sigma_frac", 0.005))
@@ -330,26 +355,29 @@ class UnsharpMaskPlugin(Plugin):
                     x0=np.array([a_init, r_init, t_init], dtype=np.float64),
                     method="Powell",
                     bounds=[(0.0, 500.0), (0.0003, 0.03), (0.0, 40.0)],
-                    options={"maxiter": 60, "ftol": 1e-3},
+                    options={"maxiter": 18, "ftol": 2e-3},
                 )
                 cand_vec = opt.x
             else:
                 cand_vec = np.array([0.0, r_init, t_init], dtype=np.float64)
 
-            # Evaluate 5-fold spatial block CV cleanly (refit amount per fold to prevent overfitting)
+            # Evaluate 5-fold spatial block CV cleanly using closed-form fold amount refit
             cand_prm = _pack_params(cand_vec)
+            unit_prm = dict(cand_prm)
+            unit_prm["amount"] = 100.0
+            unit_deltas = [self.render(r, unit_prm) - r for r in refs]
             fold_scores = []
             for f in range(n_folds):
-                # Quick 1D amount refit on fold train split with fixed radius & threshold
-                opt_f = minimize(
-                    lambda a_arr: _eval_vec(np.array([a_arr[0], cand_prm["radius_frac"], cand_prm["threshold"]]), fold=f, train=True),
-                    x0=np.array([cand_prm["amount"]]),
-                    method="Powell",
-                    bounds=[(0.0, 500.0)],
-                    options={"maxiter": 20, "ftol": 2e-3},
-                )
+                num_f, den_f = 0.0, 0.0
+                for r, t, c, ud in zip(refs, tgts, ctxs, unit_deltas):
+                    tr_m = (c.masks.edge_mask | c.masks.flat_mask) & (c.masks.block_folds != f)
+                    uv = ud[tr_m]
+                    tv = (t - r)[tr_m]
+                    num_f += float(np.sum(uv * tv))
+                    den_f += float(np.sum(uv * uv)) + 1e-8
+                amt_f = float(np.clip(100.0 * (num_f / max(den_f, 1e-8)), 0.0, 500.0)) if cand_prm["amount"] > 0 else 0.0
                 prm_f = dict(cand_prm)
-                prm_f["amount"] = float(np.clip(opt_f.x[0], 0.0, 500.0))
+                prm_f["amount"] = amt_f
                 preds_f = [self.render(r, prm_f) for r in refs]
                 if best_nuis > 0.0:
                     preds_f = [cv2.GaussianBlur(p, (0, 0), best_nuis) for p in preds_f]
