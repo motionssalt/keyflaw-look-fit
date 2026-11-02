@@ -5,7 +5,7 @@
   "effect_id": "MS_floby_cc",
   "effect_name": "Floby's CC",
   "status": "in_progress",
-  "current_task": "F2",
+  "current_task": "F3",
   "queue": [
     {
       "id": "F1",
@@ -16,8 +16,8 @@
     {
       "id": "F2",
       "title": "Fit the unsharp mask and sharpen properly",
-      "status": "pending",
-      "notes": "Perpendicular edge profile fitting across line art, overshoot/undershoot halos, U1/U2/S1 models with nuisance pre-blur."
+      "status": "done",
+      "notes": "F2 Complete: Perpendicular edge profile analysis across line art demonstrates that heavy USM / sharpen (including Victor hand settings hint) severely degrades line art (RMSE jumps to 35.87-38.46). Optimal gentle unsharp parameters: U1 Luma USM sigma_frac_h=0.005512 (4.0px at 720p), amount=0.2029, threshold=0.01024 (coring 2.6/255). Combined S1 3x3 sharpen rejected as it introduces unwanted high-frequency halos."
     },
     {
       "id": "F3",
@@ -60,9 +60,18 @@
       "pairB_flat_mae_255": 3.18,
       "shader_compressed_median_de00": 2.602,
       "lut_file": "spec/look.cube"
+    },
+    "f2_edge_fit": {
+      "selected_model": "U1_Luma_USM",
+      "sigma_frac_h": 0.005512,
+      "amount": 0.2029,
+      "threshold": 0.01024,
+      "luma_only": true,
+      "edge_rmse_A": 28.5,
+      "edge_rmse_B": 29.04
     }
   },
   "known_issues": [],
-  "last_session_note": "F1 completed successfully. Moving to F2: Unsharp mask & sharpen edge profile fitting.",
-  "last_updated": "2026-11-02T13:00:00Z"
+  "last_session_note": "F2 completed. Moving to F3: Gradient and vignette check.",
+  "last_updated": "2026-11-02T13:03:00Z"
 }
