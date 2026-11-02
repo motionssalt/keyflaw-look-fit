@@ -1,10 +1,13 @@
-# keyflaw-look-fit
+# Keyflaw look-fit repository
 
-Quantitative recovery of colour correction, spatial gradient darkening, unsharp masking, and haze flare from two anime frame pairs for **MOTIONSALT** / **Keyflaw**.
+This private repository contains MOTIONSALT’s recovered Keyflaw colour-correction work, organized by owner. Floby’s completed source-of-truth files and installable deliverables are published in the [Floby’s CC v1.0 GitHub Release](https://github.com/motionssalt/keyflaw-look-fit/releases/tag/floby-cc-v1.0).
 
-- **`LOOK_SPEC.md`** — Complete shader-ready look specification, parameter tables, control sheet, and unit test vectors.
-- **`look_params.json`** — Machine-readable source of truth for all fitted parameters.
-- **`look_apply.py`** — Reference Python implementation matching `LOOK_SPEC.md`.
-- **`look.cube`** — 33x33x33 3D LUT of the colour-correction stage.
-- **`REPORT.md`** — Quantitative validation metrics, stage ablations, cross-validation, and visual comparisons.
-- **`BUILD_STATE.json`** — Machine-readable build state and interim/final results.
+| Owner | Status | Release | Repository source |
+|---|---|---|---|
+| [Floby](owners/floby/README.md) | Complete analysis and look deliverables | [Floby’s CC v1.0](https://github.com/motionssalt/keyflaw-look-fit/releases/tag/floby-cc-v1.0) | [owners/floby/](owners/floby/) |
+
+## Layout
+
+`docs/` contains the build prompt, manifest, and tidy notes. `owners/<owner>/inputs/` contains the matched frame pairs, while `masks/` contains masks and overlay previews. `owners/<owner>/analysis/` contains fit scripts, aligned intermediates, scratch work, and diagnostic outputs. `owners/<owner>/reports/` contains the owner’s quantitative report. `owners/<owner>/spec/` contains the source-of-truth look specification, parameters, reference implementation, and LUT. `BUILD_STATE.json` records resumable work and decisions.
+
+There are currently no reusable cross-owner tools or prompt files in this repository, and no Keyflaw `.kfpack` or pack source was found in the Floby work.
