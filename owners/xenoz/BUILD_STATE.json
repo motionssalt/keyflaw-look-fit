@@ -1,0 +1,12 @@
+{
+  "owner_slug": "xenoz",
+  "display_name": "Xenoz",
+  "status": "pending",
+  "last_updated": "2026-11-02T14:56:45Z",
+  "input_pairs_count": 2,
+  "accepted_layers": [],
+  "rejected_layers": {},
+  "iterations": [],
+  "known_issues": [],
+  "last_session_note": "Initialized in Phase 1."
+}
