@@ -5,13 +5,13 @@
   "effect_id": "MS_floby_cc",
   "effect_name": "Floby's CC",
   "status": "in_progress",
-  "current_task": "F1",
+  "current_task": "F2",
   "queue": [
     {
       "id": "F1",
       "title": "Redo the colour fit on all scenes",
-      "status": "in_progress",
-      "notes": "Fit direct 3D LUT (17^3 / 25^3) via sparse least squares with block CV, evaluate gamma/linear, compress for single-pass GLSL ES 1.00 shader, export look.cube."
+      "status": "done",
+      "notes": "F1 Complete: 25^3 direct 3D LUT fitted via sparse LS + Laplacian smoothness (lambda=0.3). 5-fold block CV reached median dE00 1.544. Scene flat median dE00: 1.034 (Pair A), 1.222 (Pair B), p90 3.151, MAE 3.18/255. Shader compressed model reached median dE00 2.602. Exported 33^3 look.cube."
     },
     {
       "id": "F2",
@@ -48,8 +48,21 @@
     "Use direct 3D colour table with trilinear/tetrahedral interpolation and Laplacian smoothness regularization.",
     "Use 5-fold spatial block cross-validation (96px blocks) to prevent overfitting."
   ],
-  "results": {},
+  "results": {
+    "f1_colour_fit": {
+      "held_out_block_cv_median_de00": 1.544,
+      "held_out_block_cv_p90_de00": 5.614,
+      "held_out_block_cv_mae_255": 5.954,
+      "pairA_flat_median_de00": 1.0341,
+      "pairA_flat_mae_255": 4.8,
+      "pairB_flat_median_de00": 1.2222,
+      "pairB_flat_p90_de00": 3.1514,
+      "pairB_flat_mae_255": 3.18,
+      "shader_compressed_median_de00": 2.602,
+      "lut_file": "spec/look.cube"
+    }
+  },
   "known_issues": [],
-  "last_session_note": "Starting F1 colour fit redo.",
-  "last_updated": "2026-11-02T12:55:00Z"
+  "last_session_note": "F1 completed successfully. Moving to F2: Unsharp mask & sharpen edge profile fitting.",
+  "last_updated": "2026-11-02T13:00:00Z"
 }
