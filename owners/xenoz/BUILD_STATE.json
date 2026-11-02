@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + quality processing of Xenoz's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q2",
+  "current_phase": "Q3",
   "queue": [
     {
       "id": "Q1",
@@ -14,13 +14,13 @@
     {
       "id": "Q2",
       "title": "Alignment audit",
-      "status": "in_progress",
-      "notes": ""
+      "status": "done",
+      "notes": "SIFT + sub-pixel ECC affine alignment audit complete. Pair A edge corr reached 0.97065 (max disp 0.549 px); Pair B edge corr reached 0.91007 (max disp 0.675 px). Re-warped 720p originals saved to analysis/outputs/aligned/."
     },
     {
       "id": "Q3",
       "title": "Colour correction fit",
-      "status": "pending",
+      "status": "in_progress",
       "notes": ""
     },
     {
@@ -67,10 +67,23 @@
     "unsharp": {},
     "flare": {},
     "order_of_operations": "",
-    "metrics": {}
+    "metrics": {},
+    "alignment": {
+      "pairA": {
+        "edge_corr_before": 0.96904,
+        "edge_corr_after_ecc": 0.97065,
+        "max_disp_px": 0.5492
+      },
+      "pairB": {
+        "edge_corr_before": 0.9025,
+        "edge_corr_after_ecc": 0.91007,
+        "max_disp_px": 0.6751
+      }
+    }
   },
   "completed": [
-    "Q1"
+    "Q1",
+    "Q2"
   ],
   "next_steps": [
     "Obtain Xenoz frame pairs (pairA_edited.png, pairA_original_matched.png, pairB_edited.png, pairB_original_matched.png)",
@@ -94,6 +107,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-02T05:27:00Z",
-  "last_session_note": "Q1 complete. Generated masks and overlay previews. Proceeding to Q2 alignment audit."
+  "last_updated": "2026-11-02T05:28:00Z",
+  "last_session_note": "Q2 complete. Alignment audit passed with high edge correlation. Proceeding to Q3 colour correction fit."
 }
