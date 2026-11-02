@@ -5,8 +5,8 @@ import json
 import cv2
 import numpy as np
 
-REPO = "/tmp/keyflaw-look-fit"
-MASK_DIR = os.path.join(REPO, "masks")
+REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+MASK_DIR = os.path.join(REPO, "owners", "floby", "masks")
 os.makedirs(MASK_DIR, exist_ok=True)
 
 
@@ -72,8 +72,8 @@ def save_mask(name: str, mask_bool: np.ndarray) -> str:
 
 
 def build_pair_a():
-    ed = load_rgb(os.path.join(REPO, "inputs/pairA_edited.png"))
-    or_im = load_rgb(os.path.join(REPO, "inputs/pairA_original_matched.png"))
+    ed = load_rgb(os.path.join(REPO, "owners/floby/inputs/pairA_edited.png"))
+    or_im = load_rgb(os.path.join(REPO, "owners/floby/inputs/pairA_original_matched.png"))
     h, w, _ = ed.shape  # 720, 1278
 
     # 1. Bars mask: rows 0..38 and 682..719 (includes black bars 0..34 & 686..719, transitions 35..36 & 684..685, +2px ringing buffer)
@@ -175,8 +175,8 @@ def build_pair_a():
 
 
 def build_pair_b():
-    ed = load_rgb(os.path.join(REPO, "inputs/pairB_edited.png"))       # 720 x 1291
-    or_im = load_rgb(os.path.join(REPO, "inputs/pairB_original_matched.png"))  # 409 x 720
+    ed = load_rgb(os.path.join(REPO, "owners/floby/inputs/pairB_edited.png"))       # 720 x 1291
+    or_im = load_rgb(os.path.join(REPO, "owners/floby/inputs/pairB_original_matched.png"))  # 409 x 720
     h, w, _ = ed.shape
     ho, wo, _ = or_im.shape
 

@@ -8,7 +8,7 @@ from scipy.optimize import least_squares
 from q3_colour_fit import init_theta, unpack_params, serialize_params, export_cube, ciede2000_stats, REPO, LUMA_W
 from q4_gradient import eval_ramp, row_residual_y_corr, build_spatial_samples
 
-OUT_DIR = os.path.join(REPO, "outputs", "q4")
+OUT_DIR = os.path.join(REPO, "owners", "floby", "analysis", "outputs", "q4")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 
@@ -32,13 +32,13 @@ def eval_grad_mul(cc_f: np.ndarray, yn: np.ndarray, g: np.ndarray) -> np.ndarray
 
 
 def main():
-    a_ed = cv2.cvtColor(cv2.imread(os.path.join(REPO, "inputs/pairA_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    a_or = cv2.cvtColor(cv2.imread(os.path.join(REPO, "inputs/pairA_original_matched.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    a_flat = cv2.imread(os.path.join(REPO, "masks/pairA_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
+    a_ed = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/floby/inputs/pairA_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    a_or = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/floby/inputs/pairA_original_matched.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    a_flat = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
 
-    b_ed = cv2.cvtColor(cv2.imread(os.path.join(REPO, "inputs/pairB_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    b_or = cv2.cvtColor(cv2.imread(os.path.join(REPO, "outputs/aligned/pairB_orig_aligned_720p.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    b_flat = cv2.imread(os.path.join(REPO, "masks/pairB_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
+    b_ed = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/floby/inputs/pairB_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    b_or = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/floby/analysis/outputs/aligned/pairB_orig_aligned_720p.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    b_flat = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
 
     ya, xa = np.mgrid[0:720, 0:1278]
     yb, xb = np.mgrid[0:720, 0:1291]
@@ -57,7 +57,7 @@ def main():
     YN_J = np.concatenate([YNa, YNas, YNb])
     W_J = np.concatenate([Wa, Was, Wb])
 
-    th_q3 = np.load(os.path.join(REPO, "outputs/q3/theta_joint.npy"))
+    th_q3 = np.load(os.path.join(REPO, "owners/floby/analysis/outputs/q3/theta_joint.npy"))
     _, lb_cc, ub_cc = init_theta("M2")
     ub_cc[12:15] = 1.40
     lb_cc[9:12] = -0.18
@@ -200,7 +200,7 @@ def main():
     raw_cand = json.load(open(os.path.join(OUT_DIR, "q4_candidates_raw.json")))
     obs_J = [[16.0/255, 251.0/255], [21.0/255, 253.0/255], [25.0/255, 254.0/255]]
     cc_reanchored = serialize_params(th_best, "M2", "srgb", obs_J)
-    export_cube(os.path.join(REPO, "look.cube"), th_best, "M2", "srgb", size=33)
+    export_cube(os.path.join(REPO, "owners", "floby", "spec", "look.cube"), th_best, "M2", "srgb", size=33)
 
     q4_summary = {
         "surface_discovery": raw_cand["surface_discovery"],

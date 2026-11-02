@@ -17,7 +17,7 @@ from q3_colour_fit import (
     serialize_params, export_cube, REPO, LUMA_W
 )
 
-OUT_DIR = os.path.join(REPO, "outputs", "q4")
+OUT_DIR = os.path.join(REPO, "owners", "floby", "analysis", "outputs", "q4")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 
@@ -162,15 +162,15 @@ def build_spatial_samples(or_img: np.ndarray, ed_img: np.ndarray, mask: np.ndarr
 
 
 def main():
-    a_ed = cv2.cvtColor(cv2.imread(os.path.join(REPO, "inputs/pairA_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    a_or = cv2.cvtColor(cv2.imread(os.path.join(REPO, "inputs/pairA_original_matched.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    a_flat = cv2.imread(os.path.join(REPO, "masks/pairA_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
+    a_ed = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/floby/inputs/pairA_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    a_or = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/floby/inputs/pairA_original_matched.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    a_flat = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
 
-    b_ed = cv2.cvtColor(cv2.imread(os.path.join(REPO, "inputs/pairB_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    b_or = cv2.cvtColor(cv2.imread(os.path.join(REPO, "outputs/aligned/pairB_orig_aligned_720p.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
-    b_flat = cv2.imread(os.path.join(REPO, "masks/pairB_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
+    b_ed = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/floby/inputs/pairB_edited.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    b_or = cv2.cvtColor(cv2.imread(os.path.join(REPO, "owners/floby/analysis/outputs/aligned/pairB_orig_aligned_720p.png")), cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
+    b_flat = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_flat_interior.png"), cv2.IMREAD_GRAYSCALE) > 0
 
-    th_q3 = np.load(os.path.join(REPO, "outputs/q3/theta_joint.npy"))
+    th_q3 = np.load(os.path.join(REPO, "owners/floby/analysis/outputs/q3/theta_joint.npy"))
     cc_a_q3 = eval_cc(a_or, th_q3, "M2", "srgb")
     cc_b_q3 = eval_cc(b_or, th_q3, "M2", "srgb")
 

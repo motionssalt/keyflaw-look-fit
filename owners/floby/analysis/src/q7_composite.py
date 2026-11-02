@@ -19,7 +19,7 @@ from q4_gradient import eval_ramp
 from q5_unsharp import apply_usm_25tap_2d
 from q6_flare import apply_flare_2d, flare_falloff
 
-OUT_DIR = os.path.join(REPO, "outputs", "q7")
+OUT_DIR = os.path.join(REPO, "owners", "floby", "analysis", "outputs", "q7")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 
@@ -98,37 +98,37 @@ def compute_all_metrics(pred01: np.ndarray, ed01: np.ndarray, flat_m: np.ndarray
 
 
 def main():
-    th_init = np.load(os.path.join(REPO, "outputs/q4/theta_cc_q4.npy"))
-    g_init = np.load(os.path.join(REPO, "outputs/q4/grad_q4.npy"))
-    usm_q5 = json.load(open(os.path.join(REPO, "outputs/q5/usm_q5.json")))
-    fl_q6 = json.load(open(os.path.join(REPO, "outputs/q6/flare_q6.json")))
+    th_init = np.load(os.path.join(REPO, "owners/floby/analysis/outputs/q4/theta_cc_q4.npy"))
+    g_init = np.load(os.path.join(REPO, "owners/floby/analysis/outputs/q4/grad_q4.npy"))
+    usm_q5 = json.load(open(os.path.join(REPO, "owners/floby/analysis/outputs/q5/usm_q5.json")))
+    fl_q6 = json.load(open(os.path.join(REPO, "owners/floby/analysis/outputs/q6/flare_q6.json")))
 
-    a_ed = load_rgb01("inputs/pairA_edited.png")
-    a_or = load_rgb01("inputs/pairA_original_matched.png")
-    a_flat = cv2.imread(os.path.join(REPO, "masks/pairA_flat_interior.png"), 0) > 0
-    a_bars = cv2.imread(os.path.join(REPO, "masks/pairA_bars.png"), 0) > 0
-    a_cap = cv2.imread(os.path.join(REPO, "masks/pairA_caption.png"), 0) > 0
-    a_inv = cv2.imread(os.path.join(REPO, "masks/pairA_invalid_border.png"), 0) > 0
-    a_line = cv2.imread(os.path.join(REPO, "masks/pairA_line_edges.png"), 0) > 0
+    a_ed = load_rgb01("owners/floby/inputs/pairA_edited.png")
+    a_or = load_rgb01("owners/floby/inputs/pairA_original_matched.png")
+    a_flat = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_flat_interior.png"), 0) > 0
+    a_bars = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_bars.png"), 0) > 0
+    a_cap = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_caption.png"), 0) > 0
+    a_inv = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_invalid_border.png"), 0) > 0
+    a_line = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_line_edges.png"), 0) > 0
     a_val = ~(a_bars | a_cap | a_inv)
     a_edge = a_line & a_val
 
-    b_ed = load_rgb01("inputs/pairB_edited.png")
-    b_or = load_rgb01("outputs/aligned/pairB_orig_aligned_720p.png")
-    b_flat = cv2.imread(os.path.join(REPO, "masks/pairB_flat_interior.png"), 0) > 0
-    b_bars = cv2.imread(os.path.join(REPO, "masks/pairB_bars.png"), 0) > 0
-    b_inv = cv2.imread(os.path.join(REPO, "masks/pairB_invalid_border.png"), 0) > 0
-    b_line = cv2.imread(os.path.join(REPO, "masks/pairB_line_edges.png"), 0) > 0
+    b_ed = load_rgb01("owners/floby/inputs/pairB_edited.png")
+    b_or = load_rgb01("owners/floby/analysis/outputs/aligned/pairB_orig_aligned_720p.png")
+    b_flat = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_flat_interior.png"), 0) > 0
+    b_bars = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_bars.png"), 0) > 0
+    b_inv = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_invalid_border.png"), 0) > 0
+    b_line = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_line_edges.png"), 0) > 0
     b_val = ~(b_bars | b_inv)
     yb, xb = np.mgrid[0:720, 0:1291]
     b_edge = b_line & b_val & (xb < 760)
     b_fit_clean = b_flat & (~((xb >= 770) & (xb <= 965)))
 
-    b4_ed = load_rgb01("outputs/aligned/pairB_edit_aligned_409p.png")
-    b4_or = load_rgb01("inputs/pairB_original_matched.png")
-    b4_flat = cv2.imread(os.path.join(REPO, "masks/pairB_409p_flat_interior.png"), 0) > 0
-    b4_inv = cv2.imread(os.path.join(REPO, "masks/pairB_409p_invalid_border.png"), 0) > 0
-    b4_line = cv2.imread(os.path.join(REPO, "masks/pairB_409p_line_edges.png"), 0) > 0
+    b4_ed = load_rgb01("owners/floby/analysis/outputs/aligned/pairB_edit_aligned_409p.png")
+    b4_or = load_rgb01("owners/floby/inputs/pairB_original_matched.png")
+    b4_flat = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_409p_flat_interior.png"), 0) > 0
+    b4_inv = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_409p_invalid_border.png"), 0) > 0
+    b4_line = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_409p_line_edges.png"), 0) > 0
     b4_val = ~b4_inv
     yb4, xb4 = np.mgrid[0:409, 0:720]
     b4_edge = b4_line & b4_val & (xb4 < 425)
@@ -307,7 +307,7 @@ def main():
     }
 
     # Update 33x33x33 look.cube with final refined CC stage!
-    export_cube(os.path.join(REPO, "look.cube"), th_ref, "M2", "srgb", size=33)
+    export_cube(os.path.join(REPO, "owners", "floby", "spec", "look.cube"), th_ref, "M2", "srgb", size=33)
 
     # Save refined composite predictions
     cv2.imwrite(os.path.join(OUT_DIR, "pairA_composite_shared.png"), cv2.cvtColor(np.round(imgs_A["4_full_composite_shared_flare"] * 255.0).astype(np.uint8), cv2.COLOR_RGB2BGR))

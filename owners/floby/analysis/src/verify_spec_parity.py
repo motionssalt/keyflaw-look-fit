@@ -17,8 +17,8 @@ import json
 import ast
 import numpy as np
 
-REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, REPO)
+REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+sys.path.insert(0, os.path.join(REPO, "owners", "floby", "spec"))
 import look_apply
 
 
@@ -95,7 +95,7 @@ def glsl_stage2_literal(rgb_in: np.ndarray, dade_strength: float = 1.0, clamp_hi
 
 
 def main():
-    spec_text = open(os.path.join(REPO, "LOOK_SPEC.md"), encoding="utf-8").read()
+    spec_text = open(os.path.join(REPO, "owners", "floby", "spec", "LOOK_SPEC.md"), encoding="utf-8").read()
     params = look_apply.load_params()
 
     # 1. Random grid parity between LOOK_SPEC.md literal GLSL math and look_apply.py
@@ -172,7 +172,7 @@ def main():
 
     # 6. Verify 33x33x33 look.cube against look_apply.stage2_colour_correction
     cube_lines = [
-        ln.strip() for ln in open(os.path.join(REPO, "look.cube"), encoding="utf-8")
+        ln.strip() for ln in open(os.path.join(REPO, "owners", "floby", "spec", "look.cube"), encoding="utf-8")
         if ln.strip() and not ln.startswith(("TITLE", "LUT_3D_SIZE", "DOMAIN_", "#"))
     ]
     assert len(cube_lines) == 33 ** 3, f"Expected 35937 LUT lines, found {len(cube_lines)}"

@@ -21,9 +21,9 @@ from scipy.optimize import least_squares
 from skimage.color import rgb2lab, deltaE_ciede2000
 from skimage.metrics import structural_similarity as ssim
 
-REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, REPO)
-sys.path.insert(0, os.path.join(REPO, "src"))
+REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+sys.path.insert(0, os.path.join(REPO, "owners", "floby", "spec"))
+sys.path.insert(0, os.path.join(REPO, "owners", "floby", "analysis", "src"))
 
 import look_apply
 from q7_dade_refine import (
@@ -32,7 +32,7 @@ from q7_dade_refine import (
 )
 from q4_gradient import row_residual_y_corr
 
-OUT_Q8 = os.path.join(REPO, "outputs", "q8")
+OUT_Q8 = os.path.join(REPO, "owners", "floby", "analysis", "outputs", "q8")
 os.makedirs(OUT_Q8, exist_ok=True)
 
 
@@ -98,10 +98,10 @@ def add_px_equivs(fp: dict) -> dict:
 
 
 def main():
-    th = np.load(os.path.join(REPO, "outputs/q7/theta_cc_final.npy"))
-    g = np.load(os.path.join(REPO, "outputs/q7/grad_final.npy"))
-    q7_sum = json.load(open(os.path.join(REPO, "outputs/q7/q7_summary.json")))
-    usm_q5 = json.load(open(os.path.join(REPO, "outputs/q5/usm_q5.json")))
+    th = np.load(os.path.join(REPO, "owners/floby/analysis/outputs/q7/theta_cc_final.npy"))
+    g = np.load(os.path.join(REPO, "owners/floby/analysis/outputs/q7/grad_final.npy"))
+    q7_sum = json.load(open(os.path.join(REPO, "owners/floby/analysis/outputs/q7/q7_summary.json")))
+    usm_q5 = json.load(open(os.path.join(REPO, "owners/floby/analysis/outputs/q5/usm_q5.json")))
 
     p = unpack_dade_params(th)
     y0_f = round(float(g[0]), 6)
@@ -109,33 +109,33 @@ def main():
 
     # Fit a clean in-frame top-right shared default flare (cx in [0.85, 0.96], cy in [0.04, 0.20])
     # so default zero-flag `look_apply.py` has physically intuitive coordinates AND beats CC-only & Original on both pairs!
-    a_ed = load_rgb01("inputs/pairA_edited.png")
-    a_or = load_rgb01("inputs/pairA_original_matched.png")
-    a_flat = cv2.imread(os.path.join(REPO, "masks/pairA_flat_interior.png"), 0) > 0
-    a_bars = cv2.imread(os.path.join(REPO, "masks/pairA_bars.png"), 0) > 0
-    a_cap = cv2.imread(os.path.join(REPO, "masks/pairA_caption.png"), 0) > 0
-    a_inv = cv2.imread(os.path.join(REPO, "masks/pairA_invalid_border.png"), 0) > 0
-    a_line = cv2.imread(os.path.join(REPO, "masks/pairA_line_edges.png"), 0) > 0
+    a_ed = load_rgb01("owners/floby/inputs/pairA_edited.png")
+    a_or = load_rgb01("owners/floby/inputs/pairA_original_matched.png")
+    a_flat = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_flat_interior.png"), 0) > 0
+    a_bars = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_bars.png"), 0) > 0
+    a_cap = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_caption.png"), 0) > 0
+    a_inv = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_invalid_border.png"), 0) > 0
+    a_line = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_line_edges.png"), 0) > 0
     a_val = ~(a_bars | a_cap | a_inv)
     a_edge = a_line & a_val
 
-    b_ed = load_rgb01("inputs/pairB_edited.png")
-    b_or = load_rgb01("outputs/aligned/pairB_orig_aligned_720p.png")
-    b_flat = cv2.imread(os.path.join(REPO, "masks/pairB_flat_interior.png"), 0) > 0
-    b_bars = cv2.imread(os.path.join(REPO, "masks/pairB_bars.png"), 0) > 0
-    b_inv = cv2.imread(os.path.join(REPO, "masks/pairB_invalid_border.png"), 0) > 0
-    b_line = cv2.imread(os.path.join(REPO, "masks/pairB_line_edges.png"), 0) > 0
+    b_ed = load_rgb01("owners/floby/inputs/pairB_edited.png")
+    b_or = load_rgb01("owners/floby/analysis/outputs/aligned/pairB_orig_aligned_720p.png")
+    b_flat = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_flat_interior.png"), 0) > 0
+    b_bars = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_bars.png"), 0) > 0
+    b_inv = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_invalid_border.png"), 0) > 0
+    b_line = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_line_edges.png"), 0) > 0
     b_val = ~(b_bars | b_inv)
     yb, xb = np.mgrid[0:720, 0:1291]
     b_edge = b_line & b_val & (xb < 760)
     b_fit_clean = b_flat & (~((xb >= 770) & (xb <= 965)))
 
-    b4_ed = load_rgb01("outputs/aligned/pairB_edit_aligned_409p.png")
-    b4_or = load_rgb01("inputs/pairB_original_matched.png")
-    b4_flat = cv2.imread(os.path.join(REPO, "masks/pairB_409p_flat_interior.png"), 0) > 0
-    b4_bars = cv2.imread(os.path.join(REPO, "masks/pairB_409p_bars.png"), 0) > 0
-    b4_inv = cv2.imread(os.path.join(REPO, "masks/pairB_409p_invalid_border.png"), 0) > 0
-    b4_line = cv2.imread(os.path.join(REPO, "masks/pairB_409p_line_edges.png"), 0) > 0
+    b4_ed = load_rgb01("owners/floby/analysis/outputs/aligned/pairB_edit_aligned_409p.png")
+    b4_or = load_rgb01("owners/floby/inputs/pairB_original_matched.png")
+    b4_flat = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_409p_flat_interior.png"), 0) > 0
+    b4_bars = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_409p_bars.png"), 0) > 0
+    b4_inv = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_409p_invalid_border.png"), 0) > 0
+    b4_line = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_409p_line_edges.png"), 0) > 0
     b4_val = ~(b4_bars | b4_inv)
     yb4, xb4 = np.mgrid[0:409, 0:720]
     b4_edge = b4_line & b4_val & (xb4 < 425)
@@ -325,7 +325,7 @@ def main():
         },
     }
 
-    params_path = os.path.join(REPO, "look_params.json")
+    params_path = os.path.join(REPO, "owners", "floby", "spec", "look_params.json")
     with open(params_path, "w", encoding="utf-8") as f:
         json.dump(look_params, f, indent=2)
 
@@ -334,7 +334,7 @@ def main():
     B_g, G_g, R_g = np.meshgrid(grid, grid, grid, indexing="ij")
     lut_in = np.stack([R_g.ravel(), G_g.ravel(), B_g.ravel()], axis=1).astype(np.float32)
     lut_out = look_apply.stage2_colour_correction(lut_in, cc_dict, dade_strength=1.0, clamp_output=True)
-    with open(os.path.join(REPO, "look.cube"), "w", encoding="utf-8") as f:
+    with open(os.path.join(REPO, "owners", "floby", "spec", "look.cube"), "w", encoding="utf-8") as f:
         f.write('TITLE "MOTIONSALT_Keyflaw_Look_Dade_CC"\n')
         f.write("LUT_3D_SIZE 33\n")
         f.write("DOMAIN_MIN 0.0 0.0 0.0\n")
@@ -344,15 +344,15 @@ def main():
 
     # Run look_apply.py via CLI on both matched originals and aligned Pair B!
     cli_runs = [
-        ("inputs/pairA_original_matched.png", "outputs/q8/pairA_pred_default.png", "default"),
-        ("inputs/pairA_original_matched.png", "outputs/q8/pairA_pred_scene.png", "pairA"),
-        ("inputs/pairB_original_matched.png", "outputs/q8/pairB_409p_pred_default.png", "default"),
-        ("inputs/pairB_original_matched.png", "outputs/q8/pairB_409p_pred_scene.png", "pairB"),
-        ("outputs/aligned/pairB_orig_aligned_720p.png", "outputs/q8/pairB_720p_pred_default.png", "default"),
-        ("outputs/aligned/pairB_orig_aligned_720p.png", "outputs/q8/pairB_720p_pred_scene.png", "pairB"),
+        ("owners/floby/inputs/pairA_original_matched.png", "owners/floby/analysis/outputs/q8/pairA_pred_default.png", "default"),
+        ("owners/floby/inputs/pairA_original_matched.png", "owners/floby/analysis/outputs/q8/pairA_pred_scene.png", "pairA"),
+        ("owners/floby/inputs/pairB_original_matched.png", "owners/floby/analysis/outputs/q8/pairB_409p_pred_default.png", "default"),
+        ("owners/floby/inputs/pairB_original_matched.png", "owners/floby/analysis/outputs/q8/pairB_409p_pred_scene.png", "pairB"),
+        ("owners/floby/analysis/outputs/aligned/pairB_orig_aligned_720p.png", "owners/floby/analysis/outputs/q8/pairB_720p_pred_default.png", "default"),
+        ("owners/floby/analysis/outputs/aligned/pairB_orig_aligned_720p.png", "owners/floby/analysis/outputs/q8/pairB_720p_pred_scene.png", "pairB"),
     ]
     for inp_rel, out_rel, preset in cli_runs:
-        cmd = [sys.executable, os.path.join(REPO, "look_apply.py"), os.path.join(REPO, inp_rel), os.path.join(REPO, out_rel), "--flare-preset", preset]
+        cmd = [sys.executable, os.path.join(REPO, "owners", "floby", "spec", "look_apply.py"), os.path.join(REPO, inp_rel), os.path.join(REPO, out_rel), "--flare-preset", preset]
         subprocess.run(cmd, check=True)
 
     # Re-evaluate complete stage progression metrics using exact look_apply functions + CLI outputs!
@@ -373,10 +373,10 @@ def main():
         }
         return st, s4_def, s5_scn
 
-    m_A, pA_def, pA_scn = eval_stages(a_or, a_ed, a_flat, a_val, a_edge, "pairA", "outputs/q8/pairA_pred_default.png", "outputs/q8/pairA_pred_scene.png")
-    m_B_all, pB_def, pB_scn = eval_stages(b_or, b_ed, b_flat, b_val, b_edge, "pairB", "outputs/q8/pairB_720p_pred_default.png", "outputs/q8/pairB_720p_pred_scene.png")
-    m_B_nb, _, _ = eval_stages(b_or, b_ed, b_fit_clean, b_val & (~((xb >= 770) & (xb <= 965))), b_edge, "pairB", "outputs/q8/pairB_720p_pred_default.png", "outputs/q8/pairB_720p_pred_scene.png")
-    m_B4, pB4_def, pB4_scn = eval_stages(b4_or, b4_ed, b4_flat, b4_val, b4_edge, "pairB", "outputs/q8/pairB_409p_pred_default.png", "outputs/q8/pairB_409p_pred_scene.png")
+    m_A, pA_def, pA_scn = eval_stages(a_or, a_ed, a_flat, a_val, a_edge, "pairA", "owners/floby/analysis/outputs/q8/pairA_pred_default.png", "owners/floby/analysis/outputs/q8/pairA_pred_scene.png")
+    m_B_all, pB_def, pB_scn = eval_stages(b_or, b_ed, b_flat, b_val, b_edge, "pairB", "owners/floby/analysis/outputs/q8/pairB_720p_pred_default.png", "owners/floby/analysis/outputs/q8/pairB_720p_pred_scene.png")
+    m_B_nb, _, _ = eval_stages(b_or, b_ed, b_fit_clean, b_val & (~((xb >= 770) & (xb <= 965))), b_edge, "pairB", "owners/floby/analysis/outputs/q8/pairB_720p_pred_default.png", "owners/floby/analysis/outputs/q8/pairB_720p_pred_scene.png")
+    m_B4, pB4_def, pB4_scn = eval_stages(b4_or, b4_ed, b4_flat, b4_val, b4_edge, "pairB", "owners/floby/analysis/outputs/q8/pairB_409p_pred_default.png", "owners/floby/analysis/outputs/q8/pairB_409p_pred_scene.png")
 
     # Verify row-mean y correlation after full look on both pairs!
     ya_g, xa_g = np.mgrid[0:720, 0:1278]

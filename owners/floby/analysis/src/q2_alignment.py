@@ -5,8 +5,8 @@ import json
 import cv2
 import numpy as np
 
-REPO = "/tmp/keyflaw-look-fit"
-ALIGN_DIR = os.path.join(REPO, "outputs", "aligned")
+REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+ALIGN_DIR = os.path.join(REPO, "owners", "floby", "analysis", "outputs", "aligned")
 os.makedirs(ALIGN_DIR, exist_ok=True)
 
 
@@ -37,13 +37,13 @@ def pearson_corr(a: np.ndarray, b: np.ndarray, mask: np.ndarray = None) -> float
 
 
 def audit_pair_a():
-    ed = load_rgb(os.path.join(REPO, "inputs/pairA_edited.png"))
-    or_im = load_rgb(os.path.join(REPO, "inputs/pairA_original_matched.png"))
+    ed = load_rgb(os.path.join(REPO, "owners/floby/inputs/pairA_edited.png"))
+    or_im = load_rgb(os.path.join(REPO, "owners/floby/inputs/pairA_original_matched.png"))
     h, w, _ = ed.shape
 
-    bars = cv2.imread(os.path.join(REPO, "masks/pairA_bars.png"), cv2.IMREAD_GRAYSCALE) > 0
-    cap = cv2.imread(os.path.join(REPO, "masks/pairA_caption.png"), cv2.IMREAD_GRAYSCALE) > 0
-    inv = cv2.imread(os.path.join(REPO, "masks/pairA_invalid_border.png"), cv2.IMREAD_GRAYSCALE) > 0
+    bars = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_bars.png"), cv2.IMREAD_GRAYSCALE) > 0
+    cap = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_caption.png"), cv2.IMREAD_GRAYSCALE) > 0
+    inv = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_invalid_border.png"), cv2.IMREAD_GRAYSCALE) > 0
     valid = (~bars) & (~cap) & (~inv)
 
     e_ed = edge_map(ed, sigma=1.0)
@@ -111,13 +111,13 @@ def audit_pair_a():
 
 
 def audit_pair_b():
-    ed = load_rgb(os.path.join(REPO, "inputs/pairB_edited.png"))       # 720 x 1291
-    or_im = load_rgb(os.path.join(REPO, "inputs/pairB_original_matched.png"))  # 409 x 720
+    ed = load_rgb(os.path.join(REPO, "owners/floby/inputs/pairB_edited.png"))       # 720 x 1291
+    or_im = load_rgb(os.path.join(REPO, "owners/floby/inputs/pairB_original_matched.png"))  # 409 x 720
     h, w, _ = ed.shape
     ho, wo, _ = or_im.shape
 
-    bars = cv2.imread(os.path.join(REPO, "masks/pairB_bars.png"), cv2.IMREAD_GRAYSCALE) > 0
-    inv = cv2.imread(os.path.join(REPO, "masks/pairB_invalid_border.png"), cv2.IMREAD_GRAYSCALE) > 0
+    bars = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_bars.png"), cv2.IMREAD_GRAYSCALE) > 0
+    inv = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_invalid_border.png"), cv2.IMREAD_GRAYSCALE) > 0
     valid = (~bars) & (~inv)
 
     e_ed = edge_map(ed, sigma=1.0)
@@ -211,8 +211,8 @@ def audit_pair_b():
     cv2.imwrite(os.path.join(ALIGN_DIR, "pairB_edit_aligned_409p.png"), cv2.cvtColor(ed_409, cv2.COLOR_RGB2BGR))
 
     # Also measure edge correlation on 409p native original grid!
-    bars_409 = cv2.imread(os.path.join(REPO, "masks/pairB_409p_bars.png"), cv2.IMREAD_GRAYSCALE) > 0
-    inv_409 = cv2.imread(os.path.join(REPO, "masks/pairB_409p_invalid_border.png"), cv2.IMREAD_GRAYSCALE) > 0
+    bars_409 = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_409p_bars.png"), cv2.IMREAD_GRAYSCALE) > 0
+    inv_409 = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_409p_invalid_border.png"), cv2.IMREAD_GRAYSCALE) > 0
     valid_409 = (~bars_409) & (~inv_409)
     corr_409_after = pearson_corr(edge_map(or_im, 1.0), edge_map(ed_409, 1.0), valid_409)
     ed_409_naive = cv2.resize(ed, (wo, ho), interpolation=cv2.INTER_AREA)
@@ -245,8 +245,8 @@ def audit_pair_b():
         "threshold_px": 1.0,
         "re_warped_used": True,
         "aligned_files": [
-            "outputs/aligned/pairB_orig_aligned_720p.png",
-            "outputs/aligned/pairB_edit_aligned_409p.png",
+            "owners/floby/analysis/outputs/aligned/pairB_orig_aligned_720p.png",
+            "owners/floby/analysis/outputs/aligned/pairB_edit_aligned_409p.png",
         ],
     }
 

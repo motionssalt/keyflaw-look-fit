@@ -14,7 +14,7 @@ from scipy.ndimage import gaussian_filter1d
 from q4_finalize import eval_cc_float, eval_grad_mul
 from q3_colour_fit import LUMA_W, REPO
 
-OUT_DIR = os.path.join(REPO, "outputs", "q5")
+OUT_DIR = os.path.join(REPO, "owners", "floby", "analysis", "outputs", "q5")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 W1D_5 = np.array([1.0, 4.0, 6.0, 4.0, 1.0], dtype=np.float32) / 16.0
@@ -154,32 +154,32 @@ def load_rgb01(rel_path: str) -> np.ndarray:
 
 
 def main():
-    th = np.load(os.path.join(REPO, "outputs/q4/theta_cc_q4.npy"))
-    g = np.load(os.path.join(REPO, "outputs/q4/grad_q4.npy"))
+    th = np.load(os.path.join(REPO, "owners/floby/analysis/outputs/q4/theta_cc_q4.npy"))
+    g = np.load(os.path.join(REPO, "owners/floby/analysis/outputs/q4/grad_q4.npy"))
 
-    a_ed = load_rgb01("inputs/pairA_edited.png")
-    a_cg = load_rgb01("outputs/q4/pairA_cc_grad.png")
-    b_ed = load_rgb01("inputs/pairB_edited.png")
-    b_cg = load_rgb01("outputs/q4/pairB_cc_grad.png")
+    a_ed = load_rgb01("owners/floby/inputs/pairA_edited.png")
+    a_cg = load_rgb01("owners/floby/analysis/outputs/q4/pairA_cc_grad.png")
+    b_ed = load_rgb01("owners/floby/inputs/pairB_edited.png")
+    b_cg = load_rgb01("owners/floby/analysis/outputs/q4/pairB_cc_grad.png")
 
-    b4_ed = load_rgb01("outputs/aligned/pairB_edit_aligned_409p.png")
-    b4_or = load_rgb01("inputs/pairB_original_matched.png")
+    b4_ed = load_rgb01("owners/floby/analysis/outputs/aligned/pairB_edit_aligned_409p.png")
+    b4_or = load_rgb01("owners/floby/inputs/pairB_original_matched.png")
     yb4 = np.mgrid[0:409, 0:720][0] / 409.0
     b4_cg = eval_grad_mul(eval_cc_float(b4_or, th), yb4, g).astype(np.float32)
 
     k15 = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
-    a_bars = cv2.imread(os.path.join(REPO, "masks/pairA_bars.png"), 0) > 0
-    a_cap = cv2.imread(os.path.join(REPO, "masks/pairA_caption.png"), 0) > 0
-    a_inv = cv2.imread(os.path.join(REPO, "masks/pairA_invalid_border.png"), 0) > 0
+    a_bars = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_bars.png"), 0) > 0
+    a_cap = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_caption.png"), 0) > 0
+    a_inv = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairA_invalid_border.png"), 0) > 0
     ya, xa = np.mgrid[0:720, 0:1278]
     a_valid = ~(cv2.dilate((a_bars | a_cap | a_inv).astype(np.uint8), k15) > 0) & ~((xa > 880) & (ya < 260))
 
-    b_bars = cv2.imread(os.path.join(REPO, "masks/pairB_bars.png"), 0) > 0
-    b_inv = cv2.imread(os.path.join(REPO, "masks/pairB_invalid_border.png"), 0) > 0
+    b_bars = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_bars.png"), 0) > 0
+    b_inv = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_invalid_border.png"), 0) > 0
     yb, xb = np.mgrid[0:720, 0:1291]
     b_valid = ~(cv2.dilate((b_bars | b_inv).astype(np.uint8), k15) > 0) & (xb < 760)
 
-    b4_inv = cv2.imread(os.path.join(REPO, "masks/pairB_409p_invalid_border.png"), 0) > 0
+    b4_inv = cv2.imread(os.path.join(REPO, "owners/floby/masks/pairB_409p_invalid_border.png"), 0) > 0
     yb4_i, xb4_i = np.mgrid[0:409, 0:720]
     b4_valid = ~(cv2.dilate(b4_inv.astype(np.uint8), k15) > 0) & (xb4_i < 425)
 
