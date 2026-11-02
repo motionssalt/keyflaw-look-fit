@@ -1,12 +1,29 @@
 {
   "owner_slug": "floby",
   "display_name": "Floby",
-  "status": "pending",
-  "last_updated": "2026-11-02T14:56:45Z",
+  "status": "tuned",
+  "last_updated": "2026-11-02T17:38:33.141830+00:00",
   "input_pairs_count": 2,
-  "accepted_layers": [],
+  "accepted_layers": [
+    "colour",
+    "unsharp_mask",
+    "gradient"
+  ],
   "rejected_layers": {},
   "iterations": [],
   "known_issues": [],
-  "last_session_note": "Initialized in Phase 1."
+  "last_session_note": "Initialized in Phase 1.",
+  "latest_metrics": {
+    "ciede2000_median": 4.9609,
+    "ciede2000_p90": 13.9788,
+    "ciede2000_mean": 7.1553,
+    "mae_r_255": 17.3858,
+    "mae_g_255": 15.0501,
+    "mae_b_255": 15.2935,
+    "mae_mean_255": 15.9116,
+    "edge_raw_rmse_255": 27.686,
+    "edge_halo_rmse_255": 20.1847,
+    "ssim": 0.82876,
+    "joint_loss": 11.73657
+  }
 }

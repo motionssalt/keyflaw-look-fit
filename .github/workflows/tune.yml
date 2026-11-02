@@ -136,8 +136,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: lookfit-small-*
-          merge-multiple: true
-          path: .
+          path: staged-artifacts
+
+      - name: Relocate downloaded owner results
+        run: |
+          for dir in staged-artifacts/lookfit-small-*; do
+            [ -d "$dir" ] || continue
+            slug="${dir##*lookfit-small-}"
+            mkdir -p "owners/${slug}"
+            cp -r "$dir"/* "owners/${slug}/"
+          done
+          rm -rf staged-artifacts
 
       - name: Sync root BUILD_STATE.json and verify untouched inputs
         env:

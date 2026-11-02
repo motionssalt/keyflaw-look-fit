@@ -1,6 +1,6 @@
 {
   "status": "in_progress",
-  "last_updated": "2026-11-02T17:31:34.748500+00:00",
+  "last_updated": "2026-11-02T17:41:08.985455+00:00",
   "repo": "motionssalt/keyflaw-look-fit",
   "owners": [
     {
@@ -181,9 +181,10 @@
     "Observed cross-resolution and crop/zoom differences in floby/pairB, gojo/pairA-D, and xenoz/pairA-B during initial frame inspection; designed multi-candidate SIFT+RANSAC + gradient-ECC alignment in lookfit/core/alignment.py while treating all pairs equally per brief.",
     "Designed GLSL ES 1.00 colour compression to avoid dynamic array indexing (forbidden in strict #version 100) by combining binary-tree piecewise-linear 1D shaper curves with 3x3 matrix + smooth polynomial/trilinear basis verified against glslangValidator.",
     "Caught and fixed an OpenCV 5.0 in-place mutation in cv2.phaseCorrelate(src1, src2, window) by passing defensive copies, boosting interior gradient alignment correlations up to 0.971.",
-    "Set phase to CC_TUNING and plugin_work to frozen per brief. Cleanest owner/pair identified as floby/pairA (exact 1278x720 matching 1:1 resolution, zero geometric crop distortion, edge correlation 0.963). Initial tuning starts with floby."
+    "Set phase to CC_TUNING and plugin_work to frozen per brief. Cleanest owner/pair identified as floby/pairA (exact 1278x720 matching 1:1 resolution, zero geometric crop distortion, edge correlation 0.963). Initial tuning starts with floby.",
+    "Fixed upload-artifact/download-artifact path stripping in .github/workflows/tune.yml: download-artifact@v4 stripped the common owners/<slug> prefix, causing git add owners/*/results/ to fail with exit code 128. Downloaded into staged-artifacts and relocated to owners/<slug>/ before committing."
   ],
-  "last_session_note": "Commencing CC tuning run: plugin work frozen, phase CC_TUNING, starting with floby.",
+  "last_session_note": "Completed Floby Iteration 1: median CIEDE2000 6.91 -> 4.96, p90 17.73 -> 13.98, MAE 24.08 -> 15.91.",
   "phases": {
     "phase_1_docs_and_plan": {
       "status": "done",
@@ -228,12 +229,16 @@
   },
   "owner_status": {
     "floby": {
-      "status": "pending",
+      "status": "tuned",
       "pairs": [
         "pairA",
         "pairB"
       ],
-      "accepted_layers": []
+      "accepted_layers": [
+        "colour",
+        "unsharp_mask",
+        "gradient"
+      ]
     },
     "gojo": {
       "status": "pending",
@@ -254,7 +259,38 @@
       "accepted_layers": []
     }
   },
-  "results": {},
+  "results": {
+    "floby": [
+      {
+        "iteration": "gha-tune-floby-r1",
+        "timestamp": "2026-11-02T17:41:08.985455+00:00",
+        "accepted_layers": [
+          "colour",
+          "unsharp_mask",
+          "gradient"
+        ],
+        "ciede2000_median_before": 6.9086,
+        "ciede2000_median_after": 4.9609,
+        "ciede2000_p90_before": 17.7271,
+        "ciede2000_p90_after": 13.9788,
+        "mae_mean_255_before": 24.0836,
+        "mae_mean_255_after": 15.9116,
+        "edge_halo_rmse_255_before": 19.9399,
+        "edge_halo_rmse_255_after": 20.1847,
+        "ssim_before": 0.83995,
+        "ssim_after": 0.82876,
+        "joint_loss_after": 11.73657,
+        "shader_taps": 21,
+        "shader_parity": {
+          "colour_shader_vs_python_mean_255": 0.0,
+          "colour_shader_vs_cube_mean_255": 5.75826,
+          "full_stack_shader_vs_python_mean_255": 0.14064,
+          "colour_within_1_255": false,
+          "full_stack_within_2_255": true
+        }
+      }
+    ]
+  },
   "known_issues": [],
   "phase": "CC_TUNING",
   "plugin_work": "frozen",

@@ -1,0 +1,208 @@
+{
+  "owner": "floby",
+  "pair_summaries": [
+    {
+      "pair_id": "pairA",
+      "ref_orig_shape": [
+        720,
+        1278,
+        3
+      ],
+      "tgt_shape": [
+        720,
+        1278,
+        3
+      ],
+      "alignment": {
+        "method": "phase_correlate",
+        "tx_px": -0.031,
+        "ty_px": 0.103,
+        "scale_x": 1.0,
+        "scale_y": 1.0,
+        "rotation_deg": 0.0,
+        "edge_corr_before": 0.963,
+        "edge_corr_after": 0.9634
+      },
+      "masks": {
+        "active_frac": 0.8729,
+        "flat_frac": 0.532,
+        "edge_frac": 0.3115,
+        "caption_frac": 0.0062,
+        "bar_bounds_tblr": [
+          39,
+          38,
+          0,
+          0
+        ]
+      },
+      "raw_noise_stats": {
+        "ref_std_255": 0.282,
+        "tgt_std_255": 0.216,
+        "excess_std_255": 0.0,
+        "blockiness_ratio": 0.927
+      }
+    },
+    {
+      "pair_id": "pairB",
+      "ref_orig_shape": [
+        409,
+        720,
+        3
+      ],
+      "tgt_shape": [
+        720,
+        1291,
+        3
+      ],
+      "alignment": {
+        "method": "sift_affine+ecc_trans",
+        "tx_px": 4.994,
+        "ty_px": -0.163,
+        "scale_x": 1.79189,
+        "scale_y": 1.78062,
+        "rotation_deg": -0.0664,
+        "edge_corr_before": 0.4269,
+        "edge_corr_after": 0.8754
+      },
+      "masks": {
+        "active_frac": 0.9162,
+        "flat_frac": 0.4372,
+        "edge_frac": 0.3805,
+        "caption_frac": 0.0437,
+        "bar_bounds_tblr": [
+          0,
+          0,
+          11,
+          8
+        ]
+      },
+      "raw_noise_stats": {
+        "ref_std_255": 0.191,
+        "tgt_std_255": 0.22,
+        "excess_std_255": 0.109,
+        "blockiness_ratio": 0.744
+      }
+    }
+  ],
+  "plain_words": [
+    "[colour] PRESENT: Blurred flat-area colour difference before grade: median CIEDE2000=6.17, p90=12.18, MAE=21.01/255.",
+    "[sharpen] WEAK: 3x3 fine-edge high-pass ratio tgt/ref=0.939, edge-halo RMSE=29.49/255 (kernel model fitted, not known).",
+    "[unsharp_mask] PRESENT: Multi-scale edge band ratio=1.286, perpendicular edge-halo RMSE=29.49/255.",
+    "[haze_flare] PRESENT: Low-frequency smooth residual MAE=10.72/255 (halo-ring MAE=13.76/255); excess positive glow in highlight-halo rings vs background=+6.14/255 -> present.",
+    "[grain] NOT_PROVABLE: not provable: flat-area noise shows 8x8 recompression blockiness (blockiness_ratio=2.88 > 1.22, excess_std=0.00/255); skipping grain.",
+    "[gradient] PRESENT: Low-frequency directional gradient check: peak-to-peak amp=10.08/255, linear plane R^2=0.197 -> present.",
+    "[vignette] ABSENT: Radial corner darkening check: centre-to-outer drop=0.63/255, quadrant consistency=0.62 -> absent.",
+    "[black_lift] ABSENT: Shadow black-point veil check on 0 dark pixels: median lift=0.00/255 -> absent.",
+    "[chromatic_aberration] ABSENT: Outer-frame radial R/B chromatic fringe check: corner shift=0.04 px -> absent.",
+    "[flicker] ABSENT: Flicker requires >=3 independent frame pairs to distinguish temporal oscillation from static look (have 2)."
+  ],
+  "planned_order": [
+    "colour",
+    "sharpen",
+    "unsharp_mask",
+    "haze_flare",
+    "gradient"
+  ],
+  "dropped_plugins": {
+    "grain": "Dropped at P2 Plan (not_provable): not provable: flat-area noise shows 8x8 recompression blockiness (blockiness_ratio=2.88 > 1.22, excess_std=0.00/255); skipping grain.",
+    "vignette": "Dropped at P2 Plan (absent): Radial corner darkening check: centre-to-outer drop=0.63/255, quadrant consistency=0.62 -> absent.",
+    "black_lift": "Optional plugin not triggered (absent): Shadow black-point veil check on 0 dark pixels: median lift=0.00/255 -> absent.",
+    "chromatic_aberration": "Optional plugin not triggered (absent): Outer-frame radial R/B chromatic fringe check: corner shift=0.04 px -> absent.",
+    "flicker": "Optional plugin not triggered (absent): Flicker requires >=3 independent frame pairs to distinguish temporal oscillation from static look (have 2)."
+  },
+  "evidence": {
+    "colour": {
+      "status": "present",
+      "score": 6.17,
+      "notes": "Blurred flat-area colour difference before grade: median CIEDE2000=6.17, p90=12.18, MAE=21.01/255.",
+      "metrics": {
+        "flat_de00_median": 6.170002222061157,
+        "flat_de00_p90": 12.179532051086426,
+        "flat_mae_255": 21.013315200805664
+      }
+    },
+    "sharpen": {
+      "status": "weak",
+      "score": 0.0,
+      "notes": "3x3 fine-edge high-pass ratio tgt/ref=0.939, edge-halo RMSE=29.49/255 (kernel model fitted, not known).",
+      "metrics": {
+        "hp3x3_ratio": 0.9394942944226049,
+        "edge_halo_rmse_255": 29.49074649810791
+      }
+    },
+    "unsharp_mask": {
+      "status": "present",
+      "score": 8.7549,
+      "notes": "Multi-scale edge band ratio=1.286, perpendicular edge-halo RMSE=29.49/255.",
+      "metrics": {
+        "band_ratio": 1.2856749892234802,
+        "edge_halo_rmse_255": 29.49074649810791
+      }
+    },
+    "haze_flare": {
+      "status": "present",
+      "score": 6.1425,
+      "notes": "Low-frequency smooth residual MAE=10.72/255 (halo-ring MAE=13.76/255); excess positive glow in highlight-halo rings vs background=+6.14/255 -> present.",
+      "metrics": {
+        "lf_mae_255": 10.71818733215332,
+        "halo_ring_lf_mae_255": 13.760825634002686,
+        "highlight_halo_excess_255": 6.142484426498413
+      }
+    },
+    "grain": {
+      "status": "not_provable",
+      "score": 0.0,
+      "notes": "not provable: flat-area noise shows 8x8 recompression blockiness (blockiness_ratio=2.88 > 1.22, excess_std=0.00/255); skipping grain.",
+      "metrics": {
+        "excess_std_255": 0.0,
+        "blockiness_ratio": 2.8807570934295654,
+        "flat_block_ubiquity": 0.0
+      }
+    },
+    "gradient": {
+      "status": "present",
+      "score": 1.9851,
+      "notes": "Low-frequency directional gradient check: peak-to-peak amp=10.08/255, linear plane R^2=0.197 -> present.",
+      "metrics": {
+        "linear_amp_255": 10.079039573669434,
+        "linear_r2": 0.19695189781486988
+      }
+    },
+    "vignette": {
+      "status": "absent",
+      "score": 0.3958,
+      "notes": "Radial corner darkening check: centre-to-outer drop=0.63/255, quadrant consistency=0.62 -> absent.",
+      "metrics": {
+        "corner_drop_255": 0.6332952976226807,
+        "quadrant_consistency": 0.625
+      }
+    },
+    "black_lift": {
+      "status": "absent",
+      "score": 0.0,
+      "notes": "Shadow black-point veil check on 0 dark pixels: median lift=0.00/255 -> absent.",
+      "metrics": {
+        "median_dark_lift_255": 0.0,
+        "dark_pixel_count": 0
+      }
+    },
+    "chromatic_aberration": {
+      "status": "absent",
+      "score": 0.0423,
+      "notes": "Outer-frame radial R/B chromatic fringe check: corner shift=0.04 px -> absent.",
+      "metrics": {
+        "est_corner_shift_px": 0.042293926524551675,
+        "mean_k_red": 5.139962990381298e-05,
+        "mean_k_blue": -1.3987436369488356e-05
+      }
+    },
+    "flicker": {
+      "status": "absent",
+      "score": 0.0,
+      "notes": "Flicker requires >=3 independent frame pairs to distinguish temporal oscillation from static look (have 2).",
+      "metrics": {
+        "n_pairs": 2
+      }
+    }
+  }
+}
