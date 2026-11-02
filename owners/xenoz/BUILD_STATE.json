@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + quality processing of Xenoz's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q7",
+  "current_phase": "Q8",
   "queue": [
     {
       "id": "Q1",
@@ -50,8 +50,8 @@
     {
       "id": "Q7",
       "title": "Order of operations and the full composite",
-      "status": "pending",
-      "notes": ""
+      "status": "done",
+      "notes": "5 candidate orders tested. Canonical order CC_GRAD_USM_FLARE chosen (lowest joint error). Full composite beats CC-only across metrics: Pair A flat DE00 median dropped 2.468 -> 1.199 (-51.4%), Pair B flat DE00 median dropped 4.213 -> 3.436 (-18.4%), MAE 10.53 -> 5.44/255. Stage-by-stage progression heatmaps generated."
     },
     {
       "id": "Q8",
@@ -163,8 +163,143 @@
       },
       "scene_dependence": "Glow position and tint vary per shot matching the scene highlight/energy burst. The Keyflaw effect provides a Haze Flare toggle and default parameters."
     },
-    "order_of_operations": "",
-    "metrics": {},
+    "order_of_operations": "1. Colour Correction (M3 spline in linear space) -> 2. Gradient (smoothstep multiply) -> 3. Unsharp Mask (25-tap RGB) -> 4. Haze Flare (2D Gaussian Screen)",
+    "metrics": {
+      "pairA": {
+        "raw_original": {
+          "ciede2000_median": 15.596,
+          "ciede2000_p90": 20.139,
+          "ciede2000_mean": 15.303,
+          "mae_rgb_255": [
+            13.33,
+            37.43,
+            60.55
+          ],
+          "mae_mean_255": 37.1,
+          "edge_rmse_255": 40.42,
+          "ssim_luma": 0.9122
+        },
+        "cc_only": {
+          "ciede2000_median": 2.468,
+          "ciede2000_p90": 6.214,
+          "ciede2000_mean": 2.942,
+          "mae_rgb_255": [
+            7.32,
+            6.7,
+            8.05
+          ],
+          "mae_mean_255": 7.36,
+          "edge_rmse_255": 21.04,
+          "ssim_luma": 0.9543
+        },
+        "cc_plus_gradient": {
+          "ciede2000_median": 2.372,
+          "ciede2000_p90": 5.287,
+          "ciede2000_mean": 2.7,
+          "mae_rgb_255": [
+            7.27,
+            6.49,
+            9.8
+          ],
+          "mae_mean_255": 7.85,
+          "edge_rmse_255": 22.39,
+          "ssim_luma": 0.9553
+        },
+        "cc_grad_usm": {
+          "ciede2000_median": 2.373,
+          "ciede2000_p90": 5.295,
+          "ciede2000_mean": 2.703,
+          "mae_rgb_255": [
+            7.27,
+            6.49,
+            9.8
+          ],
+          "mae_mean_255": 7.85,
+          "edge_rmse_255": 25.61,
+          "ssim_luma": 0.939
+        },
+        "full_composite": {
+          "ciede2000_median": 1.199,
+          "ciede2000_p90": 3.259,
+          "ciede2000_mean": 1.684,
+          "mae_rgb_255": [
+            7.33,
+            3.78,
+            4.57
+          ],
+          "mae_mean_255": 5.22,
+          "edge_rmse_255": 24.47,
+          "ssim_luma": 0.9446
+        }
+      },
+      "pairB": {
+        "raw_original": {
+          "ciede2000_median": 7.089,
+          "ciede2000_p90": 9.822,
+          "ciede2000_mean": 6.965,
+          "mae_rgb_255": [
+            16.37,
+            9.7,
+            19.02
+          ],
+          "mae_mean_255": 15.03,
+          "edge_rmse_255": 42.13,
+          "ssim_luma": 0.9426
+        },
+        "cc_only": {
+          "ciede2000_median": 4.213,
+          "ciede2000_p90": 7.876,
+          "ciede2000_mean": 4.639,
+          "mae_rgb_255": [
+            5.23,
+            10.42,
+            15.96
+          ],
+          "mae_mean_255": 10.53,
+          "edge_rmse_255": 39.02,
+          "ssim_luma": 0.9397
+        },
+        "cc_plus_gradient": {
+          "ciede2000_median": 3.782,
+          "ciede2000_p90": 6.485,
+          "ciede2000_mean": 3.858,
+          "mae_rgb_255": [
+            7.2,
+            3.64,
+            7.67
+          ],
+          "mae_mean_255": 6.17,
+          "edge_rmse_255": 36.44,
+          "ssim_luma": 0.9428
+        },
+        "cc_grad_usm": {
+          "ciede2000_median": 3.782,
+          "ciede2000_p90": 6.488,
+          "ciede2000_mean": 3.859,
+          "mae_rgb_255": [
+            7.2,
+            3.65,
+            7.67
+          ],
+          "mae_mean_255": 6.17,
+          "edge_rmse_255": 38.38,
+          "ssim_luma": 0.9315
+        },
+        "full_composite": {
+          "ciede2000_median": 3.436,
+          "ciede2000_p90": 6.311,
+          "ciede2000_mean": 3.663,
+          "mae_rgb_255": [
+            5.43,
+            3.23,
+            7.67
+          ],
+          "mae_mean_255": 5.44,
+          "edge_rmse_255": 37.17,
+          "ssim_luma": 0.9323
+        }
+      }
+    },
     "alignment": {
       "pairA": {
         "edge_corr_before": 0.96904,
@@ -230,6 +365,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-02T06:14:54.997747+00:00",
-  "last_session_note": "Q6 flare and Q6b secondary effects complete. Proceeding to Q7 composite order."
+  "last_updated": "2026-11-02T06:18:02.492906+00:00",
+  "last_session_note": "Q7 composite order complete. Proceeding to Q8 deliverables."
 }
