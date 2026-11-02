@@ -1,6 +1,6 @@
 {
   "status": "in_progress",
-  "last_updated": "2026-11-02T16:11:01.402961+00:00",
+  "last_updated": "2026-11-02T16:22:11.197413+00:00",
   "repo": "motionssalt/keyflaw-look-fit",
   "owners": [
     {
@@ -182,7 +182,7 @@
     "Designed GLSL ES 1.00 colour compression to avoid dynamic array indexing (forbidden in strict #version 100) by combining binary-tree piecewise-linear 1D shaper curves with 3x3 matrix + smooth polynomial/trilinear basis verified against glslangValidator.",
     "Caught and fixed an OpenCV 5.0 in-place mutation in cv2.phaseCorrelate(src1, src2, window) by passing defensive copies, boosting interior gradient alignment correlations up to 0.971."
   ],
-  "last_session_note": "Completed Phase 3: all 10 core + optional plugins implemented and verified with synthetic parameter recovery + glslangValidator unit tests.",
+  "last_session_note": "Completed Phase 4: planner, tuner, exporters, kfpack builder, and run.py CLI verified end-to-end.",
   "phases": {
     "phase_1_docs_and_plan": {
       "status": "done",
@@ -197,8 +197,8 @@
       "verified_how": "16/16 pytest unit tests passed across test_core.py and all 10 plugins (colour, sharpen, unsharp_mask, haze_flare, grain, gradient, vignette, black_lift, chromatic_aberration, flicker): synthetic parameter recovery on held-out 96px blocks, 3 mandatory real-bloom tests & painted-overlay rejection for haze_flare, 8x8 DCT blockiness vs film-grain separation for grain, yTop=1.0-vTex.y coordinate parity, and strict #version 100 glslangValidator compilation."
     },
     "phase_4_planner_tuner_export": {
-      "status": "pending",
-      "verified_how": ""
+      "status": "done",
+      "verified_how": "Passed tests/test_planner_tuner.py end-to-end (17/17 total pytest suite): P0 alignment/masks, P1 post-probe-LUT detection + diagnostic maps, P2 stack planning & adjacent-swap checks, P3 layer-by-layer CV tuning, P4 coordinate-descent joint refinement, P5/P6 export, glslangValidator #version 100 check, NumPy shader parity (<1/255 colour, <2/255 full stack), and SKILL.md .kfpack validator."
     },
     "phase_5_workflow": {
       "status": "pending",
