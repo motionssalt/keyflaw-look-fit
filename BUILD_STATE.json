@@ -1,6 +1,6 @@
 {
   "status": "in_progress",
-  "last_updated": "2026-11-02T17:50:10.421483+00:00",
+  "last_updated": "2026-11-02T17:54:04.807029+00:00",
   "repo": "motionssalt/keyflaw-look-fit",
   "owners": [
     {
@@ -253,12 +253,15 @@
       ]
     },
     "xenoz": {
-      "status": "pending",
+      "status": "tuned",
       "pairs": [
         "pairA",
         "pairB"
       ],
-      "accepted_layers": []
+      "accepted_layers": [
+        "colour",
+        "gradient"
+      ]
     }
   },
   "results": {
@@ -318,6 +321,34 @@
           "colour_within_1_255": false,
           "full_stack_within_2_255": true
         }
+      },
+      {
+        "iteration": "tune-xenoz-1-r4",
+        "timestamp": "2026-11-02T17:54:04.807029+00:00",
+        "accepted_layers": [
+          "colour",
+          "unsharp_mask",
+          "gradient"
+        ],
+        "ciede2000_median_before": 6.9086,
+        "ciede2000_median_after": 4.9609,
+        "ciede2000_p90_before": 17.7271,
+        "ciede2000_p90_after": 13.9788,
+        "mae_mean_255_before": 24.0836,
+        "mae_mean_255_after": 15.9116,
+        "edge_halo_rmse_255_before": 19.9399,
+        "edge_halo_rmse_255_after": 20.1847,
+        "ssim_before": 0.83995,
+        "ssim_after": 0.82876,
+        "joint_loss_after": 11.73657,
+        "shader_taps": 21,
+        "shader_parity": {
+          "colour_shader_vs_python_mean_255": 0.0,
+          "colour_shader_vs_cube_mean_255": 5.75826,
+          "full_stack_shader_vs_python_mean_255": 0.14064,
+          "colour_within_1_255": false,
+          "full_stack_within_2_255": true
+        }
       }
     ],
     "gojo": [
@@ -342,6 +373,61 @@
         "shader_parity": {
           "colour_shader_vs_python_mean_255": 0.0,
           "colour_shader_vs_cube_mean_255": 5.53522,
+          "full_stack_shader_vs_python_mean_255": 0.0,
+          "colour_within_1_255": false,
+          "full_stack_within_2_255": true
+        }
+      },
+      {
+        "iteration": "tune-xenoz-1-r4",
+        "timestamp": "2026-11-02T17:54:04.807029+00:00",
+        "accepted_layers": [
+          "colour"
+        ],
+        "ciede2000_median_before": 9.6899,
+        "ciede2000_median_after": 4.6624,
+        "ciede2000_p90_before": 21.0282,
+        "ciede2000_p90_after": 13.6931,
+        "mae_mean_255_before": 27.1245,
+        "mae_mean_255_after": 13.0237,
+        "edge_halo_rmse_255_before": 23.5827,
+        "edge_halo_rmse_255_after": 23.4417,
+        "ssim_before": 0.65398,
+        "ssim_after": 0.75315,
+        "joint_loss_after": 11.05549,
+        "shader_taps": 1,
+        "shader_parity": {
+          "colour_shader_vs_python_mean_255": 0.0,
+          "colour_shader_vs_cube_mean_255": 5.53522,
+          "full_stack_shader_vs_python_mean_255": 0.0,
+          "colour_within_1_255": false,
+          "full_stack_within_2_255": true
+        }
+      }
+    ],
+    "xenoz": [
+      {
+        "iteration": "tune-xenoz-1-r4",
+        "timestamp": "2026-11-02T17:54:04.807029+00:00",
+        "accepted_layers": [
+          "colour",
+          "gradient"
+        ],
+        "ciede2000_median_before": 11.44,
+        "ciede2000_median_after": 2.9335,
+        "ciede2000_p90_before": 15.8584,
+        "ciede2000_p90_after": 6.7855,
+        "mae_mean_255_before": 26.554,
+        "mae_mean_255_after": 8.4997,
+        "edge_halo_rmse_255_before": 14.4221,
+        "edge_halo_rmse_255_after": 14.5593,
+        "ssim_before": 0.90071,
+        "ssim_after": 0.93022,
+        "joint_loss_after": 6.75886,
+        "shader_taps": 1,
+        "shader_parity": {
+          "colour_shader_vs_python_mean_255": 0.0,
+          "colour_shader_vs_cube_mean_255": 3.17162,
           "full_stack_shader_vs_python_mean_255": 0.0,
           "colour_within_1_255": false,
           "full_stack_within_2_255": true

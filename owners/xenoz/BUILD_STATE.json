@@ -1,12 +1,28 @@
 {
   "owner_slug": "xenoz",
   "display_name": "Xenoz",
-  "status": "pending",
-  "last_updated": "2026-11-02T14:56:45Z",
+  "status": "tuned",
+  "last_updated": "2026-11-02T17:53:49.085741+00:00",
   "input_pairs_count": 2,
-  "accepted_layers": [],
+  "accepted_layers": [
+    "colour",
+    "gradient"
+  ],
   "rejected_layers": {},
   "iterations": [],
   "known_issues": [],
-  "last_session_note": "Initialized in Phase 1."
+  "last_session_note": "Initialized in Phase 1.",
+  "latest_metrics": {
+    "ciede2000_median": 2.9335,
+    "ciede2000_p90": 6.7855,
+    "ciede2000_mean": 3.6819,
+    "mae_r_255": 7.8992,
+    "mae_g_255": 7.6914,
+    "mae_b_255": 9.9155,
+    "mae_mean_255": 8.4997,
+    "edge_raw_rmse_255": 20.98,
+    "edge_halo_rmse_255": 14.5593,
+    "ssim": 0.93022,
+    "joint_loss": 6.75886
+  }
 }
