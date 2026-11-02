@@ -1,6 +1,6 @@
 {
   "status": "in_progress",
-  "last_updated": "2026-11-02T17:41:08.985455+00:00",
+  "last_updated": "2026-11-02T17:50:10.421483+00:00",
   "repo": "motionssalt/keyflaw-look-fit",
   "owners": [
     {
@@ -241,14 +241,16 @@
       ]
     },
     "gojo": {
-      "status": "pending",
+      "status": "tuned",
       "pairs": [
         "pairA",
         "pairB",
         "pairC",
         "pairD"
       ],
-      "accepted_layers": []
+      "accepted_layers": [
+        "colour"
+      ]
     },
     "xenoz": {
       "status": "pending",
@@ -285,6 +287,62 @@
           "colour_shader_vs_python_mean_255": 0.0,
           "colour_shader_vs_cube_mean_255": 5.75826,
           "full_stack_shader_vs_python_mean_255": 0.14064,
+          "colour_within_1_255": false,
+          "full_stack_within_2_255": true
+        }
+      },
+      {
+        "iteration": "tune-gojo-1-r3",
+        "timestamp": "2026-11-02T17:50:10.421483+00:00",
+        "accepted_layers": [
+          "colour",
+          "unsharp_mask",
+          "gradient"
+        ],
+        "ciede2000_median_before": 6.9086,
+        "ciede2000_median_after": 4.9609,
+        "ciede2000_p90_before": 17.7271,
+        "ciede2000_p90_after": 13.9788,
+        "mae_mean_255_before": 24.0836,
+        "mae_mean_255_after": 15.9116,
+        "edge_halo_rmse_255_before": 19.9399,
+        "edge_halo_rmse_255_after": 20.1847,
+        "ssim_before": 0.83995,
+        "ssim_after": 0.82876,
+        "joint_loss_after": 11.73657,
+        "shader_taps": 21,
+        "shader_parity": {
+          "colour_shader_vs_python_mean_255": 0.0,
+          "colour_shader_vs_cube_mean_255": 5.75826,
+          "full_stack_shader_vs_python_mean_255": 0.14064,
+          "colour_within_1_255": false,
+          "full_stack_within_2_255": true
+        }
+      }
+    ],
+    "gojo": [
+      {
+        "iteration": "tune-gojo-1-r3",
+        "timestamp": "2026-11-02T17:50:10.421483+00:00",
+        "accepted_layers": [
+          "colour"
+        ],
+        "ciede2000_median_before": 9.6899,
+        "ciede2000_median_after": 4.6624,
+        "ciede2000_p90_before": 21.0282,
+        "ciede2000_p90_after": 13.6931,
+        "mae_mean_255_before": 27.1245,
+        "mae_mean_255_after": 13.0237,
+        "edge_halo_rmse_255_before": 23.5827,
+        "edge_halo_rmse_255_after": 23.4417,
+        "ssim_before": 0.65398,
+        "ssim_after": 0.75315,
+        "joint_loss_after": 11.05549,
+        "shader_taps": 1,
+        "shader_parity": {
+          "colour_shader_vs_python_mean_255": 0.0,
+          "colour_shader_vs_cube_mean_255": 5.53522,
+          "full_stack_shader_vs_python_mean_255": 0.0,
           "colour_within_1_255": false,
           "full_stack_within_2_255": true
         }

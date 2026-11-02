@@ -1,12 +1,27 @@
 {
   "owner_slug": "gojo",
   "display_name": "Gojo",
-  "status": "pending",
-  "last_updated": "2026-11-02T14:56:45Z",
+  "status": "tuned",
+  "last_updated": "2026-11-02T17:49:52.511101+00:00",
   "input_pairs_count": 4,
-  "accepted_layers": [],
+  "accepted_layers": [
+    "colour"
+  ],
   "rejected_layers": {},
   "iterations": [],
   "known_issues": [],
-  "last_session_note": "Initialized in Phase 1."
+  "last_session_note": "Initialized in Phase 1.",
+  "latest_metrics": {
+    "ciede2000_median": 4.6624,
+    "ciede2000_p90": 13.6931,
+    "ciede2000_mean": 6.6038,
+    "mae_r_255": 15.8272,
+    "mae_g_255": 12.8976,
+    "mae_b_255": 10.3244,
+    "mae_mean_255": 13.0237,
+    "edge_raw_rmse_255": 32.2835,
+    "edge_halo_rmse_255": 23.4417,
+    "ssim": 0.75315,
+    "joint_loss": 11.05549
+  }
 }
