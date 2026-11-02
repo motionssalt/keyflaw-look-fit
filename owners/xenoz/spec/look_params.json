@@ -1,303 +1,388 @@
 {
   "schema_version": "1.0.0",
   "project": "MOTIONSALT Keyflaw Look-Fit",
+  "cc_owner": "Xenoz",
+  "effect_name": "Xenoz's CC",
+  "effect_id": "MS_xenoz_cc",
   "order_of_operations": [
-    "1_unsharp_mask_25tap_rgb",
-    "2_colour_correction_dade_srgb",
-    "3_vertical_multiply_gradient",
+    "1_colour_correction_m3_linear",
+    "2_vertical_multiply_gradient",
+    "3_unsharp_mask_25tap_rgb",
     "4_anisotropic_gaussian_screen_flare"
   ],
   "assumptions": {
-    "shader_architecture": "Single-pass GLSL fragment shader (to be confirmed by Keyflaw pack builder)",
-    "inputs_available": "Input video frame texture + uniform controls only (no extra LUT/auxiliary textures, no multi-pass)",
+    "shader_architecture": "Single-pass GLSL ES 1.00 fragment shader for Keyflaw 1.4.8+",
+    "inputs_available": "Input video frame texture (uTexture) + uniform controls only (no extra LUT/auxiliary textures, no multi-pass)",
     "max_texture_taps": 25,
-    "working_colour_space": "Gamma-encoded sRGB [0.0, 1.0]",
-    "uv_origin_convention": "Normalised (x, y) in [0, 1] with (0, 0) = top-left and (1, 1) = bottom-right (flip y if host uses bottom-left OpenGL UV origin)"
-  },
-  "unsharp": {
-    "mode": "rgb",
-    "colour_space": "gamma-encoded sRGB [0..1] (Stage 1 pre-CC)",
-    "kernel": "single-pass 25-tap (5x5 separable [1,4,6,4,1]/16 with bilinear UV offset = vec2(i,j) * sigma_px / resolution)",
-    "scaling_law": "constant_fraction_of_height",
-    "sigma_frac_h": 0.003473,
-    "sigma_px_at_resolutions": {
-      "pairA_1278x720": 2.5006,
-      "pairB_edit_1291x720": 2.5006,
-      "pairB_orig_720x409": 1.4205,
-      "fhd_1920x1080": 3.7508
-    },
-    "amount": 0.82,
-    "threshold_01": 0.01433,
-    "threshold_255": 3.654,
-    "amount_1d_with_nuisance_preblur": 1.2563,
-    "edge_profile_rmse_reduction_pct": {
-      "pairA_720p_vs_no_sharpening": 38.92,
-      "pairB_720p_vs_no_sharpening": 39.31,
-      "pairB_409p_vs_no_sharpening": 33.56
-    }
+    "working_colour_space": "Linear RGB for colour grading splines; gamma-encoded sRGB [0, 1] for gradient, USM, and screen flare",
+    "uv_origin_convention": "Normalised (x, y) in [0, 1] with (0, 0) = top-left and (1, 1) = bottom-right. Note: Keyflaw vTex has y=0 at bottom, so shader uses yTop = 1.0 - vTex.y"
   },
   "colour_correction": {
-    "model_type": "M2_Dade_srgb",
-    "colour_space": "srgb",
+    "model_type": "M3_linear",
+    "colour_space": "linear",
     "levels": {
       "in_black": [
-        -0.079999,
-        -0.077538,
-        0.035829
+        -0.101015,
+        -0.043312,
+        0.013963
       ],
       "in_white": [
-        0.934037,
-        0.929412,
-        0.963913
+        0.90479,
+        0.891216,
+        0.930482
       ],
       "gamma": [
-        0.820622,
-        0.889244,
-        0.863185
+        1.148331,
+        0.924251,
+        0.850588
       ],
       "out_black": [
-        -0.112643,
-        -0.119988,
-        0.029787
+        -0.05224,
+        -0.044284,
+        0.029805
       ],
       "out_white": [
-        1.01702,
-        1.012705,
-        1.0806
+        1.054894,
+        1.032638,
+        1.028508
       ]
     },
-    "shadow_toe": {
-      "luma_end": 0.28,
-      "shadow_lift_rgb": [
-        -0.008286,
-        0.028697,
-        0.049749
-      ]
-    },
-    "saturation_equiv": 1.199071,
+    "saturation": 1.990699,
     "matrix_3x3": [
       [
-        1.45155,
-        -0.243174,
-        -0.208376
+        1.533419,
+        -0.61178,
+        0.078361
       ],
       [
-        0.024565,
-        1.124975,
-        -0.14954
+        0.106358,
+        0.616635,
+        0.277007
       ],
       [
-        -0.208747,
-        0.087738,
-        1.121009
+        0.089059,
+        -1.054469,
+        1.965411
       ]
     ],
-    "dade_hue_shaper": {
-      "chroma_gate_start": 0.015,
-      "chroma_gate_end": 0.06,
-      "foliage_window": {
-        "h_start0_deg": 56.0,
-        "h_start1_deg": 68.0,
-        "h_end0_deg": 138.0,
-        "h_end1_deg": 172.0,
-        "dh_rad": 0.757676,
-        "dh_deg": 43.412,
-        "dc_gain": -0.079099,
-        "da_luma": -0.120041
-      },
-      "von_mises_lobes": [
-        {
-          "name": "teal_greens",
-          "center_deg": 162.0,
-          "cos_center": -0.951057,
-          "sin_center": 0.309017,
-          "kappa": 5.5,
-          "dh_rad": -0.11086,
-          "dh_deg": -6.352,
-          "dc_gain": 0.391882,
-          "da_luma": 0.18
-        },
-        {
-          "name": "cyan_sky",
-          "center_deg": 198.0,
-          "cos_center": -0.951057,
-          "sin_center": -0.309017,
-          "kappa": 5.5,
-          "dh_rad": -0.045421,
-          "dh_deg": -2.602,
-          "dc_gain": -0.159362,
-          "da_luma": 0.062555
-        },
-        {
-          "name": "violet_plum",
-          "center_deg": 315.0,
-          "cos_center": 0.707107,
-          "sin_center": -0.707107,
-          "kappa": 3.0,
-          "dh_rad": -0.325884,
-          "dh_deg": -18.672,
-          "dc_gain": -0.266123,
-          "da_luma": -0.153217
-        }
+    "curve_knots_x": [
+      0.0,
+      0.0625,
+      0.125,
+      0.1875,
+      0.25,
+      0.3125,
+      0.375,
+      0.4375,
+      0.5,
+      0.5625,
+      0.625,
+      0.6875,
+      0.75,
+      0.8125,
+      0.875,
+      0.9375,
+      1.0
+    ],
+    "curve_knots_rgb": {
+      "R": [
+        0.002211,
+        0.034315,
+        0.056511,
+        0.078239,
+        0.211251,
+        0.219826,
+        0.327422,
+        0.435065,
+        0.501375,
+        0.507213,
+        0.513778,
+        0.608417,
+        0.703812,
+        0.798546,
+        0.891579,
+        0.94457,
+        0.998716
+      ],
+      "G": [
+        0.002476,
+        0.03631,
+        0.099874,
+        0.199782,
+        0.25617,
+        0.258343,
+        0.32215,
+        0.385051,
+        0.537921,
+        0.576072,
+        0.613322,
+        0.650356,
+        0.688095,
+        0.755144,
+        0.820146,
+        0.977927,
+        0.99854
+      ],
+      "B": [
+        0.000834,
+        0.026932,
+        0.078904,
+        0.180359,
+        0.218283,
+        0.297963,
+        0.378248,
+        0.457639,
+        0.467386,
+        0.474853,
+        0.660959,
+        0.713462,
+        0.817572,
+        0.870244,
+        0.954786,
+        0.977025,
+        0.999431
       ]
     },
-    "observed_input_range_srgb_0_255": [
+    "observed_input_ranges_0_255": [
       {
         "channel": "R",
-        "min_255": 16.0,
-        "max_255": 251.0,
-        "extrapolated_below_255": 16.0,
-        "extrapolated_above_255": 251.0
+        "min_255": 34.0,
+        "max_255": 241.0,
+        "extrapolated_below_255": 34.0,
+        "extrapolated_above_255": 241.0
       },
       {
         "channel": "G",
-        "min_255": 21.0,
-        "max_255": 253.0,
-        "extrapolated_below_255": 21.0,
-        "extrapolated_above_255": 253.0
+        "min_255": 48.0,
+        "max_255": 233.0,
+        "extrapolated_below_255": 48.0,
+        "extrapolated_above_255": 233.0
       },
       {
         "channel": "B",
-        "min_255": 25.0,
-        "max_255": 254.0,
-        "extrapolated_below_255": 25.0,
-        "extrapolated_above_255": 254.0
+        "min_255": 56.0,
+        "max_255": 226.0,
+        "extrapolated_below_255": 56.0,
+        "extrapolated_above_255": 226.0
       }
-    ]
+    ],
+    "extrapolation_note": "Outside observed ranges (R < 34 or > 241, G < 48 or > 233, B < 56 or > 226), curves smoothly clamp and regularize towards identity."
   },
   "gradient": {
-    "hypothesis": "H1_vertical_spatial_multiply_gradient",
-    "coordinate_reference": "Full frame height including letterbox bars (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
-    "y0_norm": 0.14,
-    "y1_norm": 0.758341,
+    "type": "H1_vertical_spatial_multiply_gradient",
+    "coordinate_reference": "Full frame height [0, 1] (0 = top row, 1 = bottom row)",
+    "y0_norm": 0.226816,
+    "y1_norm": 0.775967,
     "falloff_curve": "smoothstep",
     "blend_mode": "multiply",
+    "blend_formula": "out = clamp(cc * (1.0 - smoothstep(y0, y1, y_norm) * strength_rgb), 0.0, 1.0)",
     "strength_rgb": [
-      0.262739,
-      0.256392,
-      0.28055
+      0.089249,
+      0.109361,
+      0.101978
     ],
-    "strength_luma_equiv": 0.259486,
+    "strength_luma_equiv": 0.104552,
     "pixel_rows_at_resolutions": {
-      "pairA_1278x720": {
-        "y0_px": 100.8,
-        "y1_px": 546.01
+      "pairA_1280x720": {
+        "y0_px": 163.31,
+        "y1_px": 558.7
       },
-      "pairB_edit_1291x720": {
-        "y0_px": 100.8,
-        "y1_px": 546.01
+      "pairB_1280x720": {
+        "y0_px": 163.31,
+        "y1_px": 558.7
       },
-      "pairB_orig_720x409": {
-        "y0_px": 57.26,
-        "y1_px": 310.16
+      "fhd_1920x1080": {
+        "y0_px": 244.96,
+        "y1_px": 838.04
       }
     }
   },
+  "unsharp": {
+    "mode": "rgb",
+    "colour_space": "gamma-encoded sRGB [0..1] (post-gradient)",
+    "kernel": "single-pass 25-tap (5x5 separable [1,4,6,4,1]/16 with bilinear UV offset = vec2(i,j) * sigma_px / resolution)",
+    "scaling_law": "constant_fraction_of_height",
+    "sigma_frac_h": 0.000535,
+    "sigma_px_at_resolutions": {
+      "pairA_1280x720": 0.3854,
+      "pairB_1280x720": 0.3854,
+      "pairB_409p": 0.2189,
+      "fhd_1920x1080": 0.578
+    },
+    "amount": 3.0,
+    "threshold_01": 0.00659,
+    "threshold_255": 1.68,
+    "formula": "d = rgb - blur25(rgb, sigma_frac_h * H); d_t = sign(d) * max(abs(d) - threshold, 0.0); out = clamp(rgb + amount * d_t, 0.0, 1.0)"
+  },
   "flare": {
-    "model": "2D anisotropic rotated Gaussian radial glow",
+    "status": "present_scene_dependent",
+    "model": "2D anisotropic rotated Gaussian radial glow with Screen blend",
     "falloff_curve": "gaussian",
     "blend_mode": "screen",
-    "global_veil_needed": false,
-    "default_preset": "default",
-    "presets": {
-      "default": {
-        "cx": 0.869336,
-        "cy": 0.081183,
-        "rx_frac_h": 0.18539,
-        "ry_frac_h": 0.248768,
-        "angle_deg": -72.9434,
-        "colour_rgb": [
-          0.437628,
-          1.0,
-          0.984158
+    "blend_formula": "f = intensity * exp(-0.5 * (u^2 + v^2)) * colour_rgb; out = 1.0 - (1.0 - base) * (1.0 - clamp(f, 0.0, 1.0))",
+    "canonical_default_params": {
+      "cx": 0.40268765489967634,
+      "cy": -0.19999999990872497,
+      "rx_frac_h": 0.8499999999999815,
+      "ry_frac_h": 0.8499999999999599,
+      "angle_deg": 89.95424790983336,
+      "colour_rgb": [
+        0.019327,
+        0.198772,
+        1.0
+      ],
+      "intensity": 0.411355,
+      "source_basis": "Pair A top energy-burst optical glow (warm amber [1.0, 0.86, 0.11], cx=0.402, cy=0.015, rx=0.35, ry=0.30)"
+    },
+    "pairB_fitted_params": {
+      "cx": 0.9160736013485856,
+      "cy": 0.5599464911982706,
+      "rx_frac_h": 0.5320131725097228,
+      "ry_frac_h": 0.11341449831814147,
+      "angle_deg": -44.15617832889186,
+      "colour_rgb": [
+        1.0,
+        0.13799,
+        0.0
+      ],
+      "intensity": 0.85,
+      "source_basis": "Pair B character eye-burst highlight glow (red/warm accent, cx=0.727, cy=0.986)"
+    },
+    "scene_dependence_notes": "Optical glow tracks scene energy burst/highlight position and tint. Expose as user toggle and controls in Keyflaw."
+  },
+  "metrics_summary": {
+    "pairA": {
+      "raw_original": {
+        "ciede2000_median": 15.596,
+        "ciede2000_p90": 20.139,
+        "ciede2000_mean": 15.303,
+        "mae_rgb_255": [
+          13.33,
+          37.43,
+          60.55
         ],
-        "intensity": 0.118307,
-        "pixel_equivalents": {
-          "pairA_1278x720": {
-            "cx_px": 1111.01,
-            "cy_px": 58.45,
-            "rx_px": 133.48,
-            "ry_px": 179.11
-          },
-          "pairB_edit_1291x720": {
-            "cx_px": 1122.31,
-            "cy_px": 58.45,
-            "rx_px": 133.48,
-            "ry_px": 179.11
-          },
-          "pairB_orig_720x409": {
-            "cx_px": 625.92,
-            "cy_px": 33.2,
-            "rx_px": 75.82,
-            "ry_px": 101.75
-          }
-        }
+        "mae_mean_255": 37.1,
+        "edge_rmse_255": 40.42,
+        "ssim_luma": 0.9122
       },
-      "pairA": {
-        "cx": 0.958064,
-        "cy": 0.183344,
-        "rx_frac_h": 0.193505,
-        "ry_frac_h": 0.301423,
-        "angle_deg": -41.45956,
-        "colour_rgb": [
-          0.970588,
-          1.0,
-          0.352941
+      "cc_only": {
+        "ciede2000_median": 2.468,
+        "ciede2000_p90": 6.214,
+        "ciede2000_mean": 2.942,
+        "mae_rgb_255": [
+          7.32,
+          6.7,
+          8.05
         ],
-        "intensity": 0.34,
-        "pixel_equivalents": {
-          "pairA_1278x720": {
-            "cx_px": 1224.41,
-            "cy_px": 132.01,
-            "rx_px": 139.32,
-            "ry_px": 217.02
-          },
-          "pairB_edit_1291x720": {
-            "cx_px": 1236.86,
-            "cy_px": 132.01,
-            "rx_px": 139.32,
-            "ry_px": 217.02
-          },
-          "pairB_orig_720x409": {
-            "cx_px": 689.81,
-            "cy_px": 74.99,
-            "rx_px": 79.14,
-            "ry_px": 123.28
-          }
-        }
+        "mae_mean_255": 7.36,
+        "edge_rmse_255": 21.04,
+        "ssim_luma": 0.9543
       },
-      "pairB": {
-        "cx": 0.89711,
-        "cy": 0.021277,
-        "rx_frac_h": 0.194185,
-        "ry_frac_h": 0.261388,
-        "angle_deg": 66.823434,
-        "colour_rgb": [
-          0.384615,
-          0.923077,
-          1.0
+      "cc_plus_gradient": {
+        "ciede2000_median": 2.372,
+        "ciede2000_p90": 5.287,
+        "ciede2000_mean": 2.7,
+        "mae_rgb_255": [
+          7.27,
+          6.49,
+          9.8
         ],
-        "intensity": 0.13,
-        "pixel_equivalents": {
-          "pairA_1278x720": {
-            "cx_px": 1146.51,
-            "cy_px": 15.32,
-            "rx_px": 139.81,
-            "ry_px": 188.2
-          },
-          "pairB_edit_1291x720": {
-            "cx_px": 1158.17,
-            "cy_px": 15.32,
-            "rx_px": 139.81,
-            "ry_px": 188.2
-          },
-          "pairB_orig_720x409": {
-            "cx_px": 645.92,
-            "cy_px": 8.7,
-            "rx_px": 79.42,
-            "ry_px": 106.91
-          }
-        }
+        "mae_mean_255": 7.85,
+        "edge_rmse_255": 22.39,
+        "ssim_luma": 0.9553
+      },
+      "cc_grad_usm": {
+        "ciede2000_median": 2.373,
+        "ciede2000_p90": 5.295,
+        "ciede2000_mean": 2.703,
+        "mae_rgb_255": [
+          7.27,
+          6.49,
+          9.8
+        ],
+        "mae_mean_255": 7.85,
+        "edge_rmse_255": 25.61,
+        "ssim_luma": 0.939
+      },
+      "full_composite": {
+        "ciede2000_median": 1.199,
+        "ciede2000_p90": 3.259,
+        "ciede2000_mean": 1.684,
+        "mae_rgb_255": [
+          7.33,
+          3.78,
+          4.57
+        ],
+        "mae_mean_255": 5.22,
+        "edge_rmse_255": 24.47,
+        "ssim_luma": 0.9446
+      }
+    },
+    "pairB": {
+      "raw_original": {
+        "ciede2000_median": 7.089,
+        "ciede2000_p90": 9.822,
+        "ciede2000_mean": 6.965,
+        "mae_rgb_255": [
+          16.37,
+          9.7,
+          19.02
+        ],
+        "mae_mean_255": 15.03,
+        "edge_rmse_255": 42.13,
+        "ssim_luma": 0.9426
+      },
+      "cc_only": {
+        "ciede2000_median": 4.213,
+        "ciede2000_p90": 7.876,
+        "ciede2000_mean": 4.639,
+        "mae_rgb_255": [
+          5.23,
+          10.42,
+          15.96
+        ],
+        "mae_mean_255": 10.53,
+        "edge_rmse_255": 39.02,
+        "ssim_luma": 0.9397
+      },
+      "cc_plus_gradient": {
+        "ciede2000_median": 3.782,
+        "ciede2000_p90": 6.485,
+        "ciede2000_mean": 3.858,
+        "mae_rgb_255": [
+          7.2,
+          3.64,
+          7.67
+        ],
+        "mae_mean_255": 6.17,
+        "edge_rmse_255": 36.44,
+        "ssim_luma": 0.9428
+      },
+      "cc_grad_usm": {
+        "ciede2000_median": 3.782,
+        "ciede2000_p90": 6.488,
+        "ciede2000_mean": 3.859,
+        "mae_rgb_255": [
+          7.2,
+          3.65,
+          7.67
+        ],
+        "mae_mean_255": 6.17,
+        "edge_rmse_255": 38.38,
+        "ssim_luma": 0.9315
+      },
+      "full_composite": {
+        "ciede2000_median": 3.436,
+        "ciede2000_p90": 6.311,
+        "ciede2000_mean": 3.663,
+        "mae_rgb_255": [
+          5.43,
+          3.23,
+          7.67
+        ],
+        "mae_mean_255": 5.44,
+        "edge_rmse_255": 37.17,
+        "ssim_luma": 0.9323
       }
     }
   }

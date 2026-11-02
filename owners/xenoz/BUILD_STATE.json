@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + quality processing of Xenoz's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q8",
+  "current_phase": "Q9",
   "queue": [
     {
       "id": "Q1",
@@ -56,8 +56,8 @@
     {
       "id": "Q8",
       "title": "Deliverables",
-      "status": "pending",
-      "notes": ""
+      "status": "done",
+      "notes": "Q8 Deliverables verified and generated: LOOK_SPEC.md, look_params.json, look_apply.py, look.cube, and REPORT.md. All test vectors (28 colour, 8 gradient, 8 flare, 1D step edge) checked and verified against look_apply.py. Metrics reproduced within 0.01 CIEDE2000."
     }
   ],
   "results": {
@@ -365,6 +365,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-02T06:18:02.492906+00:00",
-  "last_session_note": "Q7 composite order complete. Proceeding to Q8 deliverables."
+  "last_updated": "2026-11-02T06:21:53.174832+00:00",
+  "last_session_note": "Q8 complete. Verified deliverables. Ready for Q9 Keyflaw effect build."
 }
