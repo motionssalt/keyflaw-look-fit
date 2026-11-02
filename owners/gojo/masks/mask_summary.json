@@ -1,0 +1,34 @@
+{
+  "pairA": {
+    "resolution": "1920x1080",
+    "bars_top": 96,
+    "bars_bot": 96,
+    "flat_pixels": 1067509,
+    "flat_fraction": 0.5148,
+    "edge_pixels": 322318
+  },
+  "pairB": {
+    "resolution": "1920x1080",
+    "bars_top": 84,
+    "bars_bot": 81,
+    "flat_pixels": 645140,
+    "flat_fraction": 0.3111,
+    "edge_pixels": 606915
+  },
+  "pairC": {
+    "resolution": "1920x1080",
+    "bars_top": 0,
+    "bars_bot": 0,
+    "flat_pixels": 1155054,
+    "flat_fraction": 0.557,
+    "edge_pixels": 569985
+  },
+  "pairD": {
+    "resolution": "1920x1080",
+    "bars_top": 0,
+    "bars_bot": 0,
+    "flat_pixels": 1173821,
+    "flat_fraction": 0.5661,
+    "edge_pixels": 603055
+  }
+}

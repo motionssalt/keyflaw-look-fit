@@ -1,0 +1,93 @@
+{
+  "project": "keyflaw-look-fit/gojo",
+  "repo": "motionssalt/keyflaw-look-fit",
+  "goal": "Measure the colour grade + quality processing of GOJO's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
+  "status": "in_progress",
+  "current_phase": "Q2",
+  "queue": [
+    {
+      "id": "Q1",
+      "title": "Setup, inputs, masks",
+      "status": "done",
+      "notes": "Identified 4 pairs. Built masks for bars, captions, 6px invalid border, line edges, and flat interior for pairs A, B, C, D with overlay previews."
+    },
+    {
+      "id": "Q2",
+      "title": "Alignment audit",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q3",
+      "title": "Colour correction fit",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q4",
+      "title": "Gradient / lower-area darkening",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q5",
+      "title": "Unsharp mask",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q6",
+      "title": "Haze flare (may be absent)",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q6b",
+      "title": "Other effects",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q7",
+      "title": "Order of operations and the full composite",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q8",
+      "title": "Deliverables",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q9",
+      "title": "Build the Keyflaw effect",
+      "status": "pending",
+      "notes": ""
+    }
+  ],
+  "results": {
+    "cc_model": "",
+    "cc_params": {},
+    "gradient": {},
+    "unsharp": {},
+    "flare": {},
+    "order_of_operations": "",
+    "metrics": {}
+  },
+  "completed": [],
+  "next_steps": [
+    "Save 4 frame pairs losslessly to owners/gojo/inputs/ and generate masks"
+  ],
+  "decisions": [
+    "Scaffolded owners/gojo directory following floby and xenoz conventions.",
+    "Four frame pairs identified: Tanjiro closed eyes (A), Tanjiro sword swing (B), Zenitsu close-up (C), Daki close-up (D)."
+  ],
+  "known_issues": [],
+  "cc_owner": "GOJO",
+  "secrets_expected": [
+    "GITHUB_PAT"
+  ],
+  "last_updated": "2026-11-02T01:50:00Z",
+  "last_session_note": "Scaffold created. Awaiting inputs in inputs/ folder to run Q1-Q9 pipeline."
+}
