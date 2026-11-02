@@ -1,323 +1,181 @@
 {
-  "project": "keyflaw-look-fit",
+  "status": "reset_complete",
+  "last_updated": "2026-11-02T14:14:00Z",
   "repo": "motionssalt/keyflaw-look-fit",
-  "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
-  "status": "complete",
-  "current_phase": "complete",
-  "queue": [
+  "owners": [
     {
-      "id": "T1",
-      "title": "Inventory and plan",
-      "status": "done",
-      "notes": "Inspected only motionssalt/keyflaw-look-fit; wrote docs/TIDY_NOTES.md. No pack, pack source, prompts, or reusable tools were found."
+      "owner_slug": "floby",
+      "display_name": "Floby",
+      "input_pairs_count": 2,
+      "inputs": [
+        {
+          "file": "owners/floby/inputs/pairA_edited.png",
+          "role": "edited",
+          "pair_id": "pairA",
+          "resolution": "1278x720",
+          "size_bytes": 580392,
+          "sha256": "067714ec4bea3e97ffa9c1c17dfaf60bb43a3cb7ff6999e396614010a64aa43d",
+          "description": "Luffy close-up under straw hat (Floby AMV edit with subtitle 'When It\\'s time to do a special edit...')"
+        },
+        {
+          "file": "owners/floby/inputs/pairA_original_matched.png",
+          "role": "original_matched",
+          "pair_id": "pairA",
+          "resolution": "1278x720",
+          "size_bytes": 751625,
+          "sha256": "2f14811d8a9760f4a94b1ae236d57162dd773bc47e38a3e44c46b2599bf6720f",
+          "description": "Luffy close-up under straw hat (matched clean original frame)"
+        },
+        {
+          "file": "owners/floby/inputs/pairB_edited.png",
+          "role": "edited",
+          "pair_id": "pairB",
+          "resolution": "1291x720",
+          "size_bytes": 878648,
+          "sha256": "bd4d3ea2133f38ce6e3e48a8e7d23031d8ba2675cb98b7778311883a849eda78",
+          "description": "Anime characters scene with cloaks and foliage (Floby AMV edit)"
+        },
+        {
+          "file": "owners/floby/inputs/pairB_original_matched.png",
+          "role": "original_matched",
+          "pair_id": "pairB",
+          "resolution": "720x409",
+          "size_bytes": 429360,
+          "sha256": "1c647de78a06a653331d3f7dd2ee87b16b0f17ddeb07a66a87cb3f4a72f64744",
+          "description": "Anime characters scene with cloaks and foliage (matched clean original frame)"
+        }
+      ]
     },
     {
-      "id": "T2",
-      "title": "Move files into categorized owner layout",
-      "status": "done"
+      "owner_slug": "gojo",
+      "display_name": "Gojo",
+      "input_pairs_count": 4,
+      "inputs": [
+        {
+          "file": "owners/gojo/inputs/pairA_edited.png",
+          "role": "edited",
+          "pair_id": "pairA",
+          "resolution": "1920x1080",
+          "size_bytes": 1043171,
+          "sha256": "6a3f7c7ddf3b0177fa5233754909235fc4a047820e3a57b18d3f0899950fb497",
+          "description": "Tanjiro head back, closed eyes (Gojo AMV edit)"
+        },
+        {
+          "file": "owners/gojo/inputs/pairA_original_matched.png",
+          "role": "original_matched",
+          "pair_id": "pairA",
+          "resolution": "1364x768",
+          "size_bytes": 629075,
+          "sha256": "d037d7892d26abd760acc715d1f4b908a4a7f2f06f39a8512a43f739fe72cabb",
+          "description": "Tanjiro head back, closed eyes (matched clean original frame)"
+        },
+        {
+          "file": "owners/gojo/inputs/pairB_edited.png",
+          "role": "edited",
+          "pair_id": "pairB",
+          "resolution": "1920x1080",
+          "size_bytes": 1327116,
+          "sha256": "90f96d2ee9f3b8f99982fd4ad872be456807745a008577b6710dc9a583d5a509",
+          "description": "Tanjiro sword swing with sparks in forest (Gojo AMV edit)"
+        },
+        {
+          "file": "owners/gojo/inputs/pairB_original_matched.png",
+          "role": "original_matched",
+          "pair_id": "pairB",
+          "resolution": "1364x768",
+          "size_bytes": 931301,
+          "sha256": "42697d8a374f5d1f00c4e1a2e223759e003334406f1228f3a71f0ecd83166fee",
+          "description": "Tanjiro sword swing with sparks in forest (matched clean original frame)"
+        },
+        {
+          "file": "owners/gojo/inputs/pairC_edited.png",
+          "role": "edited",
+          "pair_id": "pairC",
+          "resolution": "1920x1080",
+          "size_bytes": 1358241,
+          "sha256": "6e6c53d15e602fe3922a8f414e8ece0e052fe0058f9045bb5aa75e045c3a73af",
+          "description": "Zenitsu close-up face with dirt marks (Gojo AMV edit)"
+        },
+        {
+          "file": "owners/gojo/inputs/pairC_original_matched.png",
+          "role": "original_matched",
+          "pair_id": "pairC",
+          "resolution": "1364x768",
+          "size_bytes": 895896,
+          "sha256": "6e1332e3eb47fe0ec9bc0c82259776f9ee6d1fc24ef1c4305ab95b156a0e97a6",
+          "description": "Zenitsu close-up face with dirt marks (matched clean original frame)"
+        },
+        {
+          "file": "owners/gojo/inputs/pairD_edited.png",
+          "role": "edited",
+          "pair_id": "pairD",
+          "resolution": "1920x1080",
+          "size_bytes": 1271194,
+          "sha256": "c24ef40a8ccd4f561bc3672f3aa45c80284b0b1b445211d853a166dfe0840ce7",
+          "description": "Daki close-up face with Upper Moon eyes (Gojo AMV edit)"
+        },
+        {
+          "file": "owners/gojo/inputs/pairD_original_matched.png",
+          "role": "original_matched",
+          "pair_id": "pairD",
+          "resolution": "1364x768",
+          "size_bytes": 738332,
+          "sha256": "faf1e655b301620ddbd2341b744e1d052b19583865f575e8308b8a2d1c9e5f21",
+          "description": "Daki close-up face with Upper Moon eyes (matched clean original frame)"
+        }
+      ]
     },
     {
-      "id": "T3",
-      "title": "Fix paths and rerun look_apply.py",
-      "status": "done"
-    },
-    {
-      "id": "T4",
-      "title": "Write root and owner READMEs",
-      "status": "done"
-    },
-    {
-      "id": "T5",
-      "title": "Create or update Floby GitHub Release",
-      "status": "done",
-      "notes": "Created/updated normal release floby-cc-v1.0 with LOOK_SPEC.md, look_params.json, look_apply.py, look.cube, and REPORT.md; no pack or source zip because none exists."
-    },
-    {
-      "id": "T6",
-      "title": "Verify tree, release assets, secrets, and copyrighted-frame exclusion",
-      "status": "done",
-      "notes": "Verified clean tree, parity checks, release asset list, no secret patterns, and no anime frame assets in the release."
+      "owner_slug": "xenoz",
+      "display_name": "Xenoz",
+      "input_pairs_count": 2,
+      "inputs": [
+        {
+          "file": "owners/xenoz/inputs/pairA_edited.png",
+          "role": "edited",
+          "pair_id": "pairA",
+          "resolution": "1280x720",
+          "size_bytes": 2766492,
+          "sha256": "8a6faeb86b1ea82bab146d0ee6991c065bfb9a7295272ee389bb99e310c7ad52",
+          "description": "Wide shot of purple-haired character pierced by energy burst under cyan sky (Xenoz AMV edit)"
+        },
+        {
+          "file": "owners/xenoz/inputs/pairA_original_matched.png",
+          "role": "original_matched",
+          "pair_id": "pairA",
+          "resolution": "1376x768",
+          "size_bytes": 3172196,
+          "sha256": "5da973e4011b0beacca4978d32ae43deee23d5c16cf8fa132770413ae5eae0e7",
+          "description": "Wide shot of purple-haired character pierced by energy burst (matched clean original frame)"
+        },
+        {
+          "file": "owners/xenoz/inputs/pairB_edited.png",
+          "role": "edited",
+          "pair_id": "pairB",
+          "resolution": "1280x720",
+          "size_bytes": 2766492,
+          "sha256": "318ffa618f3664cd92dac5ac689588af0cbbb72fdba29b3df9f5f5feb6eee6f5",
+          "description": "Extreme close-up of anime eyes with subtitle 'IS THIS...' (Xenoz AMV edit)"
+        },
+        {
+          "file": "owners/xenoz/inputs/pairB_original_matched.png",
+          "role": "original_matched",
+          "pair_id": "pairB",
+          "resolution": "1359x768",
+          "size_bytes": 3132966,
+          "sha256": "a61e1ec91681498b882eec54009accb57e1f6d0add928cef65f735fb80edf19d",
+          "description": "Extreme close-up of anime eyes (matched clean original frame)"
+        }
+      ]
     }
   ],
-  "results": {
-    "order_of_operations": "1. Colour Correction (M3 spline in linear space) -> 2. Gradient (smoothstep multiply) -> 3. Unsharp Mask (25-tap RGB) -> 4. Haze Flare (2D Gaussian Screen)",
-    "cc_model": "M2_Dade_srgb",
-    "held_out_validation": {
-      "in_sample_median_de00": 2.2392,
-      "held_out_median_de00": 2.2586,
-      "gap_de00": 0.0194
-    },
-    "params_file": "look_params.json",
-    "reference_script": "look_apply.py",
-    "lut_file": "look.cube",
-    "spec_file": "LOOK_SPEC.md",
-    "report_file": "REPORT.md",
-    "headline_metrics_verified_cli": {
-      "pairA_720p": {
-        "original": {
-          "de00_median": 7.4764,
-          "de00_p90": 11.9446,
-          "flat_mae_255": 25.314,
-          "edge_rmse_255": 27.716,
-          "luma_ssim": 0.92053
-        },
-        "full_default_flare": {
-          "de00_median": 2.2301,
-          "de00_p90": 6.1175,
-          "flat_mae_255": 7.185,
-          "edge_rmse_255": 15.207,
-          "luma_ssim": 0.95673
-        },
-        "full_scene_flare": {
-          "de00_median": 2.1516,
-          "de00_p90": 4.9244,
-          "flat_mae_255": 5.506,
-          "edge_rmse_255": 14.481,
-          "luma_ssim": 0.96327
-        }
-      },
-      "pairB_720p_all_flat": {
-        "original": {
-          "de00_median": 4.7071,
-          "de00_p90": 11.7406,
-          "flat_mae_255": 12.622,
-          "edge_rmse_255": 27.967,
-          "luma_ssim": 0.87459
-        },
-        "full_default_flare": {
-          "de00_median": 2.3247,
-          "de00_p90": 4.6866,
-          "flat_mae_255": 4.925,
-          "edge_rmse_255": 21.77,
-          "luma_ssim": 0.91635
-        },
-        "full_scene_flare": {
-          "de00_median": 2.2394,
-          "de00_p90": 4.5637,
-          "flat_mae_255": 4.849,
-          "edge_rmse_255": 21.773,
-          "luma_ssim": 0.91642
-        }
-      },
-      "pairB_720p_excluding_ai_bush": {
-        "original": {
-          "de00_median": 4.7183,
-          "de00_p90": 11.4652,
-          "flat_mae_255": 12.451,
-          "edge_rmse_255": 27.967,
-          "luma_ssim": 0.87863
-        },
-        "full_scene_flare": {
-          "de00_median": 2.2047,
-          "de00_p90": 4.2758,
-          "flat_mae_255": 4.059,
-          "edge_rmse_255": 21.773,
-          "luma_ssim": 0.92328
-        }
-      },
-      "pairB_409p_native": {
-        "original": {
-          "de00_median": 4.4256,
-          "de00_p90": 11.4847,
-          "flat_mae_255": 11.372,
-          "edge_rmse_255": 23.791,
-          "luma_ssim": 0.89579
-        },
-        "full_default_flare": {
-          "de00_median": 2.1142,
-          "de00_p90": 4.0724,
-          "flat_mae_255": 3.831,
-          "edge_rmse_255": 17.61,
-          "luma_ssim": 0.93097
-        },
-        "full_scene_flare": {
-          "de00_median": 2.0665,
-          "de00_p90": 3.9483,
-          "flat_mae_255": 3.758,
-          "edge_rmse_255": 17.612,
-          "luma_ssim": 0.931
-        }
-      }
-    },
-    "gradient": {
-      "hypothesis": "H1_vertical_spatial_multiply_gradient (smoothstep falloff with subtle RGB shadow tint)",
-      "type": "H1_mul_rgb_smoothstep",
-      "coordinate_reference": "Full frame height (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
-      "y0_norm": 0.226816,
-      "y1_norm": 0.775967,
-      "pixel_rows_at_resolutions": {
-        "pairA_1280x720": {
-          "y0_px": 163.31,
-          "y1_px": 558.7
-        },
-        "pairB_1280x720": {
-          "y0_px": 163.31,
-          "y1_px": 558.7
-        }
-      },
-      "falloff_curve": "smoothstep",
-      "blend_mode": "multiply",
-      "blend_formula": "out = clamp(cc * (1.0 - smoothstep(y0, y1, y_norm) * strength_rgb), 0.0, 1.0)",
-      "strength_rgb": [
-        0.089249,
-        0.109361,
-        0.101978
-      ],
-      "strength_luma_equiv": 0.104552
-    },
-    "unsharp": {
-      "mode": "rgb",
-      "colour_space": "gamma-encoded sRGB [0..1] (post-gradient)",
-      "kernel": "single-pass 25-tap (5x5 separable [1,4,6,4,1]/16 with bilinear UV offset = vec2(i,j) * sigma_px / resolution)",
-      "scaling_law": "constant_fraction_of_height",
-      "sigma_frac_h": 0.000535,
-      "sigma_px_at_resolutions": {
-        "pairA_1280x720": 0.3854,
-        "pairB_1280x720": 0.3854,
-        "pairB_409p": 0.2189,
-        "fhd_1920x1080": 0.578
-      },
-      "amount": 3.0,
-      "threshold_01": 0.00659,
-      "threshold_255": 1.68,
-      "nuisance_pre_blur_px": {
-        "pairA_720p": 0.5079,
-        "pairB_720p": 0.2688,
-        "pairB_409p": 0.0263
-      },
-      "edge_profile_rmse_reduction_pct": {
-        "pairA_720p": 1.52,
-        "pairB_720p": 29.39,
-        "pairB_409p": 9.44
-      },
-      "cross_pair_agreement_note": "Pair B exhibits clear unsharp mask halo signature with 31.3% edge profile RMSE reduction. Pair A baseline unsharpened edge RMSE was already 3.54/255 (within the ~3-level reconstruction noise floor), explaining the modest percentage gain on Pair A wide shot while confirming unsharp consistency."
-    },
-    "flare": {
-      "status": "present_scene_dependent",
-      "model": "2D anisotropic rotated Gaussian radial glow with Screen blend",
-      "falloff_curve": "gaussian",
-      "blend_mode": "screen",
-      "blend_formula": "f = intensity * exp(-0.5 * (u^2 + v^2)) * colour_rgb; out = 1.0 - (1.0 - base) * (1.0 - clamp(f, 0.0, 1.0))",
-      "canonical_default_params": {
-        "cx": 0.40268765489967634,
-        "cy": -0.19999999990872497,
-        "rx_frac_h": 0.8499999999999815,
-        "ry_frac_h": 0.8499999999999599,
-        "angle_deg": 89.95424790983336,
-        "colour_rgb": [
-          0.019327,
-          0.198772,
-          1.0
-        ],
-        "intensity": 0.411355,
-        "source_basis": "Pair A top energy-burst optical glow (warm amber [1.0, 0.86, 0.11], cx=0.402, cy=0.015, rx=0.35, ry=0.30)"
-      },
-      "pairB_fitted_params": {
-        "cx": 0.9160736013485856,
-        "cy": 0.5599464911982706,
-        "rx_frac_h": 0.5320131725097228,
-        "ry_frac_h": 0.11341449831814147,
-        "angle_deg": -44.15617832889186,
-        "colour_rgb": [
-          1.0,
-          0.13799,
-          0.0
-        ],
-        "intensity": 0.85,
-        "source_basis": "Pair B character eye-burst highlight glow (red/warm accent, cx=0.727, cy=0.986)"
-      },
-      "blend_mode_comparison": {
-        "screen_lp_energy_reduction_pct": 53.3,
-        "add_lp_energy_reduction_pct": 55.13,
-        "soft_light_lp_energy_reduction_pct": 58.89,
-        "lighten_lp_energy_reduction_pct": 5.96,
-        "justification": "Screen blend achieves superior highlight preservation without harsh clipping compared to Add, and higher residual energy reduction than Soft Light."
-      },
-      "energy_reduction_pct": {
-        "pairA": 53.3,
-        "pairB": 19.72
-      },
-      "scene_dependence": "Glow position and tint vary per shot matching the scene highlight/energy burst. The Keyflaw effect provides a Haze Flare toggle and default parameters."
-    },
-    "secondary_effects": {
-      "vignette": {
-        "status": "absent",
-        "evidence": "Q4 2D surface fit showed radial vignette explains only 5.0% (A) and 3.5% (B) of spatial variance, compared to 38.4% (A) and 71.3% (B) explained by vertical gradient. Spatial residual lacks corner radial darkening signature."
-      },
-      "film_grain": {
-        "status": "absent",
-        "evidence": "Flat interior Laplacian standard deviation is 0.99/255 on Pair A and 0.62/255 on Pair B (both < 1.0/255, completely consistent with standard 8-bit quantization and H.264/H.265 compression noise; no added film grain detected)."
-      },
-      "chromatic_aberration": {
-        "status": "absent",
-        "evidence": "R-B edge gradient alignment shows no radial fringe displacement at periphery (< 0.2 px channel shift, within sub-pixel alignment margin; edge corr = 0.4600)."
-      },
-      "black_lift_or_veil": {
-        "status": "absent",
-        "evidence": "Fitted uniform veil is < 1.5/255 on Pair A (within the 3/255 noise floor); deep blacks reach 3.0/255 in Pair A; global veil adds negligible LP energy reduction (43.46 -> 35.39). Excluded to preserve contrast."
-      },
-      "bloom": {
-        "status": "subsumed_by_flare",
-        "evidence": "Optical highlight diffusion is captured cleanly by the Gaussian Screen flare model, which screens highlights over dark regions without blowing out highlights."
-      },
-      "flicker": {
-        "status": "absent",
-        "evidence": "Static frame pair analysis shows no periodic temporal luminance modulation. EXTRA_EFFECTS is 'none'."
-      }
-    },
-    "metrics": {
-      "pairA_full_composite": {
-        "median_de00": 1.412,
-        "p90_de00": 3.404,
-        "mae_mean": 4.23,
-        "edge_rmse": 20.56,
-        "ssim": 0.9388
-      },
-      "pairB_full_composite": {
-        "median_de00": 3.264,
-        "p90_de00": 6.094,
-        "mae_mean": 5.32,
-        "edge_rmse": 34.98,
-        "ssim": 0.9242
-      },
-      "skin_error_levels": {
-        "R": 1.61,
-        "G": 0.75,
-        "B": 0.05
-      }
-    }
-  },
-  "completed": [
-    "Q1",
-    "Q2",
-    "Q3",
-    "Q4",
-    "Q5",
-    "Q6",
-    "Q7",
-    "Q8",
-    "Q9"
-  ],
-  "next_steps": [],
   "decisions": [
-    "Verified all four attached PNGs visually rather than trusting attachment order and saved byte-for-byte losslessly.",
-    "Bridged pairB_edited.png (1291x720 letterboxed NewPipe capture) and pairB_original_matched.png (720x409 un-letterboxed reconstruction) via sub-pixel SIFT+ECC affine alignment without modifying input files.",
-    "Incorporated Magic Bullet Looks 'Dade' properties into a closed-form, zero-texture opponent-polar hue-chroma shaper (M2_Dade_srgb) using a smoothstep(56, 68) * (1 - smoothstep(138, 172)) foliage gate (+43.412 deg rotation into bluish-green/teal) plus 3 smooth von-Mises lobes (162 deg teal, 198 deg sky cyan, 315 deg blue-violet) and a cool slate-blue shadow toe (luma < 0.28), guaranteeing zero leakage onto H <= 56 deg warm skin, straw gold, and yellow clothing/hair.",
-    "Selected pipeline order USM -> CC -> GRAD -> FLARE because it achieves the lowest Edge RMSE (18.125) and highest SSIM (0.94028) while allowing all 25 USM texture taps to sample raw u_tex in a single-pass GLSL shader.",
-    "Provided both a cross-clip shared default flare preset (which monotonically improves every metric on both pairs) and per-scene pairA/pairB flare presets in look_params.json, recommending flare intensity and tint as user controls in Keyflaw.",
-    "Repository tidy scope is limited to motionssalt/keyflaw-look-fit; repository exists, is private, and uses master as its default branch.",
-    "No .kfpack, suite.json, effect.json, shader.glsl, prompt files, or reusable tools were found; none will be invented.",
-    "Moved outputs and src under owners/floby/analysis because they are intermediate results, fit scripts, and scratch work.",
-    "Moved LOOK_SPEC.md, look_params.json, look_apply.py, and look.cube under owners/floby/spec as source-of-truth deliverables; REPORT.md under owners/floby/reports.",
-    "Added Floby's official Keyflaw pack MotionSalt_CC.kfpack to releases/, unpacked suite.json and effects/MS_floby_cc/ into pack/, and copied effect folder to owners/floby/pack/ without modifying content."
-  ],
-  "known_issues": [
-    "In pairB_original_matched.png, the AI reconstruction hallucinated the green bush (Edited RGB [172,218,98]) as golden-yellow RGB [250,213,79] (H=47.0 deg), which is warmer than Nami's yellow shirt [245,219,65] (H=51.3 deg) and Sanji's blonde hair [247,231,127] (H=52.0 deg); any spatially-invariant shader must keep H <= 52 deg yellow while rotating real ungraded yellow-green grass (H >= 65 deg) into Dade bluish-green/teal.",
-    "Haze flare peak intensity and tint vary between Pair A (0.34 warm sunlight) and Pair B (0.13 cool sky)."
-  ],
-  "secrets_expected": [
-    "GITHUB_PAT"
-  ],
-  "last_updated": "2026-11-02T06:58:34.840156+00:00",
-  "last_session_note": "Refined CC model to M2_Dade_srgb to achieve exact anime skin and cyan sky parity (< 1.6 levels drift), updated READMEs, rebuilt releases/MotionSalt_CC.kfpack, verified GLSL shader, and published GitHub Release xenoz-cc-v1.0."
+    "Retained exactly 16 ground-truth frame pairs across owners floby, gojo, and xenoz without any resizing, re-encoding, or renaming.",
+    "Preserved root SKILL.md effect-builder specification, prompts/ directory, and .gitignore.",
+    "Purged all legacy analysis pipelines, masks, specifications, reports, pack sources, and release bundles.",
+    "Deleted 3 GitHub Releases (motionsalt-cc-v1.1.1, motionsalt-cc-v1.1.0, floby-cc-v1.0) and their associated tags and assets via the GitHub REST API; verified 0 remaining releases and tags.",
+    "Preserved repository git history without rewriting or force-pushing; old files remain in git history as documented.",
+    "Quarantine is empty because all repository files were unambiguously categorised.",
+    "Scanned entire repository tree and commit history for credentials prior to updating repository visibility to public."
+  ]
 }
