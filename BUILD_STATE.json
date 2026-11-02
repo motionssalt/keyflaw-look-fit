@@ -1,6 +1,6 @@
 {
   "status": "in_progress",
-  "last_updated": "2026-11-02T15:06:12Z",
+  "last_updated": "2026-11-02T16:11:01.402961+00:00",
   "repo": "motionssalt/keyflaw-look-fit",
   "owners": [
     {
@@ -182,7 +182,7 @@
     "Designed GLSL ES 1.00 colour compression to avoid dynamic array indexing (forbidden in strict #version 100) by combining binary-tree piecewise-linear 1D shaper curves with 3x3 matrix + smooth polynomial/trilinear basis verified against glslangValidator.",
     "Caught and fixed an OpenCV 5.0 in-place mutation in cv2.phaseCorrelate(src1, src2, window) by passing defensive copies, boosting interior gradient alignment correlations up to 0.971."
   ],
-  "last_session_note": "Completed Phase 2: implemented lookfit.core (io, colour_spaces, alignment, masks, metrics) and verified via pytest + all 8 ground-truth pairs.",
+  "last_session_note": "Completed Phase 3: all 10 core + optional plugins implemented and verified with synthetic parameter recovery + glslangValidator unit tests.",
   "phases": {
     "phase_1_docs_and_plan": {
       "status": "done",
@@ -193,8 +193,8 @@
       "verified_how": "6/6 pytest unit tests passed in tests/test_core.py (SHA-256 input immutability guard, sRGB/Lab roundtrip, Sharma-2005 CIEDE2000 reference vectors, sub-pixel shift recovery <0.2px, bar/subtitle/96px-block mask detection, unbiased impulse-normalized noise std). Also verified alignment & masks on all 8 real pairs (edge_corr: floby 0.963/0.875, gojo 0.928/0.871/0.868/0.481, xenoz 0.971/0.901)."
     },
     "phase_3_plugins": {
-      "status": "pending",
-      "verified_how": ""
+      "status": "done",
+      "verified_how": "16/16 pytest unit tests passed across test_core.py and all 10 plugins (colour, sharpen, unsharp_mask, haze_flare, grain, gradient, vignette, black_lift, chromatic_aberration, flicker): synthetic parameter recovery on held-out 96px blocks, 3 mandatory real-bloom tests & painted-overlay rejection for haze_flare, 8x8 DCT blockiness vs film-grain separation for grain, yTop=1.0-vTex.y coordinate parity, and strict #version 100 glslangValidator compilation."
     },
     "phase_4_planner_tuner_export": {
       "status": "pending",
