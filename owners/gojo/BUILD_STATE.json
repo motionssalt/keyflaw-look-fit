@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + quality processing of GOJO's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q2",
+  "current_phase": "Q3",
   "queue": [
     {
       "id": "Q1",
@@ -14,8 +14,8 @@
     {
       "id": "Q2",
       "title": "Alignment audit",
-      "status": "pending",
-      "notes": ""
+      "status": "done",
+      "notes": "Sub-pixel ECC and SIFT affine alignment complete for all 4 pairs. Edge corr reached 0.9254 (Pair A), 0.8690 (Pair B), 0.8627 (Pair C), and 0.5101 (Pair D). Aligned originals saved to analysis/outputs/aligned/."
     },
     {
       "id": "Q3",

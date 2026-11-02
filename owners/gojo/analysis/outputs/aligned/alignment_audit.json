@@ -1,0 +1,174 @@
+{
+  "pairA": {
+    "resolution_edit": [
+      1920,
+      1080
+    ],
+    "resolution_orig": [
+      1364,
+      768
+    ],
+    "sift_inliers": 177,
+    "sift_affine_matrix": [
+      [
+        1.406519,
+        -0.001474,
+        1.632941
+      ],
+      [
+        0.000146,
+        1.407017,
+        -0.627876
+      ]
+    ],
+    "ecc_affine_matrix": [
+      [
+        0.999536,
+        -0.000847,
+        0.776077
+      ],
+      [
+        0.000207,
+        1.000799,
+        -0.874554
+      ]
+    ],
+    "ecc_displacement_px": {
+      "median": 0.4237,
+      "p95": 0.8168,
+      "max": 1.0552
+    },
+    "edge_corr_valid_before": 0.91504,
+    "edge_corr_valid_after_ecc": 0.9254,
+    "re_warped_used": true
+  },
+  "pairB": {
+    "resolution_edit": [
+      1920,
+      1080
+    ],
+    "resolution_orig": [
+      1364,
+      768
+    ],
+    "sift_inliers": 495,
+    "sift_affine_matrix": [
+      [
+        1.405809,
+        -0.001198,
+        -0.648332
+      ],
+      [
+        8.4e-05,
+        1.406323,
+        0.167205
+      ]
+    ],
+    "ecc_affine_matrix": [
+      [
+        0.99953,
+        0.000119,
+        0.248624
+      ],
+      [
+        0.000208,
+        1.000393,
+        -0.454196
+      ]
+    ],
+    "ecc_displacement_px": {
+      "median": 0.2962,
+      "p95": 0.5712,
+      "max": 0.6401
+    },
+    "edge_corr_valid_before": 0.86604,
+    "edge_corr_valid_after_ecc": 0.86899,
+    "re_warped_used": true
+  },
+  "pairC": {
+    "resolution_edit": [
+      1920,
+      1080
+    ],
+    "resolution_orig": [
+      1364,
+      768
+    ],
+    "sift_inliers": 105,
+    "sift_affine_matrix": [
+      [
+        1.406843,
+        -0.004126,
+        1.955119
+      ],
+      [
+        -0.00117,
+        1.402688,
+        2.118728
+      ]
+    ],
+    "ecc_affine_matrix": [
+      [
+        0.99996,
+        -0.003046,
+        1.284075
+      ],
+      [
+        -0.000881,
+        0.997848,
+        1.892146
+      ]
+    ],
+    "ecc_displacement_px": {
+      "median": 1.027,
+      "p95": 2.206,
+      "max": 2.8935
+    },
+    "edge_corr_valid_before": 0.81151,
+    "edge_corr_valid_after_ecc": 0.86266,
+    "re_warped_used": true
+  },
+  "pairD": {
+    "resolution_edit": [
+      1920,
+      1080
+    ],
+    "resolution_orig": [
+      1364,
+      768
+    ],
+    "sift_inliers": 45,
+    "sift_affine_matrix": [
+      [
+        1.737202,
+        0.030268,
+        -256.477287
+      ],
+      [
+        -0.050414,
+        1.653789,
+        -94.148632
+      ]
+    ],
+    "ecc_affine_matrix": [
+      [
+        1.003972,
+        -0.008329,
+        2.815143
+      ],
+      [
+        -0.00432,
+        1.009429,
+        -2.534952
+      ]
+    ],
+    "ecc_displacement_px": {
+      "median": 4.1224,
+      "p95": 11.0963,
+      "max": 14.9262
+    },
+    "edge_corr_valid_before": 0.43344,
+    "edge_corr_valid_after_ecc": 0.51011,
+    "re_warped_used": true
+  }
+}
