@@ -371,7 +371,7 @@ def tune_owner_stack(
     det_indices = [i for i, r in enumerate(accepted) if r.plugin_name != "grain"]
 
     if len(det_indices) >= 2:
-        for rnd in range(1, 4):
+        for rnd in range(1, 3):
             round_start_joint = float(cur_metrics["aggregate"]["joint_loss"])
             improved_any = False
             layer_updates = []
@@ -399,7 +399,11 @@ def tune_owner_stack(
                 else:
                     tgt_eff = tgts
 
-                cand_p, cand_rep = pl.fit(x_in, tgt_eff, ctxs)
+                if rec.plugin_name == "colour":
+                    f_cfg = {k: rec.params[k] for k in ("grid_size", "space", "pre_blur_sigma", "cluster_weighted", "lam_smooth")}
+                    cand_p, cand_rep = pl.fit(x_in, tgt_eff, ctxs, fixed_cfg=f_cfg)  # type: ignore[call-arg]
+                else:
+                    cand_p, cand_rep = pl.fit(x_in, tgt_eff, ctxs)
                 if not cand_rep.accepted_hint:
                     continue
 

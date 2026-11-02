@@ -247,7 +247,7 @@ class GradientPlugin(Plugin):
                 x0=init_v,
                 method="Powell",
                 bounds=[(-180.0, 180.0), (-0.20, 0.85), (0.10, 1.20)],
-                options={"maxiter": 55, "ftol": 1e-3},
+                options={"maxiter": 10, "maxfev": 65, "ftol": 1e-3},
             )
             ang_f = float(opt.x[0])
             st_f = float(np.clip(opt.x[1], -0.20, 0.85))

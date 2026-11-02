@@ -174,7 +174,7 @@ class ChromaticAberrationPlugin(Plugin):
                 x0=np.array([init_kr, init_kb], dtype=np.float64),
                 method="Powell",
                 bounds=[(-0.04, 0.04), (-0.04, 0.04)],
-                options={"maxiter": 35, "ftol": 1e-3},
+                options={"maxiter": 8, "maxfev": 40, "ftol": 1e-3},
             )
             kr_f, kb_f = float(opt_f.x[0]), float(opt_f.x[1])
             fold_kr.append(kr_f)
@@ -193,7 +193,7 @@ class ChromaticAberrationPlugin(Plugin):
             x0=np.array([np.mean(fold_kr), np.mean(fold_kb)], dtype=np.float64),
             method="Powell",
             bounds=[(-0.04, 0.04), (-0.04, 0.04)],
-            options={"maxiter": 45, "ftol": 5e-4},
+            options={"maxiter": 8, "maxfev": 45, "ftol": 5e-4},
         )
         best_params = {
             "k_red": round(float(opt_full.x[0]), 6),

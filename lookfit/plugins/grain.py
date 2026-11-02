@@ -397,7 +397,7 @@ class GrainPlugin(Plugin):
             preds = [self.render(r_im, prm) for r_im in refs]
             return self.loss(preds, tgts, ctxs, fold=None, train=True)
 
-        opt = minimize(_obj_full, x0=x0, method="Powell", bounds=bounds, options={"maxiter": 65, "ftol": 1e-3})
+        opt = minimize(_obj_full, x0=x0, method="Powell", bounds=bounds, options={"maxiter": 10, "maxfev": 70, "ftol": 1e-3})
         fitted_params = _vec_to_params(opt.x, seed=1337)
 
         # Evaluate 5-fold block CV (fitting scalar amount per fold on train blocks)

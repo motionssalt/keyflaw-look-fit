@@ -230,7 +230,7 @@ class VignettePlugin(Plugin):
             x0=best_init,
             method="Powell",
             bounds=[(0.25, 0.75), (0.25, 0.75), (0.15, 1.35), (0.08, 1.25)],
-            options={"maxiter": 60, "ftol": 1e-3},
+            options={"maxiter": 10, "maxfev": 70, "ftol": 1e-3},
         )
         cx_f = float(np.clip(opt.x[0], 0.25, 0.75))
         cy_f = float(np.clip(opt.x[1], 0.25, 0.75))

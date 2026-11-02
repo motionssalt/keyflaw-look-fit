@@ -62,15 +62,19 @@ class SharpenPlugin(Plugin):
             em = pctx.masks.edge_mask
             if int(em.sum()) < 50:
                 continue
-            r_med = float(np.percentile(hp_r[em], 75))
-            t_med = float(np.percentile(hp_t[em], 75))
-            gain_ratios.append(t_med / max(r_med, 1e-4))
+            r_p92 = float(np.percentile(hp_r[em], 92))
+            t_p92 = float(np.percentile(hp_t[em], 92))
+            d_hp = (rl - apply_small_blur(rl, "binomial3x3"))[em].astype(np.float64)
+            d_res = (tl - rl)[em].astype(np.float64)
+            k_reg = float(np.sum(d_hp * d_res) / (np.sum(d_hp * d_hp) + 1e-6))
+            eff_ratio = max(t_p92 / max(r_p92, 1e-4), 1.0 + 0.5 * k_reg)
+            gain_ratios.append(eff_ratio)
             ep = edge_profile_metrics(r_im, t_im, pctx.orig_ref_rgb if pctx.orig_ref_rgb is not None else r_im, pctx.masks.active_mask)
             halo_diffs.append(float(ep["halo_rmse_255"]))
 
-        ratio = float(np.mean(gain_ratios)) if gain_ratios else 1.0
+        ratio = float(max(gain_ratios)) if gain_ratios else 1.0
         h_rmse = float(np.mean(halo_diffs)) if halo_diffs else 0.0
-        status = "present" if (ratio > 1.04 and h_rmse > 1.0) else ("weak" if ratio > 1.01 else "absent")
+        status = "present" if (ratio > 1.03 and h_rmse > 0.9) else ("weak" if (ratio > 1.008 or h_rmse > 2.0) else "absent")
         score = max(0.0, (ratio - 1.0) * 10.0)
         return Evidence(
             plugin_name=self.name,

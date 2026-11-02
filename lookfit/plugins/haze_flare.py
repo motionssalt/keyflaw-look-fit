@@ -511,7 +511,7 @@ class HazeFlarePlugin(Plugin):
                 x0=x0,
                 method="Powell",
                 bounds=[(0.30, 0.95), (0.01, 0.30), (0.0, 2.0), (0.1, 1.0), (0.1, 1.0), (0.1, 1.0)],
-                options={"maxiter": 60, "ftol": 1e-3},
+                options={"maxiter": 10, "maxfev": 75, "ftol": 1e-3},
             )
             best_cfg = _vec_to_cfg(opt.x)
 

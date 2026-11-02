@@ -355,7 +355,7 @@ class UnsharpMaskPlugin(Plugin):
                     x0=np.array([a_init, r_init, t_init], dtype=np.float64),
                     method="Powell",
                     bounds=[(0.0, 500.0), (0.0003, 0.03), (0.0, 40.0)],
-                    options={"maxiter": 18, "ftol": 2e-3},
+                    options={"maxiter": 6, "maxfev": 45, "ftol": 2e-3},
                 )
                 cand_vec = opt.x
             else:
@@ -406,12 +406,10 @@ class UnsharpMaskPlugin(Plugin):
                         prm2["stage2_amount"] = amt2
                         prm2["stage2_radius_frac"] = r2
                         prm2["stage2_threshold"] = thr2
-                        f2 = []
-                        for f in range(n_folds):
-                            p2 = [self.render(r, prm2) for r in refs]
-                            if best_nuis > 0.0:
-                                p2 = [cv2.GaussianBlur(p, (0, 0), best_nuis) for p in p2]
-                            f2.append(self.loss(p2, tgts, ctxs, fold=f, train=False))
+                        p2 = [self.render(r, prm2) for r in refs]
+                        if best_nuis > 0.0:
+                            p2 = [cv2.GaussianBlur(p, (0, 0), best_nuis) for p in p2]
+                        f2 = [self.loss(p2, tgts, ctxs, fold=f, train=False) for f in range(n_folds)]
                         m2 = float(np.mean(f2))
                         if m2 < best_s2_cv - 0.05:
                             best_s2_cv = m2

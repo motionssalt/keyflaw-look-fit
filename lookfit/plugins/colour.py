@@ -556,7 +556,7 @@ class ColourPlugin(Plugin):
             raise ValueError("No flat-mask pixels available for colour LUT fitting.")
         return np.vstack(src_all), np.vstack(tgt_all), np.concatenate(w_all)
 
-    def fit(self, ref_in: ImageOrList, tgt: ImageOrList, ctx: ContextOrList = None) -> Tuple[Dict[str, Any], FitReport]:
+    def fit(self, ref_in: ImageOrList, tgt: ImageOrList, ctx: ContextOrList = None, fixed_cfg: Optional[Dict[str, Any]] = None) -> Tuple[Dict[str, Any], FitReport]:
         items = normalize_pair_inputs(ref_in, tgt, ctx)
         n_folds = int(items[0][2].masks.block_folds.max()) + 1
 
@@ -581,11 +581,28 @@ class ColourPlugin(Plugin):
         best_fold_after: List[float] = []
         ablation_log = []
 
-        for cfg in search_configs:
+        active_configs = [fixed_cfg] if fixed_cfg is not None else search_configs
+        # Precompute blurred flat fold test points so 35-solve ablation evaluates only on held-out flat samples
+        val_fold_pts = []
+        for f in range(n_folds):
+            fp_pairs = []
+            for r_im, t_im, pctx in items:
+                rb2 = cv2.GaussianBlur(r_im, (0, 0), 2.0)
+                tb2 = cv2.GaussianBlur(t_im, (0, 0), 2.0)
+                mf = pctx.masks.flat_mask & (pctx.masks.block_folds == f)
+                ys, xs = np.nonzero(mf)
+                if ys.size >= 20:
+                    if ys.size > 12000:
+                        idx = np.linspace(0, ys.size - 1, 12000, dtype=np.int64)
+                        ys, xs = ys[idx], xs[idx]
+                    fp_pairs.append((rb2[ys, xs], tb2[ys, xs]))
+            val_fold_pts.append(fp_pairs)
+
+        for cfg in active_configs:
             f_scores = []
             for f in range(n_folds):
                 s_tr, t_tr, w_tr = self._collect_samples(
-                    items, cfg["pre_blur_sigma"], fold=f, train=True, max_per_pair=16000
+                    items, cfg["pre_blur_sigma"], fold=f, train=True, max_per_pair=14000
                 )
                 if cfg["cluster_weighted"]:
                     cw = _compute_cluster_weights(s_tr)
@@ -598,8 +615,12 @@ class ColourPlugin(Plugin):
                     lam_smooth=cfg["lam_smooth"],
                     space=cfg["space"],
                 )
-                preds_f = [eval_lut_trilinear(r_im, lut_f) for r_im, _, _ in items]
-                f_scores.append(self.loss(preds_f, [t for _, t, _ in items], [c for _, _, c in items], fold=f, train=False))
+                p_scores = []
+                for r_pts, t_pts in val_fold_pts[f]:
+                    pr_pts = eval_lut_trilinear(r_pts, lut_f)
+                    de = ciede2000_rgb(pr_pts, t_pts)
+                    p_scores.append(de["median"] + 0.25 * de["p90"])
+                f_scores.append(float(np.mean(p_scores)) if p_scores else 0.0)
             mean_cv = float(np.mean(f_scores))
             ablation_log.append({**cfg, "held_out_cv_loss": mean_cv})
             if mean_cv < best_cv:
