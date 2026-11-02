@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + quality processing of GOJO's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q4",
+  "current_phase": "Q5",
   "queue": [
     {
       "id": "Q1",
@@ -26,8 +26,8 @@
     {
       "id": "Q4",
       "title": "Gradient / lower-area darkening",
-      "status": "pending",
-      "notes": ""
+      "status": "done",
+      "notes": "2D surface discovery found vertical spatial gradient explains < 0.2% variance and radial vignette explains < 0.8%. Darkening gradient is absent as a static look component for GOJO; scene luma variations are scene-dependent."
     },
     {
       "id": "Q5",
@@ -94,7 +94,10 @@
       0.170547,
       1.250797
     ],
-    "gradient": {},
+    "gradient": {
+      "status": "absent_or_negligible",
+      "variance_explained_pct": 0.1
+    },
     "unsharp": {},
     "flare": {},
     "order_of_operations": "",
