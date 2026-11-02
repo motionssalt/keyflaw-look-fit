@@ -2,56 +2,39 @@
   "project": "keyflaw-look-fit",
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
-  "status": "complete",
-  "current_phase": "complete",
+  "status": "in_progress",
+  "current_phase": "repository_tidy",
   "queue": [
     {
-      "id": "Q1",
-      "title": "Setup, inputs, masks",
+      "id": "T1",
+      "title": "Inventory and plan",
       "status": "done",
-      "notes": "Saved 4 lossless RGB inputs after visual verification (fixed attach order; documented 1291x720 letterboxed NewPipe capture for pairB_edited). Generated bars, caption (dilated >=8px), invalid_border, line_edges (sigma=1, dilated 3px), and flat_interior (low grad in both, eroded 3px) masks + overlays for Pair A and Pair B (both 720p and 409p grids). Visually inspected all 3 overlays and wrote docs/manifest.md."
+      "notes": "Inspected only motionssalt/keyflaw-look-fit; wrote docs/TIDY_NOTES.md. No pack, pack source, prompts, or reusable tools were found."
     },
     {
-      "id": "Q2",
-      "title": "Alignment audit",
-      "status": "done",
-      "notes": "Pair A: translation shift 0.1143 px, max affine disp 0.3265 px <= 0.5 px (no re-warp needed); valid edge corr 0.97401 -> 0.97636. Pair B: SIFT+RANSAC + sub-pixel ECC affine warp (sx=1.79175, sy=1.78115, 0.593% anisotropy; ECC refined SIFT by median 0.40 px); 720p valid edge corr 0.45454 (naive) -> 0.91484 (SIFT) -> 0.93525 (ECC), 409p 0.53392 -> 0.96198. Saved internal aligned copies in outputs/aligned/."
+      "id": "T2",
+      "title": "Move files into categorized owner layout",
+      "status": "queued"
     },
     {
-      "id": "Q3",
-      "title": "Colour correction fit",
-      "status": "done",
-      "notes": "Tested M1/M2/M3 in sRGB and linear light on cluster-balanced flat samples, then upgraded in Q7/Q8 to closed-form M2_Dade_srgb (per-channel sRGB Levels + cool slate-blue shadow toe + neutral-preserving 3x3 matrix + opponent-polar Magic Bullet Looks 'Dade' hue-chroma shaper). Rotates yellow-green/green foliage (H in [60, 155] deg) by +38..+52 deg into bluish-green/teal while keeping warm skin, straw gold (H~40 deg), and yellow clothing/blonde hair (H~51-52 deg) untouched. Held-out DE00 = 2.2586 vs in-sample 2.2392 (gap +0.0194 << 1.0)."
+      "id": "T3",
+      "title": "Fix paths and rerun look_apply.py",
+      "status": "queued"
     },
     {
-      "id": "Q4",
-      "title": "Gradient / lower-area darkening",
-      "status": "done",
-      "notes": "2D surface R^2: vertical 70.2% (Pair A) / 75.7% (Pair B) vs radial vignette 6.4% / 0.5%. Jointly refined smoothstep Multiply gradient starting at y0_norm=0.1400 and saturating at y1_norm=0.758341 with strength_rgb=[0.262739, 0.256392, 0.280550] (~25.95% luma darkening). Drops Pair B row-mean y correlation from -0.9428 to -0.0340 and flat median DE00 to 2.25 (A) / 2.66 (B)."
+      "id": "T4",
+      "title": "Write root and owner READMEs",
+      "status": "queued"
     },
     {
-      "id": "Q5",
-      "title": "Unsharp mask",
-      "status": "done",
-      "notes": "Fitted 1D edge profiles (650/dataset) and calibrated 2D single-pass 25-tap (5x5 [1,4,6,4,1]/16) RGB USM: sigma_frac_h = 0.003473 (2.5006 px at 720p, 1.4205 px at 409p; independent height-normalised radii agree within 9.47% across Pair A 720p and Pair B 409p), amount = 0.82, soft coring threshold = 0.01433 (3.654/255). Reduces 1D edge-profile RMSE by 38.92% (A 720p), 39.31% (B 720p), and 33.56% (B 409p), and full-frame edge-band RMSE from 19.67 -> 16.10 (A) and 28.15 -> 21.76 (B)."
+      "id": "T5",
+      "title": "Create or update Floby GitHub Release",
+      "status": "queued"
     },
     {
-      "id": "Q6",
-      "title": "Haze flare",
-      "status": "done",
-      "notes": "Tested 12 falloff x blend candidates on low-pass spatial residuals; selected 2D anisotropic rotated Gaussian with Screen blend and global_veil_needed=false (fitted veil <= 2.5/255 within reconstruction noise floor). Reduces LP spatial residual energy by 77.2-85.3% on Pair A and 52.3-94.7% (top-right) on Pair B. Documented consistent top-right geometry (rx~0.19H, ry~0.25-0.30H) vs scene-dependent tint/intensity (Pair A warm golden 0.34 vs Pair B cool sky 0.13) and fitted an in-frame shared default preset (intensity=0.118307) that improves all metrics on both pairs."
-    },
-    {
-      "id": "Q7",
-      "title": "Order of operations and the full composite",
-      "status": "done",
-      "notes": "Evaluated all 5 pipeline orders; selected USM -> CC -> GRAD -> FLARE (lowest mean Edge RMSE 18.125, highest mean Luma SSIM 0.94028, tied best flat median DE00 2.1963, and enables 25 raw texture taps in a single-pass GLSL shader). Full composite beats Original and CC-only on every metric across both pairs for both shared default and per-scene flare presets."
-    },
-    {
-      "id": "Q8",
-      "title": "Deliverables",
-      "status": "done",
-      "notes": "Generated and verified look_params.json, look_apply.py, look.cube (33^3), LOOK_SPEC.md (with GLSL pseudocode, control sheet, assumptions, and 66 test vectors), REPORT.md (with stage ablations, Dade swatch proof, and side-by-side residual panels), and src/verify_spec_parity.py confirming max_abs_diff < 1.5e-6 across all formulas, vectors, and LUT entries."
+      "id": "T6",
+      "title": "Verify tree, release assets, secrets, and copyrighted-frame exclusion",
+      "status": "queued"
     }
   ],
   "results": {
@@ -176,7 +159,11 @@
     "Bridged pairB_edited.png (1291x720 letterboxed NewPipe capture) and pairB_original_matched.png (720x409 un-letterboxed reconstruction) via sub-pixel SIFT+ECC affine alignment without modifying input files.",
     "Incorporated Magic Bullet Looks 'Dade' properties into a closed-form, zero-texture opponent-polar hue-chroma shaper (M2_Dade_srgb) using a smoothstep(56, 68) * (1 - smoothstep(138, 172)) foliage gate (+43.412 deg rotation into bluish-green/teal) plus 3 smooth von-Mises lobes (162 deg teal, 198 deg sky cyan, 315 deg blue-violet) and a cool slate-blue shadow toe (luma < 0.28), guaranteeing zero leakage onto H <= 56 deg warm skin, straw gold, and yellow clothing/hair.",
     "Selected pipeline order USM -> CC -> GRAD -> FLARE because it achieves the lowest Edge RMSE (18.125) and highest SSIM (0.94028) while allowing all 25 USM texture taps to sample raw u_tex in a single-pass GLSL shader.",
-    "Provided both a cross-clip shared default flare preset (which monotonically improves every metric on both pairs) and per-scene pairA/pairB flare presets in look_params.json, recommending flare intensity and tint as user controls in Keyflaw."
+    "Provided both a cross-clip shared default flare preset (which monotonically improves every metric on both pairs) and per-scene pairA/pairB flare presets in look_params.json, recommending flare intensity and tint as user controls in Keyflaw.",
+    "Repository tidy scope is limited to motionssalt/keyflaw-look-fit; repository exists, is private, and uses master as its default branch.",
+    "No .kfpack, suite.json, effect.json, shader.glsl, prompt files, or reusable tools were found; none will be invented.",
+    "Moved outputs and src under owners/floby/analysis because they are intermediate results, fit scripts, and scratch work.",
+    "Moved LOOK_SPEC.md, look_params.json, look_apply.py, and look.cube under owners/floby/spec as source-of-truth deliverables; REPORT.md under owners/floby/reports."
   ],
   "known_issues": [
     "In pairB_original_matched.png, the AI reconstruction hallucinated the green bush (Edited RGB [172,218,98]) as golden-yellow RGB [250,213,79] (H=47.0 deg), which is warmer than Nami's yellow shirt [245,219,65] (H=51.3 deg) and Sanji's blonde hair [247,231,127] (H=52.0 deg); any spatially-invariant shader must keep H <= 52 deg yellow while rotating real ungraded yellow-green grass (H >= 65 deg) into Dade bluish-green/teal.",
@@ -185,6 +172,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-01T21:00:00Z",
-  "last_session_note": "All Q1-Q8 queue items complete, Dade closed-form colour specification verified against look_apply.py and look.cube (< 1.5e-6 diff), and all deliverables pushed to motionssalt/keyflaw-look-fit."
+  "last_updated": "2026-11-02T04:42:13Z",
+  "last_session_note": "T1 inventory and categorisation plan complete; next is small git-mv commits."
 }
