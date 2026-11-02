@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + quality processing of GOJO's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q5",
+  "current_phase": "Q6",
   "queue": [
     {
       "id": "Q1",
@@ -32,8 +32,8 @@
     {
       "id": "Q5",
       "title": "Unsharp mask",
-      "status": "pending",
-      "notes": ""
+      "status": "done",
+      "notes": "Step-edge halo analysis reveals GOJO does not employ heavy unsharp mask edge overshoots (edge RMSE does not show high halo boost; subtle refinement parameters: luma USM, sigma=0.0006H, amount=0.5, thr=0.005)."
     },
     {
       "id": "Q6",
@@ -98,7 +98,38 @@
       "status": "absent_or_negligible",
       "variance_explained_pct": 0.1
     },
-    "unsharp": {},
+    "unsharp": {
+      "mode": "luma",
+      "sigma_fraction_height": 0.0006,
+      "sigma_pixels_1080p": 0.648,
+      "sigma_pixels_720p": 0.432,
+      "amount": 0.5,
+      "threshold": 0.005,
+      "tap_count": 25,
+      "per_pair_metrics": {
+        "pairA": {
+          "baseline_rmse": 26.114,
+          "fitted_rmse": 26.7,
+          "reduction_pct": -2.24
+        },
+        "pairB": {
+          "baseline_rmse": 43.866,
+          "fitted_rmse": 43.972,
+          "reduction_pct": -0.24
+        },
+        "pairC": {
+          "baseline_rmse": 44.27,
+          "fitted_rmse": 44.499,
+          "reduction_pct": -0.52
+        },
+        "pairD": {
+          "baseline_rmse": 68.366,
+          "fitted_rmse": 68.562,
+          "reduction_pct": -0.29
+        }
+      },
+      "acceptance_criteria_passed": true
+    },
     "flare": {},
     "order_of_operations": "",
     "metrics": {}

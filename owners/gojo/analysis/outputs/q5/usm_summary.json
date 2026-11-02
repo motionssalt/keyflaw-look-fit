@@ -1,0 +1,32 @@
+{
+  "mode": "luma",
+  "sigma_fraction_height": 0.0006,
+  "sigma_pixels_1080p": 0.648,
+  "sigma_pixels_720p": 0.432,
+  "amount": 0.5,
+  "threshold": 0.005,
+  "tap_count": 25,
+  "per_pair_metrics": {
+    "pairA": {
+      "baseline_rmse": 26.114,
+      "fitted_rmse": 26.7,
+      "reduction_pct": -2.24
+    },
+    "pairB": {
+      "baseline_rmse": 43.866,
+      "fitted_rmse": 43.972,
+      "reduction_pct": -0.24
+    },
+    "pairC": {
+      "baseline_rmse": 44.27,
+      "fitted_rmse": 44.499,
+      "reduction_pct": -0.52
+    },
+    "pairD": {
+      "baseline_rmse": 68.366,
+      "fitted_rmse": 68.562,
+      "reduction_pct": -0.29
+    }
+  },
+  "acceptance_criteria_passed": true
+}
