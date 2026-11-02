@@ -11,4 +11,4 @@ This private repository contains MOTIONSALT’s recovered Keyflaw colour-correct
 
 `docs/` contains the build prompt, manifest, and tidy notes. `owners/<owner>/inputs/` contains the matched frame pairs, while `masks/` contains masks and overlay previews. `owners/<owner>/analysis/` contains fit scripts, aligned intermediates, scratch work, and diagnostic outputs. `owners/<owner>/reports/` contains the owner’s quantitative report. `owners/<owner>/spec/` contains the source-of-truth look specification, parameters, reference implementation, and LUT. `BUILD_STATE.json` records resumable work and decisions.
 
-There are currently no reusable cross-owner tools or prompt files in this repository, and no Keyflaw `.kfpack` or pack source was found in the Floby work.
+The suite pack source is organized in `pack/` (`pack/suite.json` and `pack/effects/`), with installable packs in `releases/MotionSalt_CC.kfpack`. Floby effect source is also archived under `owners/floby/pack/`.

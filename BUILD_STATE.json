@@ -165,7 +165,8 @@
     "Repository tidy scope is limited to motionssalt/keyflaw-look-fit; repository exists, is private, and uses master as its default branch.",
     "No .kfpack, suite.json, effect.json, shader.glsl, prompt files, or reusable tools were found; none will be invented.",
     "Moved outputs and src under owners/floby/analysis because they are intermediate results, fit scripts, and scratch work.",
-    "Moved LOOK_SPEC.md, look_params.json, look_apply.py, and look.cube under owners/floby/spec as source-of-truth deliverables; REPORT.md under owners/floby/reports."
+    "Moved LOOK_SPEC.md, look_params.json, look_apply.py, and look.cube under owners/floby/spec as source-of-truth deliverables; REPORT.md under owners/floby/reports.",
+    "Added Floby's official Keyflaw pack MotionSalt_CC.kfpack to releases/, unpacked suite.json and effects/MS_floby_cc/ into pack/, and copied effect folder to owners/floby/pack/ without modifying content."
   ],
   "known_issues": [
     "In pairB_original_matched.png, the AI reconstruction hallucinated the green bush (Edited RGB [172,218,98]) as golden-yellow RGB [250,213,79] (H=47.0 deg), which is warmer than Nami's yellow shirt [245,219,65] (H=51.3 deg) and Sanji's blonde hair [247,231,127] (H=52.0 deg); any spatially-invariant shader must keep H <= 52 deg yellow while rotating real ungraded yellow-green grass (H >= 65 deg) into Dade bluish-green/teal.",
@@ -174,6 +175,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-02T04:43:50Z",
-  "last_session_note": "Repository tidy complete. Floby release floby-cc-v1.0 is published and verified; pack assets were not found."
+  "last_updated": "2026-11-02T05:22:00Z",
+  "last_session_note": "Added Floby's Keyflaw pack (MotionSalt_CC.kfpack) to releases/MotionSalt_CC.kfpack and unzipped source into pack/ and owners/floby/pack/."
 }

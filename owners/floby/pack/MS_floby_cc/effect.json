@@ -1,0 +1,37 @@
+{
+  "id": "MS_floby_cc",
+  "name": "Floby's CC",
+  "category": "MotionSalt CC",
+  "parameters": [
+    {
+      "key": "cc",
+      "label": "Colour Correction",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 1.0,
+      "type": "BOOL",
+      "group": "Switches"
+    },
+    {
+      "key": "quality",
+      "label": "Quality (Sharpen + Gradient)",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 1.0,
+      "type": "BOOL",
+      "group": "Switches"
+    },
+    {
+      "key": "haze",
+      "label": "Haze Flare",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 1.0,
+      "type": "BOOL",
+      "group": "Switches"
+    }
+  ]
+}
