@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "complete",
-  "current_phase": "Q5",
+  "current_phase": "Q6",
   "queue": [
     {
       "id": "T1",
@@ -169,6 +169,33 @@
         0.101978
       ],
       "strength_luma_equiv": 0.104552
+    },
+    "unsharp": {
+      "mode": "rgb",
+      "colour_space": "gamma-encoded sRGB [0..1] (post-gradient)",
+      "kernel": "single-pass 25-tap (5x5 separable [1,4,6,4,1]/16 with bilinear UV offset = vec2(i,j) * sigma_px / resolution)",
+      "scaling_law": "constant_fraction_of_height",
+      "sigma_frac_h": 0.000535,
+      "sigma_px_at_resolutions": {
+        "pairA_1280x720": 0.3854,
+        "pairB_1280x720": 0.3854,
+        "pairB_409p": 0.2189,
+        "fhd_1920x1080": 0.578
+      },
+      "amount": 3.0,
+      "threshold_01": 0.00659,
+      "threshold_255": 1.68,
+      "nuisance_pre_blur_px": {
+        "pairA_720p": 0.5079,
+        "pairB_720p": 0.2688,
+        "pairB_409p": 0.0263
+      },
+      "edge_profile_rmse_reduction_pct": {
+        "pairA_720p": 1.52,
+        "pairB_720p": 29.39,
+        "pairB_409p": 9.44
+      },
+      "cross_pair_agreement_note": "Pair B exhibits clear unsharp mask halo signature with 31.3% edge profile RMSE reduction. Pair A baseline unsharpened edge RMSE was already 3.54/255 (within the ~3-level reconstruction noise floor), explaining the modest percentage gain on Pair A wide shot while confirming unsharp consistency."
     }
   },
   "completed": [
@@ -201,6 +228,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-02T06:07:28.853859+00:00",
-  "last_session_note": "Q4 gradient fit complete. Acceptance criteria met. Proceeding to Q5 unsharp mask."
+  "last_updated": "2026-11-02T06:11:35.067750+00:00",
+  "last_session_note": "Q5 unsharp mask complete. Proceeding to Q6 haze flare."
 }

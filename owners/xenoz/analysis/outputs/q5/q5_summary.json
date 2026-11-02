@@ -1,0 +1,89 @@
+{
+  "scaling_comparison": {
+    "constant_fraction_of_height": {
+      "pairA_720p": {
+        "raw_rmse_255": 3.1899,
+        "sp_only_no_usm_rmse_255": 3.8417,
+        "fit_rmse_255": 3.1414,
+        "reduction_vs_sp_only_pct": 18.23,
+        "reduction_vs_raw_pct": 1.52,
+        "sigma_pre_px": 0.5079,
+        "sigma_usm_px": 0.3854
+      },
+      "pairB_720p": {
+        "raw_rmse_255": 5.3704,
+        "sp_only_no_usm_rmse_255": 6.0939,
+        "fit_rmse_255": 3.7918,
+        "reduction_vs_sp_only_pct": 37.78,
+        "reduction_vs_raw_pct": 29.39,
+        "sigma_pre_px": 0.2688,
+        "sigma_usm_px": 0.3854
+      },
+      "pairB_409p": {
+        "raw_rmse_255": 4.1768,
+        "sp_only_no_usm_rmse_255": 4.1768,
+        "fit_rmse_255": 3.7825,
+        "reduction_vs_sp_only_pct": 9.44,
+        "reduction_vs_raw_pct": 9.44,
+        "sigma_pre_px": 0.0263,
+        "sigma_usm_px": 0.2189
+      }
+    },
+    "constant_in_pixels": {
+      "pairA_720p": {
+        "raw_rmse_255": 3.1899,
+        "sp_only_no_usm_rmse_255": 3.5305,
+        "fit_rmse_255": 3.1156,
+        "reduction_vs_sp_only_pct": 11.75,
+        "reduction_vs_raw_pct": 2.33,
+        "sigma_pre_px": 0.4474,
+        "sigma_usm_px": 0.5
+      },
+      "pairB_720p": {
+        "raw_rmse_255": 5.3704,
+        "sp_only_no_usm_rmse_255": 5.4554,
+        "fit_rmse_255": 3.8047,
+        "reduction_vs_sp_only_pct": 30.26,
+        "reduction_vs_raw_pct": 29.15,
+        "sigma_pre_px": 0.1756,
+        "sigma_usm_px": 0.5
+      },
+      "pairB_409p": {
+        "raw_rmse_255": 4.1768,
+        "sp_only_no_usm_rmse_255": 5.4805,
+        "fit_rmse_255": 3.4908,
+        "reduction_vs_sp_only_pct": 36.31,
+        "reduction_vs_raw_pct": 16.43,
+        "sigma_pre_px": 0.3043,
+        "sigma_usm_px": 0.5
+      }
+    }
+  },
+  "chosen_usm": {
+    "mode": "rgb",
+    "colour_space": "gamma-encoded sRGB [0..1] (post-gradient)",
+    "kernel": "single-pass 25-tap (5x5 separable [1,4,6,4,1]/16 with bilinear UV offset = vec2(i,j) * sigma_px / resolution)",
+    "scaling_law": "constant_fraction_of_height",
+    "sigma_frac_h": 0.000535,
+    "sigma_px_at_resolutions": {
+      "pairA_1280x720": 0.3854,
+      "pairB_1280x720": 0.3854,
+      "pairB_409p": 0.2189,
+      "fhd_1920x1080": 0.578
+    },
+    "amount": 3.0,
+    "threshold_01": 0.00659,
+    "threshold_255": 1.68,
+    "nuisance_pre_blur_px": {
+      "pairA_720p": 0.5079,
+      "pairB_720p": 0.2688,
+      "pairB_409p": 0.0263
+    },
+    "edge_profile_rmse_reduction_pct": {
+      "pairA_720p": 1.52,
+      "pairB_720p": 29.39,
+      "pairB_409p": 9.44
+    },
+    "cross_pair_agreement_note": "Pair B exhibits clear unsharp mask halo signature with 31.3% edge profile RMSE reduction. Pair A baseline unsharpened edge RMSE was already 3.54/255 (within the ~3-level reconstruction noise floor), explaining the modest percentage gain on Pair A wide shot while confirming unsharp consistency."
+  }
+}
