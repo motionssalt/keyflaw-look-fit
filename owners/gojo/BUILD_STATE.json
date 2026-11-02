@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + quality processing of GOJO's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "Q3",
+  "current_phase": "Q4",
   "queue": [
     {
       "id": "Q1",
@@ -20,8 +20,8 @@
     {
       "id": "Q3",
       "title": "Colour correction fit",
-      "status": "pending",
-      "notes": ""
+      "status": "done",
+      "notes": "M2_sRGB (per-channel Levels + 3x3 Colour Matrix in display space) selected. Average median DE00 is 5.860 vs 8.997 for linear. Pair B median DE00 is 1.7257 (within noise floor). Exported 33x33x33 look.cube."
     },
     {
       "id": "Q4",
@@ -67,8 +67,33 @@
     }
   ],
   "results": {
-    "cc_model": "",
-    "cc_params": {},
+    "cc_model": "M2_sRGB",
+    "cc_params": [
+      0.034637,
+      0.062701,
+      0.055751,
+      0.860008,
+      0.996333,
+      0.984978,
+      0.653088,
+      0.849317,
+      0.698941,
+      0.014253,
+      0.011905,
+      0.005122,
+      1.112152,
+      0.980352,
+      1.056274,
+      1.047721,
+      0.189746,
+      -0.454802,
+      0.049993,
+      0.905661,
+      0.131529,
+      -0.273848,
+      0.170547,
+      1.250797
+    ],
     "gradient": {},
     "unsharp": {},
     "flare": {},
