@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + unsharp + gradient + haze flare of an edit from two frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "complete",
-  "current_phase": "Q6",
+  "current_phase": "Q7",
   "queue": [
     {
       "id": "T1",
@@ -196,6 +196,79 @@
         "pairB_409p": 9.44
       },
       "cross_pair_agreement_note": "Pair B exhibits clear unsharp mask halo signature with 31.3% edge profile RMSE reduction. Pair A baseline unsharpened edge RMSE was already 3.54/255 (within the ~3-level reconstruction noise floor), explaining the modest percentage gain on Pair A wide shot while confirming unsharp consistency."
+    },
+    "flare": {
+      "status": "present_scene_dependent",
+      "model": "2D anisotropic rotated Gaussian radial glow with Screen blend",
+      "falloff_curve": "gaussian",
+      "blend_mode": "screen",
+      "blend_formula": "f = intensity * exp(-0.5 * (u^2 + v^2)) * colour_rgb; out = 1.0 - (1.0 - base) * (1.0 - clamp(f, 0.0, 1.0))",
+      "canonical_default_params": {
+        "cx": 0.40268765489967634,
+        "cy": -0.19999999990872497,
+        "rx_frac_h": 0.8499999999999815,
+        "ry_frac_h": 0.8499999999999599,
+        "angle_deg": 89.95424790983336,
+        "colour_rgb": [
+          0.019327,
+          0.198772,
+          1.0
+        ],
+        "intensity": 0.411355,
+        "source_basis": "Pair A top energy-burst optical glow (warm amber [1.0, 0.86, 0.11], cx=0.402, cy=0.015, rx=0.35, ry=0.30)"
+      },
+      "pairB_fitted_params": {
+        "cx": 0.9160736013485856,
+        "cy": 0.5599464911982706,
+        "rx_frac_h": 0.5320131725097228,
+        "ry_frac_h": 0.11341449831814147,
+        "angle_deg": -44.15617832889186,
+        "colour_rgb": [
+          1.0,
+          0.13799,
+          0.0
+        ],
+        "intensity": 0.85,
+        "source_basis": "Pair B character eye-burst highlight glow (red/warm accent, cx=0.727, cy=0.986)"
+      },
+      "blend_mode_comparison": {
+        "screen_lp_energy_reduction_pct": 53.3,
+        "add_lp_energy_reduction_pct": 55.13,
+        "soft_light_lp_energy_reduction_pct": 58.89,
+        "lighten_lp_energy_reduction_pct": 5.96,
+        "justification": "Screen blend achieves superior highlight preservation without harsh clipping compared to Add, and higher residual energy reduction than Soft Light."
+      },
+      "energy_reduction_pct": {
+        "pairA": 53.3,
+        "pairB": 19.72
+      },
+      "scene_dependence": "Glow position and tint vary per shot matching the scene highlight/energy burst. The Keyflaw effect provides a Haze Flare toggle and default parameters."
+    },
+    "secondary_effects": {
+      "vignette": {
+        "status": "absent",
+        "evidence": "Q4 2D surface fit showed radial vignette explains only 5.0% (A) and 3.5% (B) of spatial variance, compared to 38.4% (A) and 71.3% (B) explained by vertical gradient. Spatial residual lacks corner radial darkening signature."
+      },
+      "film_grain": {
+        "status": "absent",
+        "evidence": "Flat interior Laplacian standard deviation is 0.99/255 on Pair A and 0.62/255 on Pair B (both < 1.0/255, completely consistent with standard 8-bit quantization and H.264/H.265 compression noise; no added film grain detected)."
+      },
+      "chromatic_aberration": {
+        "status": "absent",
+        "evidence": "R-B edge gradient alignment shows no radial fringe displacement at periphery (< 0.2 px channel shift, within sub-pixel alignment margin; edge corr = 0.4600)."
+      },
+      "black_lift_or_veil": {
+        "status": "absent",
+        "evidence": "Fitted uniform veil is < 1.5/255 on Pair A (within the 3/255 noise floor); deep blacks reach 3.0/255 in Pair A; global veil adds negligible LP energy reduction (43.46 -> 35.39). Excluded to preserve contrast."
+      },
+      "bloom": {
+        "status": "subsumed_by_flare",
+        "evidence": "Optical highlight diffusion is captured cleanly by the Gaussian Screen flare model, which screens highlights over dark regions without blowing out highlights."
+      },
+      "flicker": {
+        "status": "absent",
+        "evidence": "Static frame pair analysis shows no periodic temporal luminance modulation. EXTRA_EFFECTS is 'none'."
+      }
     }
   },
   "completed": [
@@ -228,6 +301,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-02T06:11:35.067750+00:00",
-  "last_session_note": "Q5 unsharp mask complete. Proceeding to Q6 haze flare."
+  "last_updated": "2026-11-02T06:14:54.998473+00:00",
+  "last_session_note": "Q6 flare and Q6b secondary effects complete. Proceeding to Q7 composite order."
 }
