@@ -1,0 +1,47 @@
+{
+  "id": "MS_xenoz_cc",
+  "name": "Xenoz's CC",
+  "category": "MotionSalt CC",
+  "parameters": [
+    {
+      "key": "cc",
+      "label": "Colour Correction",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 1.0,
+      "type": "BOOL",
+      "group": "Switches"
+    },
+    {
+      "key": "quality",
+      "label": "Quality (Sharpen + Gradient)",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 1.0,
+      "type": "BOOL",
+      "group": "Switches"
+    },
+    {
+      "key": "flare",
+      "label": "Haze Flare",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 1.0,
+      "type": "BOOL",
+      "group": "Switches"
+    },
+    {
+      "key": "intensity",
+      "label": "Master Intensity",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.01,
+      "type": "SCALAR",
+      "group": "Adjustments"
+    }
+  ]
+}
