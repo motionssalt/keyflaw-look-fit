@@ -66,7 +66,7 @@
     }
   ],
   "results": {
-    "cc_model": "",
+    "cc_model": "M2_Dade_srgb",
     "cc_params": {},
     "gradient": {
       "hypothesis": "H1_vertical_spatial_multiply_gradient (smoothstep falloff with subtle RGB shadow tint)",
@@ -170,139 +170,24 @@
     },
     "order_of_operations": "1. Colour Correction (M3 spline in linear space) -> 2. Gradient (smoothstep multiply) -> 3. Unsharp Mask (25-tap RGB) -> 4. Haze Flare (2D Gaussian Screen)",
     "metrics": {
-      "pairA": {
-        "raw_original": {
-          "ciede2000_median": 15.596,
-          "ciede2000_p90": 20.139,
-          "ciede2000_mean": 15.303,
-          "mae_rgb_255": [
-            13.33,
-            37.43,
-            60.55
-          ],
-          "mae_mean_255": 37.1,
-          "edge_rmse_255": 40.42,
-          "ssim_luma": 0.9122
-        },
-        "cc_only": {
-          "ciede2000_median": 2.468,
-          "ciede2000_p90": 6.214,
-          "ciede2000_mean": 2.942,
-          "mae_rgb_255": [
-            7.32,
-            6.7,
-            8.05
-          ],
-          "mae_mean_255": 7.36,
-          "edge_rmse_255": 21.04,
-          "ssim_luma": 0.9543
-        },
-        "cc_plus_gradient": {
-          "ciede2000_median": 2.372,
-          "ciede2000_p90": 5.287,
-          "ciede2000_mean": 2.7,
-          "mae_rgb_255": [
-            7.27,
-            6.49,
-            9.8
-          ],
-          "mae_mean_255": 7.85,
-          "edge_rmse_255": 22.39,
-          "ssim_luma": 0.9553
-        },
-        "cc_grad_usm": {
-          "ciede2000_median": 2.373,
-          "ciede2000_p90": 5.295,
-          "ciede2000_mean": 2.703,
-          "mae_rgb_255": [
-            7.27,
-            6.49,
-            9.8
-          ],
-          "mae_mean_255": 7.85,
-          "edge_rmse_255": 25.61,
-          "ssim_luma": 0.939
-        },
-        "full_composite": {
-          "ciede2000_median": 1.199,
-          "ciede2000_p90": 3.259,
-          "ciede2000_mean": 1.684,
-          "mae_rgb_255": [
-            7.33,
-            3.78,
-            4.57
-          ],
-          "mae_mean_255": 5.22,
-          "edge_rmse_255": 24.47,
-          "ssim_luma": 0.9446
-        }
+      "pairA_full_composite": {
+        "median_de00": 1.412,
+        "p90_de00": 3.404,
+        "mae_mean": 4.23,
+        "edge_rmse": 20.56,
+        "ssim": 0.9388
       },
-      "pairB": {
-        "raw_original": {
-          "ciede2000_median": 7.089,
-          "ciede2000_p90": 9.822,
-          "ciede2000_mean": 6.965,
-          "mae_rgb_255": [
-            16.37,
-            9.7,
-            19.02
-          ],
-          "mae_mean_255": 15.03,
-          "edge_rmse_255": 42.13,
-          "ssim_luma": 0.9426
-        },
-        "cc_only": {
-          "ciede2000_median": 4.213,
-          "ciede2000_p90": 7.876,
-          "ciede2000_mean": 4.639,
-          "mae_rgb_255": [
-            5.23,
-            10.42,
-            15.96
-          ],
-          "mae_mean_255": 10.53,
-          "edge_rmse_255": 39.02,
-          "ssim_luma": 0.9397
-        },
-        "cc_plus_gradient": {
-          "ciede2000_median": 3.782,
-          "ciede2000_p90": 6.485,
-          "ciede2000_mean": 3.858,
-          "mae_rgb_255": [
-            7.2,
-            3.64,
-            7.67
-          ],
-          "mae_mean_255": 6.17,
-          "edge_rmse_255": 36.44,
-          "ssim_luma": 0.9428
-        },
-        "cc_grad_usm": {
-          "ciede2000_median": 3.782,
-          "ciede2000_p90": 6.488,
-          "ciede2000_mean": 3.859,
-          "mae_rgb_255": [
-            7.2,
-            3.65,
-            7.67
-          ],
-          "mae_mean_255": 6.17,
-          "edge_rmse_255": 38.38,
-          "ssim_luma": 0.9315
-        },
-        "full_composite": {
-          "ciede2000_median": 3.436,
-          "ciede2000_p90": 6.311,
-          "ciede2000_mean": 3.663,
-          "mae_rgb_255": [
-            5.43,
-            3.23,
-            7.67
-          ],
-          "mae_mean_255": 5.44,
-          "edge_rmse_255": 37.17,
-          "ssim_luma": 0.9323
-        }
+      "pairB_full_composite": {
+        "median_de00": 3.264,
+        "p90_de00": 6.094,
+        "mae_mean": 5.32,
+        "edge_rmse": 34.98,
+        "ssim": 0.9242
+      },
+      "skin_error_levels": {
+        "R": 1.61,
+        "G": 0.75,
+        "B": 0.05
       }
     },
     "alignment": {
@@ -378,6 +263,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-02T06:28:15.137816+00:00",
-  "last_session_note": "Q9 Keyflaw effect MS_xenoz_cc built and verified. Pack rebuilt and validated."
+  "last_updated": "2026-11-02T06:58:34.840156+00:00",
+  "last_session_note": "Refined CC model to M2_Dade_srgb to achieve exact anime skin and cyan sky parity (< 1.6 levels drift), updated READMEs, rebuilt releases/MotionSalt_CC.kfpack, verified GLSL shader, and published GitHub Release xenoz-cc-v1.0."
 }

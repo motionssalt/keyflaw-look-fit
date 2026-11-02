@@ -1,221 +1,224 @@
-# LOOK_SPEC: Xenoz's CC
+# LOOK SPECIFICATION: Xenoz's CC
 
-## 1. TL;DR
-Xenoz's color grade and quality processing combines:
-1. **High-Dynamic Color Grade**: Linear-light input levels expansion, 3x3 opponent matrix saturation boost (~1.99x), and 17-knot monotonic spline tone curves producing rich, deep anime blacks and vibrant cyan-blue sky and warm skin highlights.
-2. **Lower-Area Darkening Gradient**: A vertical multiplicative `smoothstep` darkening ramp starting at `y = 0.2268` and saturating at `y = 0.7760` with a subtle ~10.2% shadow tint (`strength_rgb = [0.0892, 0.1094, 0.1020]`), eliminating spatial residual vertical slope.
-3. **Quality Processing (Unsharp Mask)**: Single-pass 25-tap (5x5 separable `[1, 4, 6, 4, 1] / 16`) RGB unsharp mask with `sigma = 0.000535 * H`, amount `1.10`, and threshold `3.06 / 255`, recovering edge contrast and eliminating line softness.
-4. **Haze Flare**: 2D anisotropic Gaussian Screen radial glow tracking the scene's key energy burst / highlight (canonical warm amber `[1.0, 0.86, 0.11]`, intensity `0.12`, screen blend).
+**Author / Maintainer:** MOTIONSALT (Victor)  
+**CC Owner:** Xenoz  
+**Effect ID:** `MS_xenoz_cc`  
+**Host Target:** Keyflaw 1.4.8+ Shader Suite (`com.motionsalt.cc`)  
+**Specification Version:** 1.1.0  
+**Colour Spaces:** Standard sRGB display-referred [0..1] and Opponent Polar Polarized Hue-Chroma Space  
+
+---
+
+## 1. TL;DR of the Look
+Xenoz's colour grade is a punchy, vibrant, high-clarity anime grading look characterized by:
+1. **Warm, Glowing Skin Tones:** Anime skin tones are protected from cyan drift, preserving rich warmth and golden radiance while boosting overall luminance.
+2. **Deep Saturated Electric Cyan/Sky:** Strong selective rotation and saturation boost on cyan, sky-blue, and magical energy bursts without spilling into warm character highlights.
+3. **Elevated Slate-Blue Shadows:** Deep shadows are lifted with a cool slate-blue toe tint (RGB `[-0.011, +0.061, +0.120]`), preserving black depth while preventing crushed muddy darks.
+4. **Cinematic Vertical Gradient:** A smooth multiplicative vertical darkening ramp (~13% darkening towards frame bottom) focusing viewer gaze on the character action.
+5. **Quality Edge Sharpening:** Separable 25-tap RGB unsharp masking with soft-coring threshold eliminating mobile compression blockiness.
+6. **Subtle Non-Destructive Ambient Glow:** Clean screen ambient highlight flare that respects clip highlights without washing out the frame.
 
 ---
 
 ## 2. Pipeline Order of Operations
-The verified pipeline order of operations is strictly sequential:
-```
-Input Frame (sRGB)
-  │
-  ▼
-[Stage 1: Colour Correction] (Linear light: Levels -> Saturation Matrix -> 17-knot Spline Curves -> back to sRGB)
-  │
-  ▼
-[Stage 2: Vertical Spatial Gradient] (sRGB: Multiplicative smoothstep ramp from y0 to y1)
-  │
-  ▼
-[Stage 3: Unsharp Masking] (sRGB: 25-tap separable [1,4,6,4,1]/16 kernel, amount 1.10, threshold 3.06/255)
-  │
-  ▼
-[Stage 4: Haze Flare] (sRGB: 2D Gaussian Screen radial glow)
-  │
-  ▼
-Final Composited Output
-```
-*Note on Shader Implementation:* In single-pass Keyflaw GLSL, Stage 3's 25-tap blur stencil can be sampled on the input texture `uTexture` before the color step (tested in Q7: `USM_CC_GRAD_FLARE` yields virtually identical DE00: `1.198` vs `1.199`), allowing complete single-pass execution within ~25 texture taps.
+The complete composite runs in 4 strictly ordered, resolution-independent stages:
+
+1. **Stage 1 — Colour Correction (`M2_Dade_srgb`):**
+   - 1a. Per-channel sRGB Levels expansion & contrast curves.
+   - 1b. Cool slate-blue shadow toe lift (active on luma < 0.28).
+   - 1c. Neutral-preserving 3x3 color matrix transformation.
+   - 1d. Opponent-polar selective hue-chroma shaper (dedicated Cyan/Sky boost, Warm Skin preservation, and Plum/Violet lobe).
+2. **Stage 2 — Spatial Vertical Multiply Darkening Gradient:**
+   - Multiplicative smoothstep ramp from `y0_norm = 0.2691` to `y1_norm = 0.8721` with RGB strength `[0.0572, 0.1296, 0.1355]`.
+3. **Stage 3 — Unsharp Mask (Quality Pass):**
+   - Single-pass separable 5x5 (25-tap binomial `[1,4,6,4,1]/16`) RGB unsharp mask with height-fraction scaling `sigma = 0.000535 * H`, amount `1.10`, and coring threshold `0.00659` (1.68/255).
+4. **Stage 4 — Ambient Haze Flare:**
+   - Soft 2D rotated anisotropic Gaussian Screen glow (`intensity = 0.12`, center `cx = 0.50, cy = 0.05`, radius `rx = 0.45, ry = 0.35`, colour `[0.35, 0.55, 0.95]`).
 
 ---
 
-## 3. Stage Specifications
+## 3. Mathematical Specification per Stage
 
-### Stage 1: Colour Correction
-- **Working Space:** Linear RGB (converted from sRGB via standard transfer function, and returned to sRGB at stage exit).
-- **Formula (GLSL pseudocode):**
+### Stage 1: Colour Correction (`M2_Dade_srgb`)
+Working colour space: standard sRGB display-referred `[0.0, 1.0]`.
+
 ```glsl
-// sRGB to Linear
-vec3 linearRGB = pow((srgb + 0.055) / 1.055, vec3(2.4));
+// 1. Levels Expansion
+vec3 inB = vec3(0.000300, -0.093120, 0.073239);
+vec3 inW = vec3(0.945100, 0.922091, 0.895012);
+vec3 gam = vec3(1.682652, 1.824267, 0.938911);
+vec3 outB = vec3(0.199788, 0.144363, 0.135760);
+vec3 outW = vec3(1.179506, 1.152492, 1.249824);
 
-// Levels
-vec3 inBlack  = vec3(-0.101015, -0.043312, 0.013963);
-vec3 inWhite  = vec3(0.904790, 0.891216, 0.930482);
-vec3 gamma    = vec3(1.148331, 0.924251, 0.850588);
-vec3 outBlack = vec3(-0.052240, -0.044284, 0.029805);
-vec3 outWhite = vec3(1.054894, 1.032638, 1.028508);
+vec3 span = max(inW - inB, vec3(0.0001));
+vec3 t = clamp((rgbIn - inB) / span, 0.0, 1.0);
+vec3 v = outB + pow(max(t, vec3(0.00000001)), gam) * (outW - outB);
 
-vec3 span = max(inWhite - inBlack, vec3(0.0001));
-vec3 t = clamp((linearRGB - inBlack) / span, 0.0, 1.0);
-vec3 u = pow(max(t, vec3(0.00000001)), gamma);
-vec3 v = outBlack + u * (outWhite - outBlack);
+// 2. Cool Slate Shadow Toe
+float lum = dot(rgbIn, vec3(0.2126, 0.7152, 0.0722));
+float toeT = clamp(lum / 0.2800, 0.0, 1.0);
+float toeW = 1.0 - toeT * toeT * (3.0 - 2.0 * toeT);
+vec3 toeLift = vec3(-0.010808, 0.060847, 0.119867);
+v += toeW * toeLift * max(vec3(1.0) - v, vec3(0.0));
 
-// Matrix Transform
-mat3 mat = mat3(
-    vec3(1.533419, 0.106358, 0.089059),
-    vec3(-0.611780, 0.616635, -1.054469),
-    vec3(0.078361, 0.277007, 1.965411)
+// 3. 3x3 Colour Matrix
+vec3 m = vec3(
+    dot(vec3(-0.451142, -1.147089, 2.023277), v),
+    dot(vec3(-2.777678, -0.486145, 3.500240), v),
+    dot(vec3(-2.361577, -2.134604, 4.553602), v)
 );
-v = clamp(mat * v, 0.0, 1.0);
 
-// 17-knot Monotonic Spline Curves (evaluated per-channel)
-v.r = eval_spline(v.r, knots_R);
-v.g = eval_spline(v.g, knots_G);
-v.b = eval_spline(v.b, knots_B);
+// 4. Opponent-Polar Hue-Chroma Shaper
+float A = (m.r + m.g + m.b) * 0.333333333;
+float ou = m.r - 0.5 * (m.g + m.b);
+float ov = 0.86602540378 * (m.g - m.b);
+float C = sqrt(ou * ou + ov * ov + 0.00000001);
+float hu = ou / C;
+float hv = ov / C;
 
-// Linear to sRGB
-vec3 cc_srgb = 1.055 * pow(max(v, vec3(0.00000001)), vec3(1.0 / 2.4)) - 0.055;
+float cgT = clamp((C - 0.0150) / max(0.0600 - 0.0150, 0.0001), 0.0, 1.0);
+float cGate = cgT * cgT * (3.0 - 2.0 * cgT);
+
+float cosCyan = hu * (-0.9510565) + hv * (-0.3090170);
+float wCyan = exp(4.00 * (cosCyan - 1.0));
+
+float cosSkin = hu * 0.8660254 + hv * 0.5000000;
+float wSkin = exp(4.00 * (cosSkin - 1.0));
+
+float cosPlum = hu * 0.7071068 + hv * (-0.7071068);
+float wPlum = exp(3.00 * (cosPlum - 1.0));
+
+float dh = cGate * (wCyan * (0.213305) +
+                    wSkin * (0.060669) +
+                    wPlum * (0.256400));
+                    
+float sC = max(0.0, 1.0 + cGate * (wCyan * (-0.440839) +
+                                   wSkin * (-0.277627) +
+                                   wPlum * (-0.108032)));
+                                   
+float dA = cGate * C * (wCyan * (-1.250608) +
+                        wSkin * (1.998926) +
+                        wPlum * (0.629119));
+
+float cd = cos(dh);
+float sd = sin(dh);
+float ou2 = sC * (ou * cd - ov * sd);
+float ov2 = sC * (ou * sd + ov * cd);
+float A2 = A + dA;
+
+vec3 outCol;
+outCol.r = A2 + 0.666666667 * ou2;
+outCol.g = A2 - 0.333333333 * ou2 + 0.577350269 * ov2;
+outCol.b = A2 - 0.333333333 * ou2 - 0.577350269 * ov2;
+return clamp(outCol, 0.0, 1.0);
 ```
 
-#### Parameter Table (Colour Correction)
-| Parameter | Value | Range | Meaning |
-|---|---|---|---|
-| `in_black` | `[-0.1010, -0.0433, 0.0140]` | `[-0.2, 0.2]` | Input black point per channel |
-| `in_white` | `[0.9048, 0.8912, 0.9305]` | `[0.7, 1.2]` | Input white point per channel |
-| `gamma` | `[1.1483, 0.9243, 0.8506]` | `[0.5, 1.8]` | Per-channel power curve exponent |
-| `out_black` | `[-0.0522, -0.0443, 0.0298]` | `[-0.2, 0.2]` | Output black offset |
-| `out_white` | `[1.0549, 1.0326, 1.0285]` | `[0.8, 1.3]` | Output white scale |
-| `matrix_row0` | `[1.5334, -0.6118, 0.0784]` | `[-1.5, 2.5]` | Matrix transform Red row |
-| `matrix_row1` | `[0.1064, 0.6166, -1.0545]` | `[-1.5, 2.5]` | Matrix transform Green row |
-| `matrix_row2` | `[0.0891, -1.0545, 1.9654]` | `[-1.5, 2.5]` | Matrix transform Blue row |
-| `knots_x (17)` | `[0.0, 0.0625, 0.125, ..., 1.0]` | `[0.0, 1.0]` | Uniform knot coordinates |
+### Stage 2: Spatial Multiply Gradient
+Working space: Top-left origin, `yTop = 1.0 - vTex.y` in `[0.0, 1.0]`.
 
----
-
-### Stage 2: Vertical Spatial Gradient
-- **Working Space:** Gamma-encoded sRGB [0..1]
-- **Formula:**
 ```glsl
-float t = clamp((yTop - 0.226816) / (0.775967 - 0.226816), 0.0, 1.0);
+float t = clamp((yTop - 0.269079) / max(0.872060 - 0.269079, 0.00001), 0.0, 1.0);
 float ramp = t * t * (3.0 - 2.0 * t);
-vec3 strength = vec3(0.089249, 0.109361, 0.101978);
-vec3 grad_rgb = clamp(cc_rgb * (1.0 - ramp * strength), 0.0, 1.0);
+vec3 strength = vec3(0.057212, 0.129601, 0.135450);
+outRgb = clamp(inRgb * (vec3(1.0) - ramp * strength), 0.0, 1.0);
 ```
-- **Parameter Table:**
-| Name | Value | Unit | Range | Description |
-|---|---|---|---|---|
-| `y0_norm` | `0.226816` | normalised y [0..1] | `[0.0, 0.5]` | Gradient start row (top of darkening) |
-| `y1_norm` | `0.775967` | normalised y [0..1] | `[0.5, 1.0]` | Gradient end row (max darkening) |
-| `strength_r` | `0.089249` | scalar | `[0.0, 0.4]` | Red darkening multiplier |
-| `strength_g` | `0.109361` | scalar | `[0.0, 0.4]` | Green darkening multiplier |
-| `strength_b` | `0.101978` | scalar | `[0.0, 0.4]` | Blue darkening multiplier |
 
----
-
-### Stage 3: Quality Processing (Unsharp Mask)
-- **Working Space:** Gamma-encoded sRGB [0..1]
-- **Kernel:** 25-tap separable `[1, 4, 6, 4, 1] / 16`
-- **Formula:**
+### Stage 3: Unsharp Mask (25-tap Stencil)
 ```glsl
-vec3 blurred = blur25(rgb, 0.000535 * uResolution.y);
-vec3 diff = rgb - blurred;
-vec3 diff_thresh = sign(diff) * max(abs(diff) - 0.006590, 0.0);
-vec3 usm_rgb = clamp(rgb + 3.0000 * diff_thresh, 0.0, 1.0);
+vec2 st = vec2(0.000535 * uTexelSize.x / uTexelSize.y, 0.000535);
+vec3 acc = vec3(0.0);
+for (int j = -2; j <= 2; j++) {
+    float wj = (j == 0) ? 6.0 : ((j == 1 || j == -1) ? 4.0 : 1.0);
+    for (int i = -2; i <= 2; i++) {
+        float wi = (i == 0) ? 6.0 : ((i == 1 || i == -1) ? 4.0 : 1.0);
+        acc += (wi * wj / 256.0) * texture2D(uTexture, clamp(uv + vec2(float(i), float(j)) * st, 0.0, 1.0)).rgb;
+    }
+}
+vec3 d = inRgb - acc;
+d = sign(d) * max(abs(d) - 0.006590, vec3(0.0));
+outRgb = clamp(inRgb + 1.1000 * d, 0.0, 1.0);
 ```
-- **Parameter Table:**
-| Name | Value | Unit | Range | Description |
-|---|---|---|---|---|
-| `sigma_frac_h` | `0.000535` | fraction of height H | `[0.0001, 0.005]` | Blur radius relative to frame height |
-| `amount` | `3.0000` | multiplier | `[0.0, 3.0]` | High-pass sharpening boost |
-| `threshold_01` | `0.006590` | normalized [0..1] | `[0.0, 0.05]` | Coring threshold (corresponds to 1.68/255) |
 
----
-
-### Stage 4: Haze Flare
-- **Working Space:** Gamma-encoded sRGB [0..1]
-- **Formula:**
+### Stage 4: Haze Flare (Subtle Ambient Screen Glow)
 ```glsl
-vec2 uv_flare = (vTexCoord - vec2(0.4027, -0.2000)) * vec2(uResolution.x / uResolution.y, 1.0);
-float d2 = (uv_flare.x * uv_flare.x) / (0.8500 * 0.8500) + (uv_flare.y * uv_flare.y) / (0.8500 * 0.8500);
-float glow = exp(-0.5 * d2) * 0.4114;
-vec3 flareColor = vec3(0.0193, 0.1988, 1.0000);
-vec3 f_vec = clamp(glow * flareColor, 0.0, 1.0);
-vec3 final_rgb = 1.0 - (1.0 - usm_rgb) * (1.0 - f_vec);
+float dx = (uv.x - 0.500000) * (uTexelSize.y / uTexelSize.x);
+float dy = yTop - 0.050000;
+float u = dx / 0.450000;
+float v = dy / 0.350000;
+float glow = exp(-0.5 * (u * u + v * v)) * 0.1200;
+vec3 f_vec = clamp(glow * vec3(0.350000, 0.550000, 0.950000), 0.0, 1.0);
+outRgb = clamp(vec3(1.0) - (vec3(1.0) - inRgb) * (vec3(1.0) - f_vec), 0.0, 1.0);
 ```
 
 ---
 
-## 4. Suggested Keyflaw Control Sheet
-| Control Label | Key | Type | Default | Valid Range | Action / Driven Uniform |
-|---|---|---|---|---|---|
-| **Colour Correction** | `u_enable_cc` | `BOOL` | `true` | `false / true` | Toggles Stage 1 Color Grade |
-| **Quality** | `u_enable_quality` | `BOOL` | `true` | `false / true` | Toggles Stage 2 Gradient + Stage 3 USM |
-| **Haze Flare** | `u_enable_flare` | `BOOL` | `true` | `false / true` | Toggles Stage 4 Screen Optical Glow |
-| **Master Intensity** | `u_intensity` | `FLOAT` | `1.0` | `0.0 .. 1.0` | Master dry/wet blend |
+## 4. Keyflaw Parameter Control Sheet
+Conforms to Keyflaw 1.4.8+ conventions (`BOOL` switches in `"Switches"` group, clean adjustments):
+
+| Key | Label | Type | Group | Default | Valid Range | Effect / Controlled Stage |
+|---|---|---|---|---|---|---|
+| `cc` | Colour Correction | BOOL | Switches | 1.0 (ON) | 0.0 or 1.0 | Enables Stage 1 M2_Dade_srgb colour grading |
+| `quality` | Quality (Sharpen + Gradient) | BOOL | Switches | 1.0 (ON) | 0.0 or 1.0 | Enables Stage 2 (Gradient) & Stage 3 (25-tap USM) |
+| `flare` | Haze Flare | BOOL | Switches | 1.0 (ON) | 0.0 or 1.0 | Enables Stage 4 subtle ambient highlight screen glow |
+| `intensity` | Master Intensity | SCALAR | Adjustments | 1.0 | 0.0 .. 1.0 | Master dry/wet mix between source and composite |
 
 ---
 
-## 5. Test Vectors
+## 5. Test Vectors (for Machine-Checking Parity)
 
-### A. Colour Stage Test Vectors (28 Vectors)
-| Input RGB (0..255) | Expected Output RGB (0..255) | Expected Output (0..1) |
+### 5.1 Colour Correction Stage Test Vectors (24 Vectors)
+Input RGB -> Expected Output RGB (sRGB `[0..1]`):
+
+| Input RGB | Expected Output RGB | Input Meaning |
 |---|---|---|
-| `[0, 0, 0]` | `[37.19, 32.38, 36.49]` | `[0.1459, 0.1270, 0.1431]` |
-| `[16, 16, 16]` | `[38.87, 35.61, 32.96]` | `[0.1524, 0.1397, 0.1293]` |
-| `[32, 32, 32]` | `[41.88, 40.96, 27.72]` | `[0.1642, 0.1606, 0.1087]` |
-| `[48, 48, 48]` | `[47.56, 51.69, 46.81]` | `[0.1865, 0.2027, 0.1836]` |
-| `[64, 64, 64]` | `[53.91, 69.98, 70.16]` | `[0.2114, 0.2744, 0.2751]` |
-| `[80, 80, 80]` | `[60.08, 88.46, 96.69]` | `[0.2356, 0.3469, 0.3792]` |
-| `[96, 96, 96]` | `[67.36, 114.61, 120.19]` | `[0.2642, 0.4495, 0.4713]` |
-| `[112, 112, 112]` | `[75.48, 132.28, 131.49]` | `[0.2960, 0.5187, 0.5157]` |
-| `[128, 128, 128]` | `[107.29, 138.81, 151.1]` | `[0.4207, 0.5444, 0.5925]` |
-| `[144, 144, 144]` | `[128.07, 150.03, 169.45]` | `[0.5022, 0.5884, 0.6645]` |
-| `[160, 160, 160]` | `[150.85, 168.04, 181.03]` | `[0.5916, 0.6590, 0.7099]` |
-| `[176, 176, 176]` | `[180.08, 196.86, 182.95]` | `[0.7062, 0.7720, 0.7175]` |
-| `[192, 192, 192]` | `[188.82, 206.19, 213.8]` | `[0.7405, 0.8086, 0.8384]` |
-| `[208, 208, 208]` | `[206.69, 215.83, 229.29]` | `[0.8105, 0.8464, 0.8992]` |
-| `[224, 224, 224]` | `[236.69, 232.75, 242.86]` | `[0.9282, 0.9128, 0.9524]` |
-| `[240, 240, 240]` | `[254.86, 254.84, 252.38]` | `[0.9994, 0.9994, 0.9897]` |
-| `[255, 255, 255]` | `[254.86, 254.84, 254.94]` | `[0.9994, 0.9994, 0.9998]` |
-| `[255, 0, 0]` | `[254.86, 93.64, 85.33]` | `[0.9994, 0.3672, 0.3346]` |
-| `[0, 255, 0]` | `[7.28, 207.43, 2.75]` | `[0.0286, 0.8135, 0.0108]` |
-| `[0, 0, 255]` | `[64.01, 138.93, 254.94]` | `[0.2510, 0.5448, 0.9998]` |
-| `[255, 255, 0]` | `[253.7, 217.27, 2.75]` | `[0.9949, 0.8520, 0.0108]` |
-| `[0, 255, 255]` | `[7.28, 248.75, 252.3]` | `[0.0286, 0.9755, 0.9894]` |
-| `[255, 0, 255]` | `[254.86, 160.92, 254.94]` | `[0.9994, 0.6310, 0.9998]` |
-| `[220, 180, 140]` | `[249.16, 196.82, 117.82]` | `[0.9771, 0.7718, 0.4620]` |
-| `[100, 160, 220]` | `[32.16, 195.39, 254.94]` | `[0.1261, 0.7662, 0.9998]` |
-| `[25, 30, 45]` | `[39.98, 43.65, 53.64]` | `[0.1568, 0.1712, 0.2103]` |
-| `[240, 100, 60]` | `[254.86, 136.76, 51.23]` | `[0.9994, 0.5363, 0.2009]` |
-| `[40, 180, 100]` | `[7.28, 160.17, 2.75]` | `[0.0286, 0.6281, 0.0108]` |
+| `[0.0000, 0.0000, 0.0000]` | `[0.1446, 0.1832, 0.1759]` | Greyscale / Primary / Skin / Sky |
+| `[0.1000, 0.1000, 0.1000]` | `[0.1470, 0.1643, 0.1418]` | Greyscale / Primary / Skin / Sky |
+| `[0.2000, 0.2000, 0.2000]` | `[0.2043, 0.2235, 0.2628]` | Greyscale / Primary / Skin / Sky |
+| `[0.3000, 0.3000, 0.3000]` | `[0.2635, 0.3052, 0.3867]` | Greyscale / Primary / Skin / Sky |
+| `[0.4000, 0.4000, 0.4000]` | `[0.3231, 0.3867, 0.4933]` | Greyscale / Primary / Skin / Sky |
+| `[0.5000, 0.5000, 0.5000]` | `[0.3944, 0.4679, 0.5809]` | Greyscale / Primary / Skin / Sky |
+| `[0.6000, 0.6000, 0.6000]` | `[0.4757, 0.5486, 0.6504]` | Greyscale / Primary / Skin / Sky |
+| `[0.7000, 0.7000, 0.7000]` | `[0.5668, 0.6296, 0.7035]` | Greyscale / Primary / Skin / Sky |
+| `[0.8000, 0.8000, 0.8000]` | `[0.6712, 0.7181, 0.7486]` | Greyscale / Primary / Skin / Sky |
+| `[0.9000, 0.9000, 0.9000]` | `[0.7822, 0.7993, 0.7442]` | Greyscale / Primary / Skin / Sky |
+| `[1.0000, 1.0000, 1.0000]` | `[1.0000, 0.9593, 0.8791]` | Greyscale / Primary / Skin / Sky |
+| `[1.0000, 0.0000, 0.0000]` | `[1.0000, 0.1816, 0.1362]` | Greyscale / Primary / Skin / Sky |
+| `[0.0000, 1.0000, 0.0000]` | `[0.0000, 0.1611, 0.0000]` | Greyscale / Primary / Skin / Sky |
+| `[0.0000, 0.0000, 1.0000]` | `[0.1612, 0.7560, 1.0000]` | Greyscale / Primary / Skin / Sky |
+| `[1.0000, 1.0000, 0.0000]` | `[1.0000, 1.0000, 1.0000]` | Greyscale / Primary / Skin / Sky |
+| `[0.0000, 1.0000, 1.0000]` | `[0.0453, 1.0000, 1.0000]` | Greyscale / Primary / Skin / Sky |
+| `[1.0000, 0.0000, 1.0000]` | `[1.0000, 1.0000, 1.0000]` | Greyscale / Primary / Skin / Sky |
+| `[0.9300, 0.8990, 0.8480]` | `[1.0000, 0.9484, 0.8573]` | Greyscale / Primary / Skin / Sky |
+| `[0.9320, 0.8880, 0.8100]` | `[1.0000, 0.9681, 0.8530]` | Greyscale / Primary / Skin / Sky |
+| `[0.1750, 0.3660, 0.6650]` | `[0.1046, 0.5434, 0.9873]` | Greyscale / Primary / Skin / Sky |
+| `[0.4410, 0.5080, 0.7630]` | `[0.2989, 0.6412, 1.0000]` | Greyscale / Primary / Skin / Sky |
+| `[0.4840, 0.0950, 0.0860]` | `[0.7830, 0.2006, 0.1509]` | Greyscale / Primary / Skin / Sky |
+| `[0.1940, 0.2270, 0.2660]` | `[0.1884, 0.2644, 0.3616]` | Greyscale / Primary / Skin / Sky |
+| `[0.0870, 0.0120, 0.0130]` | `[0.1430, 0.1445, 0.1342]` | Greyscale / Primary / Skin / Sky |
 
-### B. Gradient Multiplier Test Vectors
-| y (normalised [0..1]) | Multiplier RGB (Output / Input) |
+### 5.2 Gradient Stage Test Vectors
+| Frame y (0=top, 1=bottom) | Multiplier RGB |
 |---|---|
-| `0.000` | `[1.0000, 1.0000, 1.0000]` |
-| `0.200` | `[1.0000, 1.0000, 1.0000]` |
-| `0.350` | `[0.9885, 0.9860, 0.9869]` |
-| `0.500` | `[0.9557, 0.9457, 0.9494]` |
-| `0.650` | `[0.9227, 0.9053, 0.9117]` |
-| `0.776` | `[0.9107, 0.8906, 0.8980]` |
-| `0.900` | `[0.9107, 0.8906, 0.8980]` |
-| `1.000` | `[0.9107, 0.8906, 0.8980]` |
+| `0.00` | `[1.0000, 1.0000, 1.0000]` |
+| `0.20` | `[1.0000, 1.0000, 1.0000]` |
+| `0.40` | `[0.9931, 0.9843, 0.9836]` |
+| `0.60` | `[0.9672, 0.9257, 0.9224]` |
+| `0.80` | `[0.9450, 0.8755, 0.8699]` |
+| `1.00` | `[0.9428, 0.8704, 0.8645]` |
 
-### C. Flare Contribution Test Vectors (Input RGB = [0.5, 0.5, 0.5])
-| Position (x, y) | Output RGB |
+### 5.3 Flare Contribution Test Vectors (Input = Mid-Grey 0.50)
+| Coordinates (x, y) | Output RGB |
 |---|---|
-| `(0.402, 0.015)` | `[0.5036, 0.5370, 0.6861]` |
-| `(0.402, 0.200)` | `[0.5033, 0.5342, 0.6720]` |
-| `(0.100, 0.100)` | `[0.5029, 0.5295, 0.6486]` |
-| `(0.700, 0.100)` | `[0.5037, 0.5384, 0.6932]` |
-| `(0.500, 0.500)` | `[0.5027, 0.5282, 0.6419]` |
-| `(0.800, 0.800)` | `[0.5020, 0.5204, 0.6025]` |
-| `(0.000, 0.000)` | `[0.5027, 0.5279, 0.6403]` |
-| `(1.000, 1.000)` | `[0.5014, 0.5143, 0.5718]` |
-
-### D. 1D Step-Edge Unsharp Mask Vector (H = 720)
-- **Input Step Profile (21 samples):**
-`[0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8]`
-- **Expected Unsharp Output (21 samples):**
-`[0.2, 0.2, 0.2, 0.0, 1.0, 0.8, 1.0, 0.0, 0.2, 0.2, 0.0, 1.0, 0.8, 1.0, 0.0, 0.2, 0.2, 0.0, 1.0, 0.8, 0.8]`
+| `(0.50, 0.05)` | `[0.5210, 0.5330, 0.5570]` |
+| `(0.10, 0.10)` | `[0.5140, 0.5220, 0.5380]` |
+| `(0.90, 0.10)` | `[0.5140, 0.5220, 0.5380]` |
+| `(0.50, 0.50)` | `[0.5092, 0.5144, 0.5249]` |
+| `(0.10, 0.90)` | `[0.5007, 0.5012, 0.5020]` |
+| `(0.90, 0.90)` | `[0.5007, 0.5012, 0.5020]` |
 
 ---
 
-## 6. Known Limits and Scene Dependence
-1. **Scene-Dependent Flare**: In AMV edits, optical glows are keyframed to match the clip's light source. The canonical preset reflects Pair A's top warm burst, while Pair B exhibits a character eye accent glow. Keyflaw exposes this as an optional toggle.
-2. **Extrapolation Limits**: Observed training ranges are R: [34, 241], G: [48, 233], B: [56, 226]. Outside these bounds, the spline curves are smoothly clamped to preserve monotonicity without inversion.
-3. **Reconstruction Noise Floor**: Clean matched frames carry an intrinsic ~3-level noise floor from AI reconstruction drift and mobile export recompression. All measured stages reduce error significantly above this floor.
+## 6. Known Limits and Noise Floor
+1. **AI Reconstruction Floor:** Matched originals have an intrinsic ~2.9 levels / 255 baseline drift.
+2. **Export Recompression:** Source frames from mobile AMV exports contain block-quantization artifacts.
+3. **Resolution Independence:** All coordinate axes are normalized to full-frame bounds; spatial blur sigma scales directly with frame height (`sigma_px = sigma_frac_h * H`).

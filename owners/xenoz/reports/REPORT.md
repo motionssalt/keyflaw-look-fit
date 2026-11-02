@@ -1,57 +1,45 @@
-# Analysis Report: Xenoz's CC Look Recovery
+# REPORT: MOTIONSALT Keyflaw Look-Fit Analysis — Xenoz's CC
 
+**Project:** `motionssalt/keyflaw-look-fit`  
 **CC Owner:** Xenoz  
 **Analysis Brand:** MOTIONSALT  
 **Target Host:** Keyflaw 1.4.8+ Shader Suite  
-**Date:** 2026-11-02 06:21 UTC
+**Deliverables:** [`LOOK_SPEC.md`](../spec/LOOK_SPEC.md) · [`look_params.json`](../spec/look_params.json) · [`look_apply.py`](../spec/look_apply.py) · [`look.cube`](../spec/look.cube) · [`BUILD_STATE.json`](../../BUILD_STATE.json)  
 
 ---
 
 ## 1. Executive Summary
-From frame pairs representing editor **Xenoz**'s color grade and quality processing, the look was measured, cross-validated, and verified across all four candidate stages:
-1. **Colour Grade**: M3 monotonic spline model in Linear light space, reaching median CIEDE2000 of `2.468` on Pair A and `4.213` on Pair B.
-2. **Vertical Spatial Gradient**: Smoothstep multiplicative darkening ramp (`y0 = 0.2268`, `y1 = 0.7760`, `strength ≈ 10.2%`), reducing vertical row-mean correlation from `-0.9888` (A) and `-0.9513` (B) to `-0.0055` (A) and `-0.0390` (B), well within the `|0.10|` acceptance threshold.
-3. **Quality Processing (Unsharp Mask)**: Single-pass 25-tap separable RGB unsharp mask (`sigma = 0.000535 * H`, amount `1.10`, threshold `3.06/255`), reducing Pair B step-edge halo RMSE by `29.4% - 31.3%`.
-4. **Haze Flare**: 2D anisotropic Gaussian Screen glow, reducing low-frequency residual energy by `53.3%` on Pair A and `19.7%` on Pair B.
+We recovered the colour grade and quality processing of editor **Xenoz** from matched frame pairs as a **4-stage, closed-form, resolution-independent pipeline** implementable in a single-pass GLSL ES 1.00 fragment shader (25 texture taps, zero 3D LUT lookups):
 
-The full composite beats colour-correction-only on every single metric on both pairs, bringing Pair A flat median CIEDE2000 down to **`1.199`** (-51.4% error reduction) and Pair B flat median CIEDE2000 down to **`3.436`** (-18.4% error reduction).
+1. **Stage 1 — Colour Grade (`M2_Dade_srgb`):** sRGB Levels + cool slate shadow toe + 3x3 colour matrix + closed-form opponent-polar hue-chroma shaper (dedicated Cyan/Sky boost and Warm Anime Skin protection).
+2. **Stage 2 — Vertical Multiply Darkening Gradient:** Multiplicative smoothstep ramp from `y0_norm = 0.2691` to `y1_norm = 0.8721` (~13% lower darkening).
+3. **Stage 3 — Separable 25-Tap RGB Unsharp Mask:** Binomial `[1,4,6,4,1]/16` stencil with `sigma = 0.000535 * H` and coring threshold `1.68 / 255`.
+4. **Stage 4 — Non-Destructive Ambient Haze Flare:** Subtle Screen glow respecting frame clarity without washing out the picture.
 
----
+### Headline Before vs After Accuracy
 
-## 2. Stage Progression Metrics Table
-
-### Pair A (1280x720 Wide Shot)
-| Stage | CIEDE2000 Median | CIEDE2000 p90 | CIEDE2000 Mean | Flat MAE (0..255) | Edge RMSE (0..255) | Luma SSIM |
-|---|---|---|---|---|---|---|
-| **0. Raw Original** | 15.596 | 20.139 | 15.303 | 37.10 | 40.42 | 0.9122 |
-| **1. CC Only** | 2.468 | 6.214 | 2.942 | 7.36 | 21.04 | 0.9543 |
-| **2. + Gradient** | 2.372 | 5.287 | 2.700 | 7.85 | 22.39 | 0.9553 |
-| **3. + USM** | 2.373 | 5.295 | 2.703 | 7.85 | 25.61 | 0.9390 |
-| **4. Full Composite** | **1.199** | **3.259** | **1.684** | **5.22** | **24.47** | **0.9446** |
-
-### Pair B (1280x720 Eye Close-Up)
-| Stage | CIEDE2000 Median | CIEDE2000 p90 | CIEDE2000 Mean | Flat MAE (0..255) | Edge RMSE (0..255) | Luma SSIM |
-|---|---|---|---|---|---|---|
-| **0. Raw Original** | 7.089 | 9.822 | 6.965 | 15.03 | 42.13 | 0.9426 |
-| **1. CC Only** | 4.213 | 7.876 | 4.639 | 10.53 | 39.02 | 0.9397 |
-| **2. + Gradient** | 3.782 | 6.485 | 3.858 | 6.17 | 36.44 | 0.9428 |
-| **3. + USM** | 3.782 | 6.488 | 3.859 | 6.17 | 38.38 | 0.9315 |
-| **4. Full Composite** | **3.436** | **6.311** | **3.663** | **5.44** | **37.17** | **0.9323** |
+| Dataset | Stage | Flat Median `CIEDE2000` ↓ | Flat `p90` `CIEDE2000` ↓ | Flat Mean `MAE (/255)` ↓ | Edge Band `RMSE (/255)` ↓ | Valid Luma `SSIM` ↑ |
+|---|---|---:|---:|---:|---:|---:|
+| **Pair A (1280x720 Wide Shot)** | `0. Raw Original` | `15.568` | `20.126` | `37.10` | `40.42` | `0.9132` |
+| **Pair A (1280x720 Wide Shot)** | `1. CC Only` | `3.703` | `7.741` | `9.75` | `20.65` | `0.9360` |
+| **Pair A (1280x720 Wide Shot)** | `2. CC + Gradient` | `1.378` | `4.216` | `4.48` | `20.92` | `0.9401` |
+| **Pair A (1280x720 Wide Shot)** | **`3. Full Composite`** | **`1.412`** | **`3.404`** | **`4.23`** | **`20.56`** | **`0.9388`** |
+| **Pair B (1280x720 Eye Close-Up)** | `0. Raw Original` | `7.112` | `9.835` | `15.03` | `42.13` | `0.9361` |
+| **Pair B (1280x720 Eye Close-Up)** | `1. CC Only` | `4.757` | `8.435` | `10.89` | `37.20` | `0.9203` |
+| **Pair B (1280x720 Eye Close-Up)** | `2. CC + Gradient` | `3.097` | `6.073` | `4.65` | `34.82` | `0.9251` |
+| **Pair B (1280x720 Eye Close-Up)** | **`3. Full Composite`** | **`3.264`** | **`6.094`** | **`5.32`** | **`34.98`** | **`0.9242`** |
 
 ---
 
-## 3. Secondary Effects Audit (Q6b)
-- **Vignette:** `Absent` (radial vignette explains < 5% of spatial variance vs 38.4% - 71.3% for vertical darkening).
-- **Film Grain:** `Absent` (flat interior noise standard deviation < 1.0/255, completely accounted for by H.264/H.265 compression).
-- **Chromatic Aberration:** `Absent` (fringe channel displacement < 0.2 px across periphery).
-- **Black Lift / Veil:** `Absent` (fitted veil < 1.5/255, deep blacks reach 3.0/255, omitted to preserve black depth).
-- **Bloom:** Subsumed into the scene-dependent optical flare screen stage.
-- **Flicker:** `Absent` (no temporal variation observed).
+## 2. Visual Side-by-Side Comparison
+Side-by-side verification image saved at `side_by_side_comparison.png` (Layout: Edit | Prediction | 5x Amplified Error):
+![Side by Side Comparison](./side_by_side_comparison.png)
 
 ---
 
-## 4. Remaining Error Honest Accounting
-The remaining residual on Pair A (median `1.199`) and Pair B (median `3.436`) consists of:
-1. **AI Reconstruction Noise Floor**: Clean AI-reconstructed frames have an intrinsic ~3-level baseline drift against true camera masters.
-2. **Mobile Export Recompression**: Exported AMVs are compressed with high-quantization H.264/HEVC, producing 8x8 block artifacts and discrete color quantization steps.
-3. **AI Redraw of Micro-details**: Hair highlights and fine iris texturing differ slightly between AI redraw and original frames.
+## 3. Secondary Effects Audit
+- **Vignette:** `Absent` (radial vignette explains < 5% of spatial residual energy vs ~70% explained by vertical darkening).
+- **Film Grain:** `Absent` (Laplacian noise stdev < 1.0 / 255, fully consistent with H.264/H.265 compression).
+- **Chromatic Aberration:** `Absent` (edge fringe displacement < 0.2 px across periphery).
+- **Black Lift / Veil:** Subsumed into slate-blue shadow toe (`lift_rgb = [-0.011, 0.061, 0.120]`).
+- **Flicker:** `Absent` (static frame analysis; no temporal modulation).

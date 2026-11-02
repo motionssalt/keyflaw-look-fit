@@ -1,0 +1,110 @@
+{
+  "pairA": {
+    "0_raw": {
+      "de00_median": 15.568,
+      "de00_p90": 20.126,
+      "de00_mean": 15.292,
+      "flat_mae_rgb": [
+        13.33,
+        37.43,
+        60.55
+      ],
+      "flat_mae_mean": 37.1,
+      "edge_rmse": 40.42,
+      "luma_ssim": 0.9132
+    },
+    "1_cc_only": {
+      "de00_median": 3.703,
+      "de00_p90": 7.741,
+      "de00_mean": 4.056,
+      "flat_mae_rgb": [
+        6.14,
+        10.31,
+        12.79
+      ],
+      "flat_mae_mean": 9.75,
+      "edge_rmse": 20.65,
+      "luma_ssim": 0.936
+    },
+    "2_cc_grad": {
+      "de00_median": 1.378,
+      "de00_p90": 4.216,
+      "de00_mean": 1.915,
+      "flat_mae_rgb": [
+        5.77,
+        4.15,
+        3.51
+      ],
+      "flat_mae_mean": 4.48,
+      "edge_rmse": 20.92,
+      "luma_ssim": 0.9401
+    },
+    "3_full_composite": {
+      "de00_median": 1.412,
+      "de00_p90": 3.404,
+      "de00_mean": 1.813,
+      "flat_mae_rgb": [
+        5.25,
+        3.9,
+        3.55
+      ],
+      "flat_mae_mean": 4.23,
+      "edge_rmse": 20.56,
+      "luma_ssim": 0.9388
+    }
+  },
+  "pairB": {
+    "0_raw": {
+      "de00_median": 7.112,
+      "de00_p90": 9.835,
+      "de00_mean": 6.985,
+      "flat_mae_rgb": [
+        16.37,
+        9.7,
+        19.02
+      ],
+      "flat_mae_mean": 15.03,
+      "edge_rmse": 42.13,
+      "luma_ssim": 0.9361
+    },
+    "1_cc_only": {
+      "de00_median": 4.757,
+      "de00_p90": 8.435,
+      "de00_mean": 5.131,
+      "flat_mae_rgb": [
+        5.52,
+        11.6,
+        15.54
+      ],
+      "flat_mae_mean": 10.89,
+      "edge_rmse": 37.2,
+      "luma_ssim": 0.9203
+    },
+    "2_cc_grad": {
+      "de00_median": 3.097,
+      "de00_p90": 6.073,
+      "de00_mean": 3.493,
+      "flat_mae_rgb": [
+        3.97,
+        3.77,
+        6.19
+      ],
+      "flat_mae_mean": 4.65,
+      "edge_rmse": 34.82,
+      "luma_ssim": 0.9251
+    },
+    "3_full_composite": {
+      "de00_median": 3.264,
+      "de00_p90": 6.094,
+      "de00_mean": 3.619,
+      "flat_mae_rgb": [
+        4.71,
+        4.08,
+        7.16
+      ],
+      "flat_mae_mean": 5.32,
+      "edge_rmse": 34.98,
+      "luma_ssim": 0.9242
+    }
+  }
+}
