@@ -1,0 +1,97 @@
+{
+  "project": "keyflaw-look-fit/xenoz",
+  "repo": "motionssalt/keyflaw-look-fit",
+  "goal": "Measure the colour grade + quality processing of Xenoz's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
+  "status": "blocked",
+  "current_phase": "Q1",
+  "queue": [
+    {
+      "id": "Q1",
+      "title": "Setup, inputs, masks",
+      "status": "blocked",
+      "notes": "Repository scaffold, directories, state tracker, and analysis pipeline created. Blocked on receiving Xenoz frame pairs: pairA_edited.png, pairA_original_matched.png, pairB_edited.png, pairB_original_matched.png (no images were attached to the prompt)."
+    },
+    {
+      "id": "Q2",
+      "title": "Alignment audit",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q3",
+      "title": "Colour correction fit",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q4",
+      "title": "Gradient / lower-area darkening",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q5",
+      "title": "Unsharp mask",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q6",
+      "title": "Haze flare (may be absent)",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q6b",
+      "title": "Other effects",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q7",
+      "title": "Order of operations and the full composite",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "Q8",
+      "title": "Deliverables",
+      "status": "pending",
+      "notes": ""
+    }
+  ],
+  "results": {
+    "cc_model": "",
+    "cc_params": {},
+    "gradient": {},
+    "unsharp": {},
+    "flare": {},
+    "order_of_operations": "",
+    "metrics": {}
+  },
+  "completed": [],
+  "next_steps": [
+    "Obtain Xenoz frame pairs (pairA_edited.png, pairA_original_matched.png, pairB_edited.png, pairB_original_matched.png)",
+    "Run Q1 mask generator and visual overlays",
+    "Execute Q2 alignment audit",
+    "Execute Q3 colour fit and cross-validation",
+    "Execute Q4 gradient discovery",
+    "Execute Q5 unsharp halo recovery",
+    "Execute Q6 flare and Q6b secondary effects recovery",
+    "Execute Q7 composite order and Q8 deliverables"
+  ],
+  "decisions": [
+    "Private repo motionssalt/keyflaw-look-fit-xenoz created using GITHUB_PAT without persisting raw secret tokens",
+    "Scaffold, docs/BUILD_PROMPT.md, docs/manifest.md, and modular pipeline scripts established",
+    "Q1 marked blocked pending attachment/upload of Xenoz frame pairs"
+  ],
+  "known_issues": [
+    "Input frame pairs for CC_OWNER = Xenoz were not attached to the user prompt"
+  ],
+  "cc_owner": "Xenoz",
+  "secrets_expected": [
+    "GITHUB_PAT"
+  ],
+  "last_updated": "2026-11-02T04:52:00Z",
+  "last_session_note": "Repository scaffolded, state registered, and pushed to motionssalt/keyflaw-look-fit-xenoz. Waiting for Xenoz frame pairs."
+}

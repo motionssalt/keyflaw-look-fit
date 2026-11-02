@@ -5,6 +5,7 @@ This private repository contains MOTIONSALT’s recovered Keyflaw colour-correct
 | Owner | Status | Release | Repository source |
 |---|---|---|---|
 | [Floby](owners/floby/README.md) | Complete analysis and look deliverables | [Floby’s CC v1.0](https://github.com/motionssalt/keyflaw-look-fit/releases/tag/floby-cc-v1.0) | [owners/floby/](owners/floby/) |
+| [Xenoz](owners/xenoz/README.md) | Initialized; blocked on Q1 awaiting frame pairs | Pending | [owners/xenoz/](owners/xenoz/) |
 
 ## Layout
 

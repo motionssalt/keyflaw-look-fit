@@ -1,0 +1,304 @@
+{
+  "schema_version": "1.0.0",
+  "project": "MOTIONSALT Keyflaw Look-Fit",
+  "order_of_operations": [
+    "1_unsharp_mask_25tap_rgb",
+    "2_colour_correction_dade_srgb",
+    "3_vertical_multiply_gradient",
+    "4_anisotropic_gaussian_screen_flare"
+  ],
+  "assumptions": {
+    "shader_architecture": "Single-pass GLSL fragment shader (to be confirmed by Keyflaw pack builder)",
+    "inputs_available": "Input video frame texture + uniform controls only (no extra LUT/auxiliary textures, no multi-pass)",
+    "max_texture_taps": 25,
+    "working_colour_space": "Gamma-encoded sRGB [0.0, 1.0]",
+    "uv_origin_convention": "Normalised (x, y) in [0, 1] with (0, 0) = top-left and (1, 1) = bottom-right (flip y if host uses bottom-left OpenGL UV origin)"
+  },
+  "unsharp": {
+    "mode": "rgb",
+    "colour_space": "gamma-encoded sRGB [0..1] (Stage 1 pre-CC)",
+    "kernel": "single-pass 25-tap (5x5 separable [1,4,6,4,1]/16 with bilinear UV offset = vec2(i,j) * sigma_px / resolution)",
+    "scaling_law": "constant_fraction_of_height",
+    "sigma_frac_h": 0.003473,
+    "sigma_px_at_resolutions": {
+      "pairA_1278x720": 2.5006,
+      "pairB_edit_1291x720": 2.5006,
+      "pairB_orig_720x409": 1.4205,
+      "fhd_1920x1080": 3.7508
+    },
+    "amount": 0.82,
+    "threshold_01": 0.01433,
+    "threshold_255": 3.654,
+    "amount_1d_with_nuisance_preblur": 1.2563,
+    "edge_profile_rmse_reduction_pct": {
+      "pairA_720p_vs_no_sharpening": 38.92,
+      "pairB_720p_vs_no_sharpening": 39.31,
+      "pairB_409p_vs_no_sharpening": 33.56
+    }
+  },
+  "colour_correction": {
+    "model_type": "M2_Dade_srgb",
+    "colour_space": "srgb",
+    "levels": {
+      "in_black": [
+        -0.079999,
+        -0.077538,
+        0.035829
+      ],
+      "in_white": [
+        0.934037,
+        0.929412,
+        0.963913
+      ],
+      "gamma": [
+        0.820622,
+        0.889244,
+        0.863185
+      ],
+      "out_black": [
+        -0.112643,
+        -0.119988,
+        0.029787
+      ],
+      "out_white": [
+        1.01702,
+        1.012705,
+        1.0806
+      ]
+    },
+    "shadow_toe": {
+      "luma_end": 0.28,
+      "shadow_lift_rgb": [
+        -0.008286,
+        0.028697,
+        0.049749
+      ]
+    },
+    "saturation_equiv": 1.199071,
+    "matrix_3x3": [
+      [
+        1.45155,
+        -0.243174,
+        -0.208376
+      ],
+      [
+        0.024565,
+        1.124975,
+        -0.14954
+      ],
+      [
+        -0.208747,
+        0.087738,
+        1.121009
+      ]
+    ],
+    "dade_hue_shaper": {
+      "chroma_gate_start": 0.015,
+      "chroma_gate_end": 0.06,
+      "foliage_window": {
+        "h_start0_deg": 56.0,
+        "h_start1_deg": 68.0,
+        "h_end0_deg": 138.0,
+        "h_end1_deg": 172.0,
+        "dh_rad": 0.757676,
+        "dh_deg": 43.412,
+        "dc_gain": -0.079099,
+        "da_luma": -0.120041
+      },
+      "von_mises_lobes": [
+        {
+          "name": "teal_greens",
+          "center_deg": 162.0,
+          "cos_center": -0.951057,
+          "sin_center": 0.309017,
+          "kappa": 5.5,
+          "dh_rad": -0.11086,
+          "dh_deg": -6.352,
+          "dc_gain": 0.391882,
+          "da_luma": 0.18
+        },
+        {
+          "name": "cyan_sky",
+          "center_deg": 198.0,
+          "cos_center": -0.951057,
+          "sin_center": -0.309017,
+          "kappa": 5.5,
+          "dh_rad": -0.045421,
+          "dh_deg": -2.602,
+          "dc_gain": -0.159362,
+          "da_luma": 0.062555
+        },
+        {
+          "name": "violet_plum",
+          "center_deg": 315.0,
+          "cos_center": 0.707107,
+          "sin_center": -0.707107,
+          "kappa": 3.0,
+          "dh_rad": -0.325884,
+          "dh_deg": -18.672,
+          "dc_gain": -0.266123,
+          "da_luma": -0.153217
+        }
+      ]
+    },
+    "observed_input_range_srgb_0_255": [
+      {
+        "channel": "R",
+        "min_255": 16.0,
+        "max_255": 251.0,
+        "extrapolated_below_255": 16.0,
+        "extrapolated_above_255": 251.0
+      },
+      {
+        "channel": "G",
+        "min_255": 21.0,
+        "max_255": 253.0,
+        "extrapolated_below_255": 21.0,
+        "extrapolated_above_255": 253.0
+      },
+      {
+        "channel": "B",
+        "min_255": 25.0,
+        "max_255": 254.0,
+        "extrapolated_below_255": 25.0,
+        "extrapolated_above_255": 254.0
+      }
+    ]
+  },
+  "gradient": {
+    "hypothesis": "H1_vertical_spatial_multiply_gradient",
+    "coordinate_reference": "Full frame height including letterbox bars (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
+    "y0_norm": 0.14,
+    "y1_norm": 0.758341,
+    "falloff_curve": "smoothstep",
+    "blend_mode": "multiply",
+    "strength_rgb": [
+      0.262739,
+      0.256392,
+      0.28055
+    ],
+    "strength_luma_equiv": 0.259486,
+    "pixel_rows_at_resolutions": {
+      "pairA_1278x720": {
+        "y0_px": 100.8,
+        "y1_px": 546.01
+      },
+      "pairB_edit_1291x720": {
+        "y0_px": 100.8,
+        "y1_px": 546.01
+      },
+      "pairB_orig_720x409": {
+        "y0_px": 57.26,
+        "y1_px": 310.16
+      }
+    }
+  },
+  "flare": {
+    "model": "2D anisotropic rotated Gaussian radial glow",
+    "falloff_curve": "gaussian",
+    "blend_mode": "screen",
+    "global_veil_needed": false,
+    "default_preset": "default",
+    "presets": {
+      "default": {
+        "cx": 0.869336,
+        "cy": 0.081183,
+        "rx_frac_h": 0.18539,
+        "ry_frac_h": 0.248768,
+        "angle_deg": -72.9434,
+        "colour_rgb": [
+          0.437628,
+          1.0,
+          0.984158
+        ],
+        "intensity": 0.118307,
+        "pixel_equivalents": {
+          "pairA_1278x720": {
+            "cx_px": 1111.01,
+            "cy_px": 58.45,
+            "rx_px": 133.48,
+            "ry_px": 179.11
+          },
+          "pairB_edit_1291x720": {
+            "cx_px": 1122.31,
+            "cy_px": 58.45,
+            "rx_px": 133.48,
+            "ry_px": 179.11
+          },
+          "pairB_orig_720x409": {
+            "cx_px": 625.92,
+            "cy_px": 33.2,
+            "rx_px": 75.82,
+            "ry_px": 101.75
+          }
+        }
+      },
+      "pairA": {
+        "cx": 0.958064,
+        "cy": 0.183344,
+        "rx_frac_h": 0.193505,
+        "ry_frac_h": 0.301423,
+        "angle_deg": -41.45956,
+        "colour_rgb": [
+          0.970588,
+          1.0,
+          0.352941
+        ],
+        "intensity": 0.34,
+        "pixel_equivalents": {
+          "pairA_1278x720": {
+            "cx_px": 1224.41,
+            "cy_px": 132.01,
+            "rx_px": 139.32,
+            "ry_px": 217.02
+          },
+          "pairB_edit_1291x720": {
+            "cx_px": 1236.86,
+            "cy_px": 132.01,
+            "rx_px": 139.32,
+            "ry_px": 217.02
+          },
+          "pairB_orig_720x409": {
+            "cx_px": 689.81,
+            "cy_px": 74.99,
+            "rx_px": 79.14,
+            "ry_px": 123.28
+          }
+        }
+      },
+      "pairB": {
+        "cx": 0.89711,
+        "cy": 0.021277,
+        "rx_frac_h": 0.194185,
+        "ry_frac_h": 0.261388,
+        "angle_deg": 66.823434,
+        "colour_rgb": [
+          0.384615,
+          0.923077,
+          1.0
+        ],
+        "intensity": 0.13,
+        "pixel_equivalents": {
+          "pairA_1278x720": {
+            "cx_px": 1146.51,
+            "cy_px": 15.32,
+            "rx_px": 139.81,
+            "ry_px": 188.2
+          },
+          "pairB_edit_1291x720": {
+            "cx_px": 1158.17,
+            "cy_px": 15.32,
+            "rx_px": 139.81,
+            "ry_px": 188.2
+          },
+          "pairB_orig_720x409": {
+            "cx_px": 645.92,
+            "cy_px": 8.7,
+            "rx_px": 79.42,
+            "ry_px": 106.91
+          }
+        }
+      }
+    }
+  }
+}
