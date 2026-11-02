@@ -2,8 +2,8 @@
   "project": "keyflaw-look-fit/xenoz",
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + quality processing of Xenoz's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
-  "status": "complete",
-  "current_phase": "complete",
+  "status": "in_progress",
+  "current_phase": "R1_clipping_audit",
   "queue": [
     {
       "id": "Q1",
@@ -242,27 +242,41 @@
     "Q9"
   ],
   "next_steps": [
-    "Obtain Xenoz frame pairs (pairA_edited.png, pairA_original_matched.png, pairB_edited.png, pairB_original_matched.png)",
-    "Run Q1 mask generator and visual overlays",
-    "Execute Q2 alignment audit",
-    "Execute Q3 colour fit and cross-validation",
-    "Execute Q4 gradient discovery",
-    "Execute Q5 unsharp halo recovery",
-    "Execute Q6 flare and Q6b secondary effects recovery",
-    "Execute Q7 composite order and Q8 deliverables"
+    "Measure current raw grade clipping on existing frame pairs and synthetic colour ramps",
+    "Implement a documented gamut safeguard and halo limiter",
+    "Publish a new immutable version without replacing existing assets"
   ],
   "decisions": [
     "Private repo motionssalt/keyflaw-look-fit-xenoz created using GITHUB_PAT without persisting raw secret tokens",
     "Scaffold, docs/BUILD_PROMPT.md, docs/manifest.md, and modular pipeline scripts established",
-    "Q1 marked blocked pending attachment/upload of Xenoz frame pairs"
+    "Q1 marked blocked pending attachment/upload of Xenoz frame pairs",
+    "Maintenance 2026-11-02: use existing single repository only; preserve existing inputs, other-owner sources and all prior release assets. New output must have a semantic version in its filename."
   ],
   "known_issues": [
-    "Input frame pairs for CC_OWNER = Xenoz were not attached to the user prompt"
+    "User reports burnt-looking clips; exact app symptom not yet reproduced in Keyflaw.",
+    "Historical state contains inconsistent fitting claims; this maintenance does not re-certify prior Q1-Q9 results."
   ],
   "cc_owner": "Xenoz",
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-02T06:58:34.840156+00:00",
-  "last_session_note": "Refined CC model to M2_Dade_srgb to achieve exact anime skin and cyan sky parity (< 1.6 levels drift), updated READMEs, rebuilt releases/MotionSalt_CC.kfpack, verified GLSL shader, and published GitHub Release xenoz-cc-v1.0."
+  "last_updated": "2026-11-02T07:17:28.131258+00:00",
+  "last_session_note": "Read existing state and complete root SKILL.md; auditing unbounded levels/matrix/shaper followed by hard clamp.",
+  "maintenance_queue": [
+    {
+      "id": "R1",
+      "title": "Audit and prevent Xenoz colour clipping and sharpening overshoot",
+      "status": "in_progress"
+    },
+    {
+      "id": "R2",
+      "title": "Immutable versioned packs and GitHub release",
+      "status": "pending"
+    },
+    {
+      "id": "R3",
+      "title": "Reference, GLSL and regression validation",
+      "status": "pending"
+    }
+  ]
 }
