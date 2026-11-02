@@ -1,0 +1,19 @@
+{
+  "status": "subtle_vertical_darkening",
+  "y_origin": "top_left",
+  "y0_top": 0.2414,
+  "y1_top": 1.8284,
+  "strength_rgb": [
+    0.0261,
+    0.0217,
+    0.0158
+  ],
+  "vignette": "absent",
+  "global_veil": "subsumed_by_3D_LUT",
+  "metrics": {
+    "pairA_mae_before": 5.092,
+    "pairA_mae_after": 5.084,
+    "pairB_mae_before": 3.589,
+    "pairB_mae_after": 3.573
+  }
+}

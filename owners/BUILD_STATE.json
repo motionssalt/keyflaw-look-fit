@@ -14,9 +14,9 @@
       "effect_id": "MS_floby_cc",
       "effect_name": "Floby's CC",
       "status": "in_progress",
-      "current_task": "F3",
+      "current_task": "F4",
       "last_updated": "2026-11-02T12:55:00Z",
-      "notes": "F2 edge fit complete. Starting F3 gradient check."
+      "notes": "F3 gradient check complete. Starting F4 haze flare audit."
     },
     {
       "owner": "gojo",
@@ -41,5 +41,5 @@
     "Queue order established: floby -> gojo -> xenoz.",
     "Each owner completed fully through F1-F6 and pack rebuilt before moving to the next."
   ],
-  "last_updated": "2026-11-02T13:03:00Z"
+  "last_updated": "2026-11-02T13:05:00Z"
 }
