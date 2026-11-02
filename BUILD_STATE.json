@@ -1,6 +1,6 @@
 {
   "status": "in_progress",
-  "last_updated": "2026-11-02T16:22:11.197413+00:00",
+  "last_updated": "2026-11-02T16:22:13.004349+00:00",
   "repo": "motionssalt/keyflaw-look-fit",
   "owners": [
     {
@@ -182,7 +182,7 @@
     "Designed GLSL ES 1.00 colour compression to avoid dynamic array indexing (forbidden in strict #version 100) by combining binary-tree piecewise-linear 1D shaper curves with 3x3 matrix + smooth polynomial/trilinear basis verified against glslangValidator.",
     "Caught and fixed an OpenCV 5.0 in-place mutation in cv2.phaseCorrelate(src1, src2, window) by passing defensive copies, boosting interior gradient alignment correlations up to 0.971."
   ],
-  "last_session_note": "Completed Phase 4: planner, tuner, exporters, kfpack builder, and run.py CLI verified end-to-end.",
+  "last_session_note": "Completed Phase 5: pushed .github/workflows/tune.yml to origin/master.",
   "phases": {
     "phase_1_docs_and_plan": {
       "status": "done",
@@ -201,8 +201,8 @@
       "verified_how": "Passed tests/test_planner_tuner.py end-to-end (17/17 total pytest suite): P0 alignment/masks, P1 post-probe-LUT detection + diagnostic maps, P2 stack planning & adjacent-swap checks, P3 layer-by-layer CV tuning, P4 coordinate-descent joint refinement, P5/P6 export, glslangValidator #version 100 check, NumPy shader parity (<1/255 colour, <2/255 full stack), and SKILL.md .kfpack validator."
     },
     "phase_5_workflow": {
-      "status": "pending",
-      "verified_how": ""
+      "status": "done",
+      "verified_how": "Created .github/workflows/tune.yml with workflow_dispatch owner input (single, comma-list, or all), per-owner parallel matrix, pip cache, glslangValidator install, full artifact upload, and conflict-free atomic [skip ci] commit-back using GITHUB_TOKEN; pushed to origin/master."
     },
     "phase_6_initial_runs": {
       "status": "pending",

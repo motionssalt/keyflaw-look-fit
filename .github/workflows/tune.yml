@@ -1,0 +1,217 @@
+name: Tune Look-Fit Stack
+
+on:
+  workflow_dispatch:
+    inputs:
+      owner:
+        description: "Owner slug (e.g. floby, gojo, xenoz, comma-separated, or 'all')"
+        required: true
+        default: "all"
+        type: string
+      iteration_tag:
+        description: "Iteration label recorded in BUILD_STATE.json"
+        required: false
+        default: "gha-tune"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  resolve-owners:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      owners_json: ${{ steps.discover.outputs.owners_json }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Discover requested owners
+        id: discover
+        env:
+          INPUT_OWNER: ${{ inputs.owner }}
+        run: |
+          python3 - << 'PY'
+          import json, os
+          from pathlib import Path
+
+          req = (os.environ.get("INPUT_OWNER") or "all").strip()
+          avail = sorted(
+              d.name for d in Path("owners").iterdir()
+              if d.is_dir() and (d / "inputs").is_dir()
+          )
+          if req.lower() == "all":
+              selected = avail
+          else:
+              selected = [s.strip() for s in req.split(",") if s.strip()]
+              missing = [s for s in selected if s not in avail]
+              if missing:
+                  raise SystemExit(f"Unknown owners {missing}; available: {avail}")
+          out_path = os.environ["GITHUB_OUTPUT"]
+          with open(out_path, "a", encoding="utf-8") as fh:
+              fh.write(f"owners_json={json.dumps(selected)}\n")
+          print("Selected owners:", selected)
+          PY
+
+  tune:
+    needs: resolve-owners
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        owner: ${{ fromJson(needs.resolve-owners.outputs.owners_json) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install glslangValidator
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends glslang-tools
+          glslangValidator --version | head -n 2
+
+      - name: Set up Python 3.11 with pip cache
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: "requirements.txt"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Verify input SHA-256 checksums before run
+        run: |
+          python -c "from lookfit.core.io import verify_inputs_untouched; assert verify_inputs_untouched('.')"
+
+      - name: Run lookfit pipeline for ${{ matrix.owner }}
+        env:
+          ITER_TAG: ${{ inputs.iteration_tag || 'gha-tune' }}
+          OWNER_SLUG: ${{ matrix.owner }}
+          RUN_NO: ${{ github.run_number }}
+        run: |
+          python -m lookfit.run \
+            --owner "${OWNER_SLUG}" \
+            --artifacts-dir "artifacts" \
+            --iteration-tag "${ITER_TAG}-r${RUN_NO}" \
+            --no-root-state
+
+      - name: Upload full artifacts (intermediate layer renders + results)
+        uses: actions/upload-artifact@v4
+        with:
+          name: lookfit-full-${{ matrix.owner }}
+          path: |
+            artifacts/${{ matrix.owner }}/
+            owners/${{ matrix.owner }}/results/
+            owners/${{ matrix.owner }}/BUILD_STATE.json
+          retention-days: 14
+
+      - name: Stage compact committable owner results
+        uses: actions/upload-artifact@v4
+        with:
+          name: lookfit-small-${{ matrix.owner }}
+          path: |
+            owners/${{ matrix.owner }}/results/
+            owners/${{ matrix.owner }}/BUILD_STATE.json
+          retention-days: 5
+
+  commit-results:
+    needs: [resolve-owners, tune]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout latest master
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download compact owner results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: lookfit-small-*
+          merge-multiple: true
+          path: .
+
+      - name: Sync root BUILD_STATE.json and verify untouched inputs
+        env:
+          ITER_TAG: ${{ inputs.iteration_tag || 'gha-tune' }}
+          RUN_NO: ${{ github.run_number }}
+        run: |
+          python3 - << 'PY'
+          import hashlib, json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          root = Path(".")
+          bs_path = root / "BUILD_STATE.json"
+          rbs = json.loads(bs_path.read_text(encoding="utf-8"))
+
+          # Verify all 16 input checksums are untouched
+          for owner_item in rbs.get("owners", []):
+              for inp in owner_item.get("inputs", []):
+                  fp = root / inp["file"]
+                  digest = hashlib.sha256(fp.read_bytes()).hexdigest()
+                  assert digest == inp["sha256"], f"Checksum mismatch on {inp['file']}"
+
+          now_iso = datetime.now(timezone.utc).isoformat()
+          tag = f"{os.environ.get('ITER_TAG', 'gha-tune')}-r{os.environ.get('RUN_NO', '0')}"
+
+          for owner_dir in sorted((root / "owners").iterdir()):
+              if not owner_dir.is_dir():
+                  continue
+              slug = owner_dir.name
+              lk_path = owner_dir / "results" / "look.json"
+              if not lk_path.exists():
+                  continue
+              lk = json.loads(lk_path.read_text(encoding="utf-8"))
+              agg0 = lk["metrics_before"]["aggregate"]
+              agg1 = lk["metrics_after"]["aggregate"]
+              entry = {
+                  "iteration": tag,
+                  "timestamp": now_iso,
+                  "accepted_layers": lk["accepted_order"],
+                  "ciede2000_median_before": agg0["ciede2000_median"],
+                  "ciede2000_median_after": agg1["ciede2000_median"],
+                  "ciede2000_p90_before": agg0["ciede2000_p90"],
+                  "ciede2000_p90_after": agg1["ciede2000_p90"],
+                  "mae_mean_255_before": agg0["mae_mean_255"],
+                  "mae_mean_255_after": agg1["mae_mean_255"],
+                  "edge_halo_rmse_255_before": agg0["edge_halo_rmse_255"],
+                  "edge_halo_rmse_255_after": agg1["edge_halo_rmse_255"],
+                  "ssim_before": agg0["ssim"],
+                  "ssim_after": agg1["ssim"],
+                  "joint_loss_after": agg1["joint_loss"],
+                  "shader_taps": lk["shader_validation"]["total_texture_taps"],
+                  "shader_parity": lk["shader_validation"]["numpy_vs_python_parity"],
+              }
+              rbs.setdefault("owner_status", {})[slug] = {
+                  "status": "tuned",
+                  "pairs": list(lk["metrics_after"]["per_pair"].keys()),
+                  "accepted_layers": lk["accepted_order"],
+              }
+              hist = rbs.setdefault("results", {}).setdefault(slug, [])
+              if not hist or hist[-1].get("iteration") != tag:
+                  hist.append(entry)
+
+          rbs["last_updated"] = now_iso
+          bs_path.write_text(json.dumps(rbs, indent=2) + "\n", encoding="utf-8")
+          PY
+
+      - name: Commit and push small results back with [skip ci]
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add owners/*/results/ owners/*/BUILD_STATE.json BUILD_STATE.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore(results): update look-fit results for ${{ inputs.owner }} (run #${{ github.run_number }}) [skip ci]"
+            git pull --rebase origin master
+            git push origin master
+          fi
