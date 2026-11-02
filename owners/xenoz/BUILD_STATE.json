@@ -3,7 +3,7 @@
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + quality processing of Xenoz's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
   "status": "in_progress",
-  "current_phase": "R1_clipping_audit",
+  "current_phase": "R3_validation",
   "queue": [
     {
       "id": "Q1",
@@ -227,6 +227,15 @@
         "status": "absent",
         "evidence": "Static frame pair analysis shows no periodic temporal luminance modulation. EXTRA_EFFECTS is 'none'."
       }
+    },
+    "burn_safety": {
+      "version": "1.1.1",
+      "raw_out_of_gamut_pct": {
+        "pairA": 37.2144097222,
+        "pairB": 66.7829861111
+      },
+      "policy": "Engineering safety patch, not a new look recovery",
+      "validation": "pending"
     }
   },
   "completed": [
@@ -250,7 +259,10 @@
     "Private repo motionssalt/keyflaw-look-fit-xenoz created using GITHUB_PAT without persisting raw secret tokens",
     "Scaffold, docs/BUILD_PROMPT.md, docs/manifest.md, and modular pipeline scripts established",
     "Q1 marked blocked pending attachment/upload of Xenoz frame pairs",
-    "Maintenance 2026-11-02: use existing single repository only; preserve existing inputs, other-owner sources and all prior release assets. New output must have a semantic version in its filename."
+    "Maintenance 2026-11-02: use existing single repository only; preserve existing inputs, other-owner sources and all prior release assets. New output must have a semantic version in its filename.",
+    "Use v1.1.1, an unused patch version after suite v1.1.0. Archive legacy pack byte-for-byte as MotionSalt_CC_v1.1.0.kfpack; leave unversioned legacy file untouched.",
+    "Reference runtime now matches actual source-USM then CC then gradient then flare; half-pixel spatial coordinates match shader sampling.",
+    "Retain flare and existing exposed controls unchanged; safety guard and anti-halo limiter are deliberate engineering changes, not freshly measured editor effects."
   ],
   "known_issues": [
     "User reports burnt-looking clips; exact app symptom not yet reproduced in Keyflaw.",
@@ -260,23 +272,24 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-02T07:17:28.131258+00:00",
-  "last_session_note": "Read existing state and complete root SKILL.md; auditing unbounded levels/matrix/shaper followed by hard clamp.",
+  "last_updated": "2026-11-02T07:19:30.310364+00:00",
+  "last_session_note": "Safety patch implemented; awaiting regression metrics, shader compile, immutable build and release.",
   "maintenance_queue": [
     {
       "id": "R1",
       "title": "Audit and prevent Xenoz colour clipping and sharpening overshoot",
-      "status": "in_progress"
+      "status": "done",
+      "notes": "Raw CC exceeds gamut on 37.2144% / 66.7830% of aligned frame pixels. Added pre-clamp shared-headroom soft knee and local-range USM limiter; base fit retained."
     },
     {
       "id": "R2",
       "title": "Immutable versioned packs and GitHub release",
-      "status": "pending"
+      "status": "in_progress"
     },
     {
       "id": "R3",
       "title": "Reference, GLSL and regression validation",
-      "status": "pending"
+      "status": "in_progress"
     }
   ]
 }

@@ -25,6 +25,19 @@ vec3 sampleTap(vec2 uv) {
     return c.rgb / max(c.a, 0.0001);
 }
 
+// v1.1.1 engineering safeguard: shared RGB displacement compression.
+vec3 xzGamutSafe(vec3 source, vec3 candidate) {
+    vec3 delta = candidate - source;
+    vec3 upper = max(source, vec3(0.996078431373));
+    vec3 lower = min(source, vec3(0.003921568627));
+    vec3 room = mix(source - lower, upper - source, step(vec3(0.0), delta));
+    vec3 ratio3 = abs(delta) / max(room, vec3(0.00001));
+    float ratio = max(ratio3.r, max(ratio3.g, ratio3.b));
+    float compressed = 0.8 + 0.2 * (1.0 - exp(-max(ratio - 0.8, 0.0) / 0.2));
+    float scale = (ratio > 0.8) ? compressed / max(ratio, 0.00001) : 1.0;
+    return clamp(source + delta * scale, 0.0, 1.0);
+}
+
 // Stage 1: Colour Correction (M2_Dade_srgb)
 vec3 applyColourCorrection(vec3 rgbIn) {
     vec3 x = clamp(rgbIn, 0.0, 1.0);
@@ -99,7 +112,7 @@ vec3 applyColourCorrection(vec3 rgbIn) {
     outCol.g = A2 - 0.333333333 * ou2 + 0.577350269 * ov2;
     outCol.b = A2 - 0.333333333 * ou2 - 0.577350269 * ov2;
     
-    return clamp(outCol, 0.0, 1.0);
+    return xzGamutSafe(x, outCol);
 }
 
 // Stage 2: Vertical Multiply Gradient
@@ -139,16 +152,21 @@ void main() {
     if (uQuality > 0.5) {
         vec2 st = vec2(xzSigmaFracH * texX / texY, xzSigmaFracH);
         vec3 acc = vec3(0.0);
+        vec3 localMin = x;
+        vec3 localMax = x;
         for (int j = -2; j <= 2; j++) {
             float wj = (j == 0) ? 6.0 : ((j == 1 || j == -1) ? 4.0 : 1.0);
             for (int i = -2; i <= 2; i++) {
                 float wi = (i == 0) ? 6.0 : ((i == 1 || i == -1) ? 4.0 : 1.0);
-                acc += (wi * wj / 256.0) * sampleTap(uv + vec2(float(i), float(j)) * st);
+                vec3 tap = sampleTap(uv + vec2(float(i), float(j)) * st);
+                acc += (wi * wj / 256.0) * tap;
+                localMin = min(localMin, tap);
+                localMax = max(localMax, tap);
             }
         }
         vec3 d = x - acc;
         d = sign(d) * max(abs(d) - xzThresh, vec3(0.0));
-        x = clamp(x + xzAmount * d, 0.0, 1.0);
+        x = clamp(x + xzAmount * d, localMin, localMax);
     }
     
     // Stage 1: Colour Correction
