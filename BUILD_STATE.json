@@ -1,6 +1,6 @@
 {
   "status": "in_progress",
-  "last_updated": "2026-11-02T14:56:45Z",
+  "last_updated": "2026-11-02T15:06:12Z",
   "repo": "motionssalt/keyflaw-look-fit",
   "owners": [
     {
@@ -179,17 +179,18 @@
     "Scanned entire repository tree and commit history for credentials prior to updating repository visibility to public.",
     "Redacted GITHUB_PAT placeholder in docs/PLUGIN_SYSTEM_BRIEF.md and installed git pre-commit secret guard to guarantee zero credentials in public repo.",
     "Observed cross-resolution and crop/zoom differences in floby/pairB, gojo/pairA-D, and xenoz/pairA-B during initial frame inspection; designed multi-candidate SIFT+RANSAC + gradient-ECC alignment in lookfit/core/alignment.py while treating all pairs equally per brief.",
-    "Designed GLSL ES 1.00 colour compression to avoid dynamic array indexing (forbidden in strict #version 100) by combining binary-tree piecewise-linear 1D shaper curves with 3x3 matrix + smooth polynomial/trilinear basis verified against glslangValidator."
+    "Designed GLSL ES 1.00 colour compression to avoid dynamic array indexing (forbidden in strict #version 100) by combining binary-tree piecewise-linear 1D shaper curves with 3x3 matrix + smooth polynomial/trilinear basis verified against glslangValidator.",
+    "Caught and fixed an OpenCV 5.0 in-place mutation in cv2.phaseCorrelate(src1, src2, window) by passing defensive copies, boosting interior gradient alignment correlations up to 0.971."
   ],
-  "last_session_note": "Completed Phase 1: committed PLUGIN_SYSTEM_BRIEF.md, PLUGIN_PARAMETER_RESEARCH.md, PLAN.md, and initialized per-owner BUILD_STATE.json files.",
+  "last_session_note": "Completed Phase 2: implemented lookfit.core (io, colour_spaces, alignment, masks, metrics) and verified via pytest + all 8 ground-truth pairs.",
   "phases": {
     "phase_1_docs_and_plan": {
       "status": "done",
       "verified_how": "Verified docs/PLUGIN_SYSTEM_BRIEF.md (redacted PAT), docs/PLUGIN_PARAMETER_RESEARCH.md, docs/PLAN.md exist, pre-commit secret guard active, and 16 input frames audited across floby/gojo/xenoz."
     },
     "phase_2_core": {
-      "status": "pending",
-      "verified_how": ""
+      "status": "done",
+      "verified_how": "6/6 pytest unit tests passed in tests/test_core.py (SHA-256 input immutability guard, sRGB/Lab roundtrip, Sharma-2005 CIEDE2000 reference vectors, sub-pixel shift recovery <0.2px, bar/subtitle/96px-block mask detection, unbiased impulse-normalized noise std). Also verified alignment & masks on all 8 real pairs (edge_corr: floby 0.963/0.875, gojo 0.928/0.871/0.868/0.481, xenoz 0.971/0.901)."
     },
     "phase_3_plugins": {
       "status": "pending",

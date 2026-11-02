@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lookfit"
+version = "0.1.0"
+description = "Plugin-based look-fit measurement, planning, and layer-by-layer tuning pipeline for Keyflaw CCs"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.11",
+    "opencv-python-headless>=4.8",
+    "scikit-image>=0.21",
+    "Pillow>=10.0",
+    "matplotlib>=3.7",
+]
+
+[tool.setuptools.packages.find]
+include = ["lookfit*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
