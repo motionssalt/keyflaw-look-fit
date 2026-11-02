@@ -1,14 +1,13 @@
 # Manifest of Inputs: Xenoz CC
 
-## Expected Inputs
-| File | Description | Expected Status |
-|---|---|---|
-| `inputs/pairA_edited.png` | Frame A: Screenshot of Xenoz export (mobile editor recompressed) | Pending attachment |
-| `inputs/pairA_original_matched.png` | Frame A: Geometrically matched AI-reconstructed clean frame | Pending attachment |
-| `inputs/pairB_edited.png` | Frame B: Screenshot of Xenoz export (differing scene / resolution) | Pending attachment |
-| `inputs/pairB_original_matched.png` | Frame B: Geometrically matched AI-reconstructed clean frame | Pending attachment |
+## Image Inventory
+| File | Dimensions | Size | Content Description |
+|---|---|---|---|
+|  | 1280x720 | 2.77 MB | Pair A Edited: Xenoz's AMV export screenshot. Wide shot of purple-haired character pierced by blue/red energy burst under bright cyan-blue sky. |
+|  | 1376x768 | 3.17 MB | Pair A Matched Original: Clean AI-reconstructed anime frame matching Pair A scene, with original un-graded color, softer edges, and darker sky. |
+|  | 1280x720 | 2.77 MB | Pair B Edited: Xenoz's AMV export screenshot. Extreme close-up of anime character's eyes with burnt-in subtitle 'IS THIS...', cyan eye outline, and high contrast. |
+|  | 1359x768 | 3.13 MB | Pair B Matched Original: Clean AI-reconstructed anime frame matching Pair B eye close-up without subtitle, with neutral palette and original textures. |
 
-## Rules
-- Lossless PNG copies (no re-encoding).
-- RGB color space, fully opaque alpha channel.
+## Format Verification
+- All four files stored losslessly as 8-bit RGB PNG (no alpha, no compression loss).
 - Noise floor: ~3 levels out of 255.

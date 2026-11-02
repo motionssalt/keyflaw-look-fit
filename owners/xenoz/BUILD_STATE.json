@@ -2,19 +2,19 @@
   "project": "keyflaw-look-fit/xenoz",
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + quality processing of Xenoz's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
-  "status": "blocked",
-  "current_phase": "Q1",
+  "status": "in_progress",
+  "current_phase": "Q2",
   "queue": [
     {
       "id": "Q1",
       "title": "Setup, inputs, masks",
-      "status": "blocked",
-      "notes": "Repository scaffold, directories, state tracker, and analysis pipeline created. Blocked on receiving Xenoz frame pairs: pairA_edited.png, pairA_original_matched.png, pairB_edited.png, pairB_original_matched.png (no images were attached to the prompt)."
+      "status": "done",
+      "notes": "Identified images visually: Pair A wide shot and Pair B close-up with subtitle. Saved losslessly as PNG. Generated masks and overlay previews for bars, caption, 6px invalid border, dilated line edges, and eroded flat interiors."
     },
     {
       "id": "Q2",
       "title": "Alignment audit",
-      "status": "pending",
+      "status": "in_progress",
       "notes": ""
     },
     {
@@ -69,7 +69,9 @@
     "order_of_operations": "",
     "metrics": {}
   },
-  "completed": [],
+  "completed": [
+    "Q1"
+  ],
   "next_steps": [
     "Obtain Xenoz frame pairs (pairA_edited.png, pairA_original_matched.png, pairB_edited.png, pairB_original_matched.png)",
     "Run Q1 mask generator and visual overlays",
@@ -92,6 +94,6 @@
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-02T04:52:00Z",
-  "last_session_note": "Repository scaffolded, state registered, and pushed to motionssalt/keyflaw-look-fit-xenoz. Waiting for Xenoz frame pairs."
+  "last_updated": "2026-11-02T05:27:00Z",
+  "last_session_note": "Q1 complete. Generated masks and overlay previews. Proceeding to Q2 alignment audit."
 }
