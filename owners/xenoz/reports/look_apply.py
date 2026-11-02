@@ -8,10 +8,10 @@ Usage:
     python look_apply.py in.png out.png --master-intensity 1.0
 
 Reads all parameters from `look_params.json` (in the same directory by default) and applies
-the exact 4-stage pipeline:
-  Stage 1: Colour Correction (sRGB Levels + Cool Slate Shadow Toe + 3x3 Matrix + Opponent-Polar Shaper)
+the Keyflaw runtime pipeline (v1.1.1):
+  First: anti-halo USM on source; then Colour Correction (sRGB Levels + Cool Slate Shadow Toe + 3x3 Matrix + Opponent-Polar Shaper)
   Stage 2: Vertical Spatial Multiply Gradient (smoothstep falloff)
-  Stage 3: 25-tap (5x5 separable [1,4,6,4,1]/16) RGB Unsharp Mask
+  Safety: source-anchored gamut compression; local-range sharpening limiter
   Stage 4: Subtle 2D Gaussian Screen Haze Flare
 """
 
@@ -26,6 +26,26 @@ K2D_25 = np.outer(W1D_5, W1D_5).astype(np.float32)
 def smoothstep_np(a, b, x):
     t = np.clip((x - a) / max(b - a, 1e-6), 0.0, 1.0)
     return t * t * (3.0 - 2.0 * t)
+
+def gamut_safe_grade(source, candidate, settings):
+    """Compress the grading displacement before clipping, with one RGB scale.
+
+    The source is the fallback anchor; this protects unfamiliar colours instead
+    of flattening them with independent channel clamps. Settings are engineering
+    safeguards, not measured properties of Xenoz's reference look.
+    """
+    delta = candidate - source
+    margin = float(settings["margin_01"])
+    eps = float(settings["epsilon"])
+    upper = np.maximum(source, 1.0 - margin)
+    lower = np.minimum(source, margin)
+    room = np.where(delta >= 0.0, upper - source, source - lower)
+    ratio = np.max(np.abs(delta) / np.maximum(room, eps), axis=-1, keepdims=True)
+    knee = float(settings["knee"])
+    tail = max(1.0 - knee, eps)
+    compressed = knee + tail * (1.0 - np.exp(-np.maximum(ratio - knee, 0.0) / tail))
+    scale = np.where(ratio > knee, compressed / np.maximum(ratio, eps), 1.0)
+    return np.clip(source + delta * scale, 0.0, 1.0)
 
 def stage1_colour_correction(x_srgb01: np.ndarray, cc_params: dict) -> np.ndarray:
     orig_shape = x_srgb01.shape
@@ -93,11 +113,11 @@ def stage1_colour_correction(x_srgb01: np.ndarray, cc_params: dict) -> np.ndarra
     out[:, 0] = A2 + (2.0 / 3.0) * ou2
     out[:, 1] = A2 - (1.0 / 3.0) * ou2 + INV_SQRT3 * ov2
     out[:, 2] = A2 - (1.0 / 3.0) * ou2 - INV_SQRT3 * ov2
-    return np.clip(out, 0.0, 1.0).reshape(orig_shape)
+    return gamut_safe_grade(x, out, cc_params["gamut_safety"]).reshape(orig_shape)
 
 def stage2_gradient(rgb01: np.ndarray, grad_params: dict) -> np.ndarray:
     H = rgb01.shape[0]
-    yn = (np.arange(H, dtype=np.float64) / float(H))[:, None, None]
+    yn = ((np.arange(H, dtype=np.float64) + 0.5) / float(H))[:, None, None]
     y0 = float(grad_params["y0_norm"])
     y1 = float(grad_params["y1_norm"])
     s = np.array(grad_params["strength_rgb"], dtype=np.float64).reshape(1, 1, 3)
@@ -113,23 +133,36 @@ def stage3_unsharp_mask(rgb01: np.ndarray, usm_params: dict) -> np.ndarray:
         return np.clip(rgb01, 0.0, 1.0)
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
     acc = np.zeros_like(rgb01, dtype=np.float32)
+    local_min = rgb01.copy()
+    local_max = rgb01.copy()
     for j_idx, j in enumerate((-2, -1, 0, 1, 2)):
         ym = np.clip(yy + j * sigma_px, 0.0, H - 1.0)
         for i_idx, i in enumerate((-2, -1, 0, 1, 2)):
             xm = np.clip(xx + i * sigma_px, 0.0, W - 1.0)
-            acc += float(K2D_25[j_idx, i_idx]) * cv2.remap(rgb01.astype(np.float32), xm, ym, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+            # Exact bilinear texture sampling (OpenCV remap quantises fractions).
+            x0 = np.floor(xm).astype(np.int32)
+            y0 = np.floor(ym).astype(np.int32)
+            x1 = np.minimum(x0 + 1, W - 1)
+            y1 = np.minimum(y0 + 1, H - 1)
+            fx = (xm - x0)[..., None]
+            fy = (ym - y0)[..., None]
+            tap = ((1.0 - fy) * ((1.0 - fx) * rgb01[y0, x0] + fx * rgb01[y0, x1])
+                   + fy * ((1.0 - fx) * rgb01[y1, x0] + fx * rgb01[y1, x1]))
+            acc += float(K2D_25[j_idx, i_idx]) * tap
+            local_min = np.minimum(local_min, tap)
+            local_max = np.maximum(local_max, tap)
     d = rgb01 - acc
     if threshold > 1e-5:
         d = np.sign(d) * np.maximum(np.abs(d) - threshold, 0.0)
-    return np.clip(rgb01 + amount * d, 0.0, 1.0)
+    return np.clip(np.minimum(np.maximum(rgb01 + amount * d, local_min), local_max), 0.0, 1.0)
 
 def stage4_flare(rgb01: np.ndarray, flare_params: dict) -> np.ndarray:
     if not flare_params or float(flare_params.get("intensity", 0.0)) <= 1e-6:
         return rgb01
     H, W = rgb01.shape[:2]
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float64)
-    dx_h = (xx - float(flare_params["cx"]) * W) / float(H)
-    dy_h = (yy - float(flare_params["cy"]) * H) / float(H)
+    dx_h = (xx + 0.5 - float(flare_params["cx"]) * W) / float(H)
+    dy_h = (yy + 0.5 - float(flare_params["cy"]) * H) / float(H)
     rx = max(float(flare_params.get("rx_frac_h", 0.45)), 0.02)
     ry = max(float(flare_params.get("ry_frac_h", 0.35)), 0.02)
     u = dx_h / rx
@@ -145,12 +178,13 @@ def apply_look(img_rgb01: np.ndarray, params: dict, master_intensity: float = 1.
                enable_usm: bool = True, enable_flare: bool = True) -> np.ndarray:
     orig = np.clip(img_rgb01.astype(np.float64), 0.0, 1.0)
     x = orig.copy()
+    # Runtime order: source USM (single-pass approximation), CC, gradient, flare.
+    if enable_usm:
+        x = stage3_unsharp_mask(x, params["unsharp"])
     if enable_cc:
         x = stage1_colour_correction(x, params["colour_correction"])
     if enable_grad:
         x = stage2_gradient(x, params["gradient"])
-    if enable_usm:
-        x = stage3_unsharp_mask(x, params["unsharp"])
     if enable_flare and "canonical_default_params" in params.get("flare", {}):
         x = stage4_flare(x, params["flare"]["canonical_default_params"])
     if abs(master_intensity - 1.0) > 1e-4:

@@ -1,3 +1,5 @@
+> **Historical v1.1.0 fit report — not current v1.1.1 runtime metrics.** Current safety changes, tradeoffs and validation: [BURN_SAFETY_v1.1.1.md](BURN_SAFETY_v1.1.1.md). Static pairs cannot prove flicker absent.
+
 # REPORT: MOTIONSALT Keyflaw Look-Fit Analysis — Xenoz's CC
 
 **Project:** `motionssalt/keyflaw-look-fit`  

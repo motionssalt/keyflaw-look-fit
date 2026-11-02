@@ -1,3 +1,5 @@
+> **Current: v1.1.1 safety patch.** [Current spec](spec/LOOK_SPEC.md) · [Regression report](reports/BURN_SAFETY_v1.1.1.md). Use versioned releases only; device test pending.
+
 # Xenoz’s Keyflaw CC
 
 Xenoz’s completed look-fit recovers a four-stage Keyflaw look: the refined `M2_Dade_srgb` colour grade, a smooth vertical multiply darkening gradient, separable 25-tap RGB unsharp masking for quality, and a subtle non-destructive ambient screen haze flare. The source-of-truth implementation and controls are documented in [spec/LOOK_SPEC.md](spec/LOOK_SPEC.md), [spec/look_params.json](spec/look_params.json), [spec/look_apply.py](spec/look_apply.py), and [spec/look.cube](spec/look.cube). The quantitative verification metrics and side-by-side images are in [reports/REPORT.md](reports/REPORT.md).

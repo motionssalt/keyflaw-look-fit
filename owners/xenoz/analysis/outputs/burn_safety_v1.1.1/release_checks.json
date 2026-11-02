@@ -1,0 +1,33 @@
+{
+  "old_unversioned_pack_unchanged": true,
+  "archived_v1_1_0_byte_identical": true,
+  "floby_source_and_packed_bytes_unchanged": true,
+  "cli": {
+    "pairA": {
+      "max_shader_difference_8bit": 1,
+      "shape": [
+        720,
+        1280,
+        3
+      ]
+    },
+    "pairB": {
+      "max_shader_difference_8bit": 1,
+      "shape": [
+        720,
+        1280,
+        3
+      ]
+    }
+  },
+  "MotionSalt_CC_v1.1.0.kfpack": {
+    "sha256": "07e6c9efd656d5ff4fc520b896df54a216006d1ac5805cde8754445ab52bbbe7",
+    "size": 6316
+  },
+  "MotionSalt_CC_v1.1.1.kfpack": {
+    "sha256": "82c2700c67b6f1775b1da09ae2d0e275bec1b0c1c9a86a6b9a11386fc9d7ac11",
+    "size": 6646
+  },
+  "GLSL_ES_100_compile": "passed",
+  "Keyflaw_device_test": "not performed"
+}

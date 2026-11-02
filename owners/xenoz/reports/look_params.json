@@ -1,14 +1,14 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.1.1",
   "project": "MOTIONSALT Keyflaw Look-Fit",
   "cc_owner": "Xenoz",
   "owner_slug": "xenoz",
   "effect_name": "Xenoz's CC",
   "effect_id": "MS_xenoz_cc",
   "order_of_operations": [
-    "1_colour_correction_dade_srgb",
-    "2_vertical_multiply_gradient",
-    "3_unsharp_mask_25tap_rgb",
+    "1_source_unsharp_with_anti_halo",
+    "2_colour_correction_with_gamut_safety",
+    "3_vertical_multiply_gradient",
     "4_subtle_ambient_haze_flare"
   ],
   "colour_correction": {
@@ -93,6 +93,13 @@
         "dc": -0.10803235370721671,
         "da": 0.6291185545610564
       }
+    },
+    "gamut_safety": {
+      "mode": "source_anchored_shared_headroom_soft_knee",
+      "knee": 0.8,
+      "margin_01": 0.00392156862745098,
+      "epsilon": 1e-05,
+      "provenance": "Engineering safeguard for user-reported burning; not an inferred editor stage."
     }
   },
   "gradient": {
@@ -115,7 +122,8 @@
     "sigma_frac_h": 0.000535,
     "amount": 1.1,
     "threshold_01": 0.00659,
-    "threshold_255": 1.68
+    "threshold_255": 1.68,
+    "anti_halo": "clamp_to_25_tap_local_min_max"
   },
   "flare": {
     "status": "subtle_ambient_glow",
@@ -134,5 +142,6 @@
       "intensity": 0.12,
       "source_basis": "Subtle soft ambient highlight glow (non-destructive; does not pollute skin or shadow depth)"
     }
-  }
+  },
+  "runtime_notes": "Unsharp on the input before nonlinear colour correction matches existing Keyflaw runtime; not mathematically equivalent to sharpening after CC. Existing flare retained unchanged, not newly validated as scene-tracking."
 }
