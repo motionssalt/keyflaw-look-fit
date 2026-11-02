@@ -2,8 +2,8 @@
   "project": "keyflaw-look-fit/xenoz",
   "repo": "motionssalt/keyflaw-look-fit",
   "goal": "Measure the colour grade + quality processing of Xenoz's edit from frame pairs and write a precise look spec for a later Keyflaw effect",
-  "status": "in_progress",
-  "current_phase": "R2_publish_versioned_releases",
+  "status": "complete",
+  "current_phase": "complete",
   "queue": [
     {
       "id": "Q1",
@@ -66,128 +66,203 @@
     }
   ],
   "results": {
-    "cc_model": "M2_Dade_srgb",
-    "cc_params": {},
-    "gradient": {
-      "hypothesis": "H1_vertical_spatial_multiply_gradient (smoothstep falloff with subtle RGB shadow tint)",
-      "type": "H1_mul_rgb_smoothstep",
-      "coordinate_reference": "Full frame height (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
-      "y0_norm": 0.226816,
-      "y1_norm": 0.775967,
-      "pixel_rows_at_resolutions": {
-        "pairA_1280x720": {
-          "y0_px": 163.31,
-          "y1_px": 558.7
+    "cc_model": "M2_Dade_srgb_gamut_safe_v1.1.1",
+    "cc_params": {
+      "model": "M2_Dade_srgb",
+      "colour_space": "sRGB display-referred [0..1]",
+      "levels": {
+        "in_black": [
+          0.00030032747620917114,
+          -0.09311952575026178,
+          0.07323927180437503
+        ],
+        "in_white": [
+          0.9450997462367785,
+          0.922091177328185,
+          0.8950115029960453
+        ],
+        "gamma": [
+          1.6826524301537116,
+          1.8242667941848931,
+          0.938911282032249
+        ],
+        "out_black": [
+          0.19978798504448497,
+          0.14436278660877533,
+          0.13575995210249803
+        ],
+        "out_white": [
+          1.1795058932368079,
+          1.152492329504375,
+          1.2498240203647792
+        ]
+      },
+      "shadow_toe": {
+        "luma_threshold": 0.28,
+        "lift_rgb": [
+          -0.010807980431261717,
+          0.06084662676544976,
+          0.11986705573773752
+        ]
+      },
+      "matrix_3x3": [
+        [
+          -0.45114229247209575,
+          -1.1470888529938412,
+          2.023276592496606
+        ],
+        [
+          -2.7776779615587857,
+          -0.48614518737337287,
+          3.500239698293216
+        ],
+        [
+          -2.361576772867952,
+          -2.1346036555365404,
+          4.55360172025641
+        ]
+      ],
+      "opponent_shaper": {
+        "space": "opponent_polar (ou = R - 0.5*(G+B), ov = 0.866025*(G-B), C = sqrt(ou^2 + ov^2))",
+        "chroma_gate": {
+          "c_min": 0.015,
+          "c_max": 0.06
         },
-        "pairB_1280x720": {
-          "y0_px": 163.31,
-          "y1_px": 558.7
+        "cyan_sky_lobe": {
+          "center_deg": 198.0,
+          "kappa": 4.0,
+          "dh_rad": 0.21330528429098827,
+          "dc": -0.44083874888235147,
+          "da": -1.2506082126341593
+        },
+        "warm_skin_lobe": {
+          "center_deg": 30.0,
+          "kappa": 4.0,
+          "dh_rad": 0.06066944904606935,
+          "dc": -0.2776265109858796,
+          "da": 1.9989258341031901
+        },
+        "plum_violet_lobe": {
+          "center_deg": 315.0,
+          "kappa": 3.0,
+          "dh_rad": 0.2563995635389732,
+          "dc": -0.10803235370721671,
+          "da": 0.6291185545610564
         }
       },
+      "gamut_safety": {
+        "mode": "source_anchored_shared_headroom_soft_knee",
+        "knee": 0.8,
+        "margin_01": 0.00392156862745098,
+        "epsilon": 1e-05,
+        "provenance": "Engineering safeguard for user-reported burning; not an inferred editor stage."
+      }
+    },
+    "gradient": {
+      "type": "H1_vertical_spatial_multiply_gradient",
+      "coordinate_reference": "Full frame height [0, 1] (0 = top row, 1 = bottom row)",
+      "y0_norm": 0.26907882821051904,
+      "y1_norm": 0.8720604819609442,
       "falloff_curve": "smoothstep",
       "blend_mode": "multiply",
-      "blend_formula": "out = clamp(cc * (1.0 - smoothstep(y0, y1, y_norm) * strength_rgb), 0.0, 1.0)",
       "strength_rgb": [
-        0.089249,
-        0.109361,
-        0.101978
-      ],
-      "strength_luma_equiv": 0.104552
+        0.05721166641061615,
+        0.12960085546358716,
+        0.1354503637000828
+      ]
     },
     "unsharp": {
       "mode": "rgb",
-      "colour_space": "gamma-encoded sRGB [0..1] (post-gradient)",
-      "kernel": "single-pass 25-tap (5x5 separable [1,4,6,4,1]/16 with bilinear UV offset = vec2(i,j) * sigma_px / resolution)",
+      "kernel": "single-pass 25-tap (5x5 separable [1,4,6,4,1]/16)",
       "scaling_law": "constant_fraction_of_height",
       "sigma_frac_h": 0.000535,
-      "sigma_px_at_resolutions": {
-        "pairA_1280x720": 0.3854,
-        "pairB_1280x720": 0.3854,
-        "pairB_409p": 0.2189,
-        "fhd_1920x1080": 0.578
-      },
-      "amount": 3.0,
+      "amount": 1.1,
       "threshold_01": 0.00659,
       "threshold_255": 1.68,
-      "nuisance_pre_blur_px": {
-        "pairA_720p": 0.5079,
-        "pairB_720p": 0.2688,
-        "pairB_409p": 0.0263
-      },
-      "edge_profile_rmse_reduction_pct": {
-        "pairA_720p": 1.52,
-        "pairB_720p": 29.39,
-        "pairB_409p": 9.44
-      },
-      "cross_pair_agreement_note": "Pair B exhibits clear unsharp mask halo signature with 31.3% edge profile RMSE reduction. Pair A baseline unsharpened edge RMSE was already 3.54/255 (within the ~3-level reconstruction noise floor), explaining the modest percentage gain on Pair A wide shot while confirming unsharp consistency."
+      "anti_halo": "clamp_to_25_tap_local_min_max"
     },
     "flare": {
-      "status": "present_scene_dependent",
-      "model": "2D anisotropic rotated Gaussian radial glow with Screen blend",
-      "falloff_curve": "gaussian",
-      "blend_mode": "screen",
-      "blend_formula": "f = intensity * exp(-0.5 * (u^2 + v^2)) * colour_rgb; out = 1.0 - (1.0 - base) * (1.0 - clamp(f, 0.0, 1.0))",
+      "status": "subtle_ambient_glow",
+      "model": "2D anisotropic Gaussian Screen glow",
       "canonical_default_params": {
-        "cx": 0.40268765489967634,
-        "cy": -0.19999999990872497,
-        "rx_frac_h": 0.8499999999999815,
-        "ry_frac_h": 0.8499999999999599,
-        "angle_deg": 89.95424790983336,
+        "cx": 0.5,
+        "cy": 0.05,
+        "rx_frac_h": 0.45,
+        "ry_frac_h": 0.35,
+        "angle_deg": 0.0,
         "colour_rgb": [
-          0.019327,
-          0.198772,
-          1.0
+          0.35,
+          0.55,
+          0.95
         ],
-        "intensity": 0.411355,
-        "source_basis": "Pair A top energy-burst optical glow (warm amber [1.0, 0.86, 0.11], cx=0.402, cy=0.015, rx=0.35, ry=0.30)"
-      },
-      "pairB_fitted_params": {
-        "cx": 0.9160736013485856,
-        "cy": 0.5599464911982706,
-        "rx_frac_h": 0.5320131725097228,
-        "ry_frac_h": 0.11341449831814147,
-        "angle_deg": -44.15617832889186,
-        "colour_rgb": [
-          1.0,
-          0.13799,
-          0.0
-        ],
-        "intensity": 0.85,
-        "source_basis": "Pair B character eye-burst highlight glow (red/warm accent, cx=0.727, cy=0.986)"
-      },
-      "blend_mode_comparison": {
-        "screen_lp_energy_reduction_pct": 53.3,
-        "add_lp_energy_reduction_pct": 55.13,
-        "soft_light_lp_energy_reduction_pct": 58.89,
-        "lighten_lp_energy_reduction_pct": 5.96,
-        "justification": "Screen blend achieves superior highlight preservation without harsh clipping compared to Add, and higher residual energy reduction than Soft Light."
-      },
-      "energy_reduction_pct": {
-        "pairA": 53.3,
-        "pairB": 19.72
-      },
-      "scene_dependence": "Glow position and tint vary per shot matching the scene highlight/energy burst. The Keyflaw effect provides a Haze Flare toggle and default parameters."
+        "intensity": 0.12,
+        "source_basis": "Subtle soft ambient highlight glow (non-destructive; does not pollute skin or shadow depth)"
+      }
     },
-    "order_of_operations": "1. Colour Correction (M3 spline in linear space) -> 2. Gradient (smoothstep multiply) -> 3. Unsharp Mask (25-tap RGB) -> 4. Haze Flare (2D Gaussian Screen)",
+    "order_of_operations": [
+      "1_source_unsharp_with_anti_halo",
+      "2_colour_correction_with_gamut_safety",
+      "3_vertical_multiply_gradient",
+      "4_subtle_ambient_haze_flare"
+    ],
     "metrics": {
-      "pairA_full_composite": {
-        "median_de00": 1.412,
-        "p90_de00": 3.404,
-        "mae_mean": 4.23,
-        "edge_rmse": 20.56,
-        "ssim": 0.9388
+      "pairA": {
+        "raw_grade_out_of_gamut_valid_pct": 37.403644874086986,
+        "before": {
+          "median_de00": 1.4094242299832185,
+          "p90_de00": 3.398167515441483,
+          "mae_rgb_255": [
+            5.24644612042209,
+            3.8901740547735435,
+            3.5428657859803843
+          ],
+          "edge_rmse_255": 20.18376628454396,
+          "valid_luma_ssim": 0.9401976017707946,
+          "valid_any_channel_at_255_pct": 17.87634650111853
+        },
+        "after": {
+          "median_de00": 1.502446102796993,
+          "p90_de00": 5.088740124919928,
+          "mae_rgb_255": [
+            5.343144555020204,
+            5.245854776312258,
+            4.9482709759202
+          ],
+          "edge_rmse_255": 20.26880842829991,
+          "valid_luma_ssim": 0.9511633659910301,
+          "valid_any_channel_at_255_pct": 0.014599261501972025
+        },
+        "shader_reference_max_error_255": 0.10183242223206324,
+        "safe_grade_above_254_5_pct": 0.019652852021885416
       },
-      "pairB_full_composite": {
-        "median_de00": 3.264,
-        "p90_de00": 6.094,
-        "mae_mean": 5.32,
-        "edge_rmse": 34.98,
-        "ssim": 0.9242
-      },
-      "skin_error_levels": {
-        "R": 1.61,
-        "G": 0.75,
-        "B": 0.05
+      "pairB": {
+        "raw_grade_out_of_gamut_valid_pct": 64.18246768474067,
+        "before": {
+          "median_de00": 3.2610680166682373,
+          "p90_de00": 6.093049772859364,
+          "mae_rgb_255": [
+            4.716056502599823,
+            4.077822937971631,
+            7.147119289015875
+          ],
+          "edge_rmse_255": 34.45692463719575,
+          "valid_luma_ssim": 0.9312241127432062,
+          "valid_any_channel_at_255_pct": 22.984752697054933
+        },
+        "after": {
+          "median_de00": 4.16590931767401,
+          "p90_de00": 7.07537198108164,
+          "mae_rgb_255": [
+            5.400691581280233,
+            6.917335338366678,
+            6.898916672310486
+          ],
+          "edge_rmse_255": 34.58970240747023,
+          "valid_luma_ssim": 0.9404493946720909,
+          "valid_any_channel_at_255_pct": 0.0004761434286850228
+        },
+        "shader_reference_max_error_255": 0.09233079678148182,
+        "safe_grade_above_254_5_pct": 0.0019045737147400912
       }
     },
     "alignment": {
@@ -203,30 +278,8 @@
       }
     },
     "secondary_effects": {
-      "vignette": {
-        "status": "absent",
-        "evidence": "Q4 2D surface fit showed radial vignette explains only 5.0% (A) and 3.5% (B) of spatial variance, compared to 38.4% (A) and 71.3% (B) explained by vertical gradient. Spatial residual lacks corner radial darkening signature."
-      },
-      "film_grain": {
-        "status": "absent",
-        "evidence": "Flat interior Laplacian standard deviation is 0.99/255 on Pair A and 0.62/255 on Pair B (both < 1.0/255, completely consistent with standard 8-bit quantization and H.264/H.265 compression noise; no added film grain detected)."
-      },
-      "chromatic_aberration": {
-        "status": "absent",
-        "evidence": "R-B edge gradient alignment shows no radial fringe displacement at periphery (< 0.2 px channel shift, within sub-pixel alignment margin; edge corr = 0.4600)."
-      },
-      "black_lift_or_veil": {
-        "status": "absent",
-        "evidence": "Fitted uniform veil is < 1.5/255 on Pair A (within the 3/255 noise floor); deep blacks reach 3.0/255 in Pair A; global veil adds negligible LP energy reduction (43.46 -> 35.39). Excluded to preserve contrast."
-      },
-      "bloom": {
-        "status": "subsumed_by_flare",
-        "evidence": "Optical highlight diffusion is captured cleanly by the Gaussian Screen flare model, which screens highlights over dark regions without blowing out highlights."
-      },
-      "flicker": {
-        "status": "absent",
-        "evidence": "Static frame pair analysis shows no periodic temporal luminance modulation. EXTRA_EFFECTS is 'none'."
-      }
+      "maintenance_scope": "Not retested; earlier findings are historical and not newly certified.",
+      "flicker": "not provable from static pairs"
     },
     "burn_safety": {
       "version": "1.1.1",
@@ -364,6 +417,195 @@
         },
         "GLSL_ES_100_compile": "passed",
         "Keyflaw_device_test": "not performed"
+      },
+      "releases": {
+        "1.1.0": {
+          "release_url": "https://github.com/motionssalt/keyflaw-look-fit/releases/tag/motionsalt-cc-v1.1.0",
+          "assets": [
+            {
+              "name": "MotionSalt_CC_v1.1.0.kfpack",
+              "size": 6316,
+              "sha256": "07e6c9efd656d5ff4fc520b896df54a216006d1ac5805cde8754445ab52bbbe7",
+              "url": "https://github.com/motionssalt/keyflaw-look-fit/releases/download/motionsalt-cc-v1.1.0/MotionSalt_CC_v1.1.0.kfpack"
+            },
+            {
+              "name": "MotionSalt_CC_v1.1.0.kfpack.sha256",
+              "size": 94,
+              "sha256": "5e27bc11e5e2bff173be9d6dc29c223d3f2183e34a6fe6f862f79983a0e8c140",
+              "url": "https://github.com/motionssalt/keyflaw-look-fit/releases/download/motionsalt-cc-v1.1.0/MotionSalt_CC_v1.1.0.kfpack.sha256"
+            }
+          ]
+        },
+        "1.1.1": {
+          "release_url": "https://github.com/motionssalt/keyflaw-look-fit/releases/tag/motionsalt-cc-v1.1.1",
+          "assets": [
+            {
+              "name": "MotionSalt_CC_v1.1.1.kfpack",
+              "size": 6646,
+              "sha256": "82c2700c67b6f1775b1da09ae2d0e275bec1b0c1c9a86a6b9a11386fc9d7ac11",
+              "url": "https://github.com/motionssalt/keyflaw-look-fit/releases/download/motionsalt-cc-v1.1.1/MotionSalt_CC_v1.1.1.kfpack"
+            },
+            {
+              "name": "MotionSalt_CC_v1.1.1.kfpack.sha256",
+              "size": 94,
+              "sha256": "8716514519edd95e17829091eaec717372d2823cbf770924bef3a60636a2c04d",
+              "url": "https://github.com/motionssalt/keyflaw-look-fit/releases/download/motionsalt-cc-v1.1.1/MotionSalt_CC_v1.1.1.kfpack.sha256"
+            }
+          ]
+        }
+      },
+      "prior_GitHub_releases_preserved": true
+    },
+    "historical_pre_maintenance_summary": {
+      "cc_model": "M2_Dade_srgb",
+      "cc_params": {},
+      "gradient": {
+        "hypothesis": "H1_vertical_spatial_multiply_gradient (smoothstep falloff with subtle RGB shadow tint)",
+        "type": "H1_mul_rgb_smoothstep",
+        "coordinate_reference": "Full frame height (normalised y in [0, 1], 0 = top row, 1 = bottom row)",
+        "y0_norm": 0.226816,
+        "y1_norm": 0.775967,
+        "pixel_rows_at_resolutions": {
+          "pairA_1280x720": {
+            "y0_px": 163.31,
+            "y1_px": 558.7
+          },
+          "pairB_1280x720": {
+            "y0_px": 163.31,
+            "y1_px": 558.7
+          }
+        },
+        "falloff_curve": "smoothstep",
+        "blend_mode": "multiply",
+        "blend_formula": "out = clamp(cc * (1.0 - smoothstep(y0, y1, y_norm) * strength_rgb), 0.0, 1.0)",
+        "strength_rgb": [
+          0.089249,
+          0.109361,
+          0.101978
+        ],
+        "strength_luma_equiv": 0.104552
+      },
+      "unsharp": {
+        "mode": "rgb",
+        "colour_space": "gamma-encoded sRGB [0..1] (post-gradient)",
+        "kernel": "single-pass 25-tap (5x5 separable [1,4,6,4,1]/16 with bilinear UV offset = vec2(i,j) * sigma_px / resolution)",
+        "scaling_law": "constant_fraction_of_height",
+        "sigma_frac_h": 0.000535,
+        "sigma_px_at_resolutions": {
+          "pairA_1280x720": 0.3854,
+          "pairB_1280x720": 0.3854,
+          "pairB_409p": 0.2189,
+          "fhd_1920x1080": 0.578
+        },
+        "amount": 3.0,
+        "threshold_01": 0.00659,
+        "threshold_255": 1.68,
+        "nuisance_pre_blur_px": {
+          "pairA_720p": 0.5079,
+          "pairB_720p": 0.2688,
+          "pairB_409p": 0.0263
+        },
+        "edge_profile_rmse_reduction_pct": {
+          "pairA_720p": 1.52,
+          "pairB_720p": 29.39,
+          "pairB_409p": 9.44
+        },
+        "cross_pair_agreement_note": "Pair B exhibits clear unsharp mask halo signature with 31.3% edge profile RMSE reduction. Pair A baseline unsharpened edge RMSE was already 3.54/255 (within the ~3-level reconstruction noise floor), explaining the modest percentage gain on Pair A wide shot while confirming unsharp consistency."
+      },
+      "flare": {
+        "status": "present_scene_dependent",
+        "model": "2D anisotropic rotated Gaussian radial glow with Screen blend",
+        "falloff_curve": "gaussian",
+        "blend_mode": "screen",
+        "blend_formula": "f = intensity * exp(-0.5 * (u^2 + v^2)) * colour_rgb; out = 1.0 - (1.0 - base) * (1.0 - clamp(f, 0.0, 1.0))",
+        "canonical_default_params": {
+          "cx": 0.40268765489967634,
+          "cy": -0.19999999990872497,
+          "rx_frac_h": 0.8499999999999815,
+          "ry_frac_h": 0.8499999999999599,
+          "angle_deg": 89.95424790983336,
+          "colour_rgb": [
+            0.019327,
+            0.198772,
+            1.0
+          ],
+          "intensity": 0.411355,
+          "source_basis": "Pair A top energy-burst optical glow (warm amber [1.0, 0.86, 0.11], cx=0.402, cy=0.015, rx=0.35, ry=0.30)"
+        },
+        "pairB_fitted_params": {
+          "cx": 0.9160736013485856,
+          "cy": 0.5599464911982706,
+          "rx_frac_h": 0.5320131725097228,
+          "ry_frac_h": 0.11341449831814147,
+          "angle_deg": -44.15617832889186,
+          "colour_rgb": [
+            1.0,
+            0.13799,
+            0.0
+          ],
+          "intensity": 0.85,
+          "source_basis": "Pair B character eye-burst highlight glow (red/warm accent, cx=0.727, cy=0.986)"
+        },
+        "blend_mode_comparison": {
+          "screen_lp_energy_reduction_pct": 53.3,
+          "add_lp_energy_reduction_pct": 55.13,
+          "soft_light_lp_energy_reduction_pct": 58.89,
+          "lighten_lp_energy_reduction_pct": 5.96,
+          "justification": "Screen blend achieves superior highlight preservation without harsh clipping compared to Add, and higher residual energy reduction than Soft Light."
+        },
+        "energy_reduction_pct": {
+          "pairA": 53.3,
+          "pairB": 19.72
+        },
+        "scene_dependence": "Glow position and tint vary per shot matching the scene highlight/energy burst. The Keyflaw effect provides a Haze Flare toggle and default parameters."
+      },
+      "order_of_operations": "1. Colour Correction (M3 spline in linear space) -> 2. Gradient (smoothstep multiply) -> 3. Unsharp Mask (25-tap RGB) -> 4. Haze Flare (2D Gaussian Screen)",
+      "metrics": {
+        "pairA_full_composite": {
+          "median_de00": 1.412,
+          "p90_de00": 3.404,
+          "mae_mean": 4.23,
+          "edge_rmse": 20.56,
+          "ssim": 0.9388
+        },
+        "pairB_full_composite": {
+          "median_de00": 3.264,
+          "p90_de00": 6.094,
+          "mae_mean": 5.32,
+          "edge_rmse": 34.98,
+          "ssim": 0.9242
+        },
+        "skin_error_levels": {
+          "R": 1.61,
+          "G": 0.75,
+          "B": 0.05
+        }
+      },
+      "secondary_effects": {
+        "vignette": {
+          "status": "absent",
+          "evidence": "Q4 2D surface fit showed radial vignette explains only 5.0% (A) and 3.5% (B) of spatial variance, compared to 38.4% (A) and 71.3% (B) explained by vertical gradient. Spatial residual lacks corner radial darkening signature."
+        },
+        "film_grain": {
+          "status": "absent",
+          "evidence": "Flat interior Laplacian standard deviation is 0.99/255 on Pair A and 0.62/255 on Pair B (both < 1.0/255, completely consistent with standard 8-bit quantization and H.264/H.265 compression noise; no added film grain detected)."
+        },
+        "chromatic_aberration": {
+          "status": "absent",
+          "evidence": "R-B edge gradient alignment shows no radial fringe displacement at periphery (< 0.2 px channel shift, within sub-pixel alignment margin; edge corr = 0.4600)."
+        },
+        "black_lift_or_veil": {
+          "status": "absent",
+          "evidence": "Fitted uniform veil is < 1.5/255 on Pair A (within the 3/255 noise floor); deep blacks reach 3.0/255 in Pair A; global veil adds negligible LP energy reduction (43.46 -> 35.39). Excluded to preserve contrast."
+        },
+        "bloom": {
+          "status": "subsumed_by_flare",
+          "evidence": "Optical highlight diffusion is captured cleanly by the Gaussian Screen flare model, which screens highlights over dark regions without blowing out highlights."
+        },
+        "flicker": {
+          "status": "absent",
+          "evidence": "Static frame pair analysis shows no periodic temporal luminance modulation. EXTRA_EFFECTS is 'none'."
+        }
       }
     }
   },
@@ -380,30 +622,29 @@
     "Q9"
   ],
   "next_steps": [
-    "Run spec parity and immutable pack builder",
-    "Verify previous packs and Floby source byte-identical",
-    "Publish and verify new versioned GitHub Release",
-    "Test reported clip in Keyflaw; device verification pending"
+    "Import MotionSalt_CC_v1.1.1.kfpack into Keyflaw and test the exact clip that looked burnt; no phone-side commands needed.",
+    "If needed, compare Colour Correction, Quality and Haze Flare switches separately."
   ],
   "decisions": [
-    "Private repo motionssalt/keyflaw-look-fit-xenoz created using GITHUB_PAT without persisting raw secret tokens",
     "Scaffold, docs/BUILD_PROMPT.md, docs/manifest.md, and modular pipeline scripts established",
-    "Q1 marked blocked pending attachment/upload of Xenoz frame pairs",
     "Maintenance 2026-11-02: use existing single repository only; preserve existing inputs, other-owner sources and all prior release assets. New output must have a semantic version in its filename.",
     "Use v1.1.1, an unused patch version after suite v1.1.0. Archive legacy pack byte-for-byte as MotionSalt_CC_v1.1.0.kfpack; leave unversioned legacy file untouched.",
     "Reference runtime now matches actual source-USM then CC then gradient then flare; half-pixel spatial coordinates match shader sampling.",
     "Retain flare and existing exposed controls unchanged; safety guard and anti-halo limiter are deliberate engineering changes, not freshly measured editor effects."
   ],
   "known_issues": [
-    "User reports burnt-looking clips; exact app symptom not yet reproduced in Keyflaw.",
-    "Historical state contains inconsistent fitting claims; this maintenance does not re-certify prior Q1-Q9 results."
+    "Not tested inside Keyflaw; exact user-reported burning remains subject to device confirmation.",
+    "Safety deliberately trades colour error for headroom; median DE00 increases A 1.409\u21921.502, B 3.261\u21924.166.",
+    "Underlying fitted matrix is not neutral-preserving and grey curve is not guaranteed monotonic; no unseen-scene accuracy claim.",
+    "Retained flare is fixed blue ambient glow, not a proven highlight-tracking reconstruction; perceptual strength is uncertain.",
+    "Historical Q1-Q9 acceptance claims have not been re-certified by this maintenance."
   ],
   "cc_owner": "Xenoz",
   "secrets_expected": [
     "GITHUB_PAT"
   ],
-  "last_updated": "2026-11-02T07:23:57.654389+00:00",
-  "last_session_note": "v1.1.1 pack validated and built; duplicate-version build refused; v1.1.0 rollback byte-identical, Floby untouched. Awaiting GitHub release publication.",
+  "last_updated": "2026-11-02T07:24:46.858906+00:00",
+  "last_session_note": "Completed and pushed Xenoz v1.1.1 burn-safety patch, immutable rollback v1.1.0 and new v1.1.1 GitHub releases; prior assets preserved. Shader/spec/CLI/numerical checks passed; Keyflaw device verification pending.",
   "maintenance_queue": [
     {
       "id": "R1",
@@ -414,7 +655,8 @@
     {
       "id": "R2",
       "title": "Immutable versioned packs and GitHub release",
-      "status": "in_progress"
+      "status": "done",
+      "notes": "Published immutable v1.1.0 archived rollback and v1.1.1 safety pack, each with versioned asset and SHA256. Earlier release/asset IDs unchanged; legacy pack untouched; overwrite refusal tested."
     },
     {
       "id": "R3",
