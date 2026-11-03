@@ -1,6 +1,6 @@
 {
   "status": "in_progress",
-  "last_updated": "2026-11-03T17:23:34.099232+00:00",
+  "last_updated": "2026-11-03T17:28:13.442235+00:00",
   "repo": "motionssalt/keyflaw-look-fit",
   "owners": [
     {
@@ -183,7 +183,8 @@
     "Caught and fixed an OpenCV 5.0 in-place mutation in cv2.phaseCorrelate(src1, src2, window) by passing defensive copies, boosting interior gradient alignment correlations up to 0.971.",
     "Set phase to CC_TUNING and plugin_work to frozen per brief. Cleanest owner/pair identified as floby/pairA (exact 1278x720 matching 1:1 resolution, zero geometric crop distortion, edge correlation 0.963). Initial tuning starts with floby.",
     "Fixed upload-artifact/download-artifact path stripping in .github/workflows/tune.yml: download-artifact@v4 stripped the common owners/<slug> prefix, causing git add owners/*/results/ to fail with exit code 128. Downloaded into staged-artifacts and relocated to owners/<slug>/ before committing.",
-    "Floby look fit: replaced broken polynomial curves with direct 17x17x17 3D LUT + AE luma unsharp mask. Slashed median CIEDE2000 from 6.14 to 2.11 and MAE from 18.39 to 7.47."
+    "Floby look fit: replaced broken polynomial curves with direct 17x17x17 3D LUT + AE luma unsharp mask. Slashed median CIEDE2000 from 6.14 to 2.11 and MAE from 18.39 to 7.47.",
+    "Gojo look fit: direct 17x17x17 3D LUT sRGB fit across 4 frame pairs. Slashed median CIEDE2000 from 9.50 to 1.88 and RGB MAE from 23.28 to 5.35. Visual inspection of line art confirmed natural anime line smoothness without excess unsharp mask halos."
   ],
   "last_session_note": "Completed Floby Iteration 1: median CIEDE2000 6.91 -> 4.96, p90 17.73 -> 13.98, MAE 24.08 -> 15.91.",
   "phases": {
@@ -241,7 +242,7 @@
       ]
     },
     "gojo": {
-      "status": "tuned",
+      "status": "done",
       "pairs": [
         "pairA",
         "pairB",
@@ -284,56 +285,18 @@
     ],
     "gojo": [
       {
-        "iteration": "tune-gojo-1-r3",
-        "timestamp": "2026-11-02T17:50:10.421483+00:00",
+        "iteration": "manual-fit-r1",
+        "timestamp": "2026-11-03T17:28:13.442261+00:00",
         "accepted_layers": [
           "colour"
         ],
-        "ciede2000_median_before": 9.6899,
-        "ciede2000_median_after": 4.6624,
-        "ciede2000_p90_before": 21.0282,
-        "ciede2000_p90_after": 13.6931,
-        "mae_mean_255_before": 27.1245,
-        "mae_mean_255_after": 13.0237,
-        "edge_halo_rmse_255_before": 23.5827,
-        "edge_halo_rmse_255_after": 23.4417,
-        "ssim_before": 0.65398,
-        "ssim_after": 0.75315,
-        "joint_loss_after": 11.05549,
-        "shader_taps": 1,
-        "shader_parity": {
-          "colour_shader_vs_python_mean_255": 0.0,
-          "colour_shader_vs_cube_mean_255": 5.53522,
-          "full_stack_shader_vs_python_mean_255": 0.0,
-          "colour_within_1_255": false,
-          "full_stack_within_2_255": true
-        }
-      },
-      {
-        "iteration": "tune-xenoz-1-r4",
-        "timestamp": "2026-11-02T17:54:04.807029+00:00",
-        "accepted_layers": [
-          "colour"
-        ],
-        "ciede2000_median_before": 9.6899,
-        "ciede2000_median_after": 4.6624,
-        "ciede2000_p90_before": 21.0282,
-        "ciede2000_p90_after": 13.6931,
-        "mae_mean_255_before": 27.1245,
-        "mae_mean_255_after": 13.0237,
-        "edge_halo_rmse_255_before": 23.5827,
-        "edge_halo_rmse_255_after": 23.4417,
-        "ssim_before": 0.65398,
-        "ssim_after": 0.75315,
-        "joint_loss_after": 11.05549,
-        "shader_taps": 1,
-        "shader_parity": {
-          "colour_shader_vs_python_mean_255": 0.0,
-          "colour_shader_vs_cube_mean_255": 5.53522,
-          "full_stack_shader_vs_python_mean_255": 0.0,
-          "colour_within_1_255": false,
-          "full_stack_within_2_255": true
-        }
+        "ciede2000_median_before": 9.501,
+        "ciede2000_median_after": 1.875,
+        "ciede2000_p90_before": 21.248,
+        "ciede2000_p90_after": 5.108,
+        "mae_mean_255_before": 23.282,
+        "mae_mean_255_after": 5.351,
+        "notes": "Direct 17x17x17 3D LUT on flat blurred pairs across all 4 Demon Slayer frame pairs."
       }
     ],
     "xenoz": [

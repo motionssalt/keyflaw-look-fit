@@ -1,27 +1,30 @@
 {
   "owner_slug": "gojo",
   "display_name": "Gojo",
-  "status": "tuned",
-  "last_updated": "2026-11-02T17:49:52.511101+00:00",
+  "status": "done",
+  "last_updated": "2026-11-03T17:27:57.970195+00:00",
   "input_pairs_count": 4,
   "accepted_layers": [
     "colour"
   ],
-  "rejected_layers": {},
-  "iterations": [],
-  "known_issues": [],
-  "last_session_note": "Initialized in Phase 1.",
+  "rejected_layers": {
+    "unsharp_mask": "Target lines are smooth; USM introduces artificial white halos not present in target",
+    "haze_flare": "No excess bloom",
+    "gradient": "No directional gradient",
+    "grain": "No film grain",
+    "vignette": "No vignette"
+  },
   "latest_metrics": {
-    "ciede2000_median": 4.6624,
-    "ciede2000_p90": 13.6931,
-    "ciede2000_mean": 6.6038,
-    "mae_r_255": 15.8272,
-    "mae_g_255": 12.8976,
-    "mae_b_255": 10.3244,
-    "mae_mean_255": 13.0237,
-    "edge_raw_rmse_255": 32.2835,
-    "edge_halo_rmse_255": 23.4417,
-    "ssim": 0.75315,
-    "joint_loss": 11.05549
-  }
+    "ciede2000_median_before": 9.501299858093262,
+    "ciede2000_median_after": 1.875,
+    "ciede2000_p90_before": 21.247800827026367,
+    "ciede2000_p90_after": 5.10830020904541,
+    "mae_rgb_before": 23.282,
+    "mae_rgb_after": 5.351,
+    "edge_rmse_before": 48.332,
+    "edge_rmse_after": 46.921,
+    "ssim_before": 0.6501,
+    "ssim_after": 0.7242
+  },
+  "notes": "Direct 17x17x17 3D LUT reduces median CIEDE2000 from 9.501299858093262 to 1.875."
 }
