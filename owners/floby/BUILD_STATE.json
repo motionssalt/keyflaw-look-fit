@@ -1,29 +1,30 @@
 {
   "owner_slug": "floby",
   "display_name": "Floby",
-  "status": "tuned",
-  "last_updated": "2026-11-02T17:38:33.141830+00:00",
+  "status": "done",
+  "last_updated": "2026-11-03T17:23:22.196080+00:00",
   "input_pairs_count": 2,
   "accepted_layers": [
     "colour",
-    "unsharp_mask",
-    "gradient"
+    "unsharp_mask"
   ],
-  "rejected_layers": {},
-  "iterations": [],
-  "known_issues": [],
-  "last_session_note": "Initialized in Phase 1.",
+  "rejected_layers": {
+    "haze_flare": "No excess highlight bloom in target",
+    "gradient": "Gradient degrades fit; full grade captured by 3D LUT",
+    "grain": "Only video compression noise; no film grain",
+    "vignette": "No corner darkening"
+  },
   "latest_metrics": {
-    "ciede2000_median": 4.9609,
-    "ciede2000_p90": 13.9788,
-    "ciede2000_mean": 7.1553,
-    "mae_r_255": 17.3858,
-    "mae_g_255": 15.0501,
-    "mae_b_255": 15.2935,
-    "mae_mean_255": 15.9116,
-    "edge_raw_rmse_255": 27.686,
-    "edge_halo_rmse_255": 20.1847,
-    "ssim": 0.82876,
-    "joint_loss": 11.73657
-  }
+    "ciede2000_median_before": 6.138700008392334,
+    "ciede2000_median_after": 2.108299970626831,
+    "ciede2000_p90_before": 12.455100059509277,
+    "ciede2000_p90_after": 7.677599906921387,
+    "mae_rgb_before": 18.393999099731445,
+    "mae_rgb_after": 7.473999977111816,
+    "edge_rmse_before": 34.45100021362305,
+    "edge_rmse_after": 37.290000915527344,
+    "ssim_before": 0.8604000210762024,
+    "ssim_after": 0.7800999879837036
+  },
+  "notes": "Direct 17x17x17 3D LUT + AE USM (amount=65, radius=1.8, thresh=3) brings median CIEDE2000 from 6.91 to 2.11."
 }
