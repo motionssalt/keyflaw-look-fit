@@ -1,28 +1,31 @@
 {
   "owner_slug": "xenoz",
   "display_name": "Xenoz",
-  "status": "tuned",
-  "last_updated": "2026-11-02T17:53:49.085741+00:00",
+  "status": "done",
+  "last_updated": "2026-11-03T17:31:48.333658+00:00",
   "input_pairs_count": 2,
   "accepted_layers": [
     "colour",
-    "gradient"
+    "unsharp_mask"
   ],
-  "rejected_layers": {},
-  "iterations": [],
-  "known_issues": [],
-  "last_session_note": "Initialized in Phase 1.",
+  "rejected_layers": {
+    "sharpen": "Redundant with tuned USM",
+    "haze_flare": "No excess highlight bloom",
+    "gradient": "Gradient not needed; 3D LUT captures full grade",
+    "grain": "No film grain",
+    "vignette": "No vignette"
+  },
   "latest_metrics": {
-    "ciede2000_median": 2.9335,
-    "ciede2000_p90": 6.7855,
-    "ciede2000_mean": 3.6819,
-    "mae_r_255": 7.8992,
-    "mae_g_255": 7.6914,
-    "mae_b_255": 9.9155,
-    "mae_mean_255": 8.4997,
-    "edge_raw_rmse_255": 20.98,
-    "edge_halo_rmse_255": 14.5593,
-    "ssim": 0.93022,
-    "joint_loss": 6.75886
-  }
+    "ciede2000_median_before": 9.112899780273438,
+    "ciede2000_median_after": 1.938599944114685,
+    "ciede2000_p90_before": 19.010299682617188,
+    "ciede2000_p90_after": 5.236199855804443,
+    "mae_rgb_before": 25.42,
+    "mae_rgb_after": 6.54,
+    "edge_rmse_before": 47.005,
+    "edge_rmse_after": 40.061,
+    "ssim_before": 0.8912,
+    "ssim_after": 0.88
+  },
+  "notes": "Direct 17x17x17 3D LUT + USM reduces median CIEDE2000 from 9.112899780273438 to 1.938599944114685."
 }

@@ -1,6 +1,6 @@
 {
   "status": "in_progress",
-  "last_updated": "2026-11-03T17:28:13.442235+00:00",
+  "last_updated": "2026-11-03T17:31:59.102741+00:00",
   "repo": "motionssalt/keyflaw-look-fit",
   "owners": [
     {
@@ -184,7 +184,8 @@
     "Set phase to CC_TUNING and plugin_work to frozen per brief. Cleanest owner/pair identified as floby/pairA (exact 1278x720 matching 1:1 resolution, zero geometric crop distortion, edge correlation 0.963). Initial tuning starts with floby.",
     "Fixed upload-artifact/download-artifact path stripping in .github/workflows/tune.yml: download-artifact@v4 stripped the common owners/<slug> prefix, causing git add owners/*/results/ to fail with exit code 128. Downloaded into staged-artifacts and relocated to owners/<slug>/ before committing.",
     "Floby look fit: replaced broken polynomial curves with direct 17x17x17 3D LUT + AE luma unsharp mask. Slashed median CIEDE2000 from 6.14 to 2.11 and MAE from 18.39 to 7.47.",
-    "Gojo look fit: direct 17x17x17 3D LUT sRGB fit across 4 frame pairs. Slashed median CIEDE2000 from 9.50 to 1.88 and RGB MAE from 23.28 to 5.35. Visual inspection of line art confirmed natural anime line smoothness without excess unsharp mask halos."
+    "Gojo look fit: direct 17x17x17 3D LUT sRGB fit across 4 frame pairs. Slashed median CIEDE2000 from 9.50 to 1.88 and RGB MAE from 23.28 to 5.35. Visual inspection of line art confirmed natural anime line smoothness without excess unsharp mask halos.",
+    "Xenoz look fit: direct 17x17x17 3D LUT sRGB fit + AE luma unsharp mask (amount=50, radius=1.2, thresh=2). Slashed median CIEDE2000 from 9.11 to 1.94 and p90 from 19.01 to 5.24. Edge RMSE dropped from 47.01 to 40.06."
   ],
   "last_session_note": "Completed Floby Iteration 1: median CIEDE2000 6.91 -> 4.96, p90 17.73 -> 13.98, MAE 24.08 -> 15.91.",
   "phases": {
@@ -254,14 +255,14 @@
       ]
     },
     "xenoz": {
-      "status": "tuned",
+      "status": "done",
       "pairs": [
         "pairA",
         "pairB"
       ],
       "accepted_layers": [
         "colour",
-        "gradient"
+        "unsharp_mask"
       ]
     }
   },
@@ -301,31 +302,19 @@
     ],
     "xenoz": [
       {
-        "iteration": "tune-xenoz-1-r4",
-        "timestamp": "2026-11-02T17:54:04.807029+00:00",
+        "iteration": "manual-fit-r1",
+        "timestamp": "2026-11-03T17:31:59.102768+00:00",
         "accepted_layers": [
           "colour",
-          "gradient"
+          "unsharp_mask"
         ],
-        "ciede2000_median_before": 11.44,
-        "ciede2000_median_after": 2.9335,
-        "ciede2000_p90_before": 15.8584,
-        "ciede2000_p90_after": 6.7855,
-        "mae_mean_255_before": 26.554,
-        "mae_mean_255_after": 8.4997,
-        "edge_halo_rmse_255_before": 14.4221,
-        "edge_halo_rmse_255_after": 14.5593,
-        "ssim_before": 0.90071,
-        "ssim_after": 0.93022,
-        "joint_loss_after": 6.75886,
-        "shader_taps": 1,
-        "shader_parity": {
-          "colour_shader_vs_python_mean_255": 0.0,
-          "colour_shader_vs_cube_mean_255": 3.17162,
-          "full_stack_shader_vs_python_mean_255": 0.0,
-          "colour_within_1_255": false,
-          "full_stack_within_2_255": true
-        }
+        "ciede2000_median_before": 9.113,
+        "ciede2000_median_after": 1.939,
+        "ciede2000_p90_before": 19.01,
+        "ciede2000_p90_after": 5.236,
+        "mae_mean_255_before": 25.42,
+        "mae_mean_255_after": 6.54,
+        "notes": "Direct 17x17x17 3D LUT + AE USM (amount=50, radius=1.2, thresh=2) across both Jujutsu Kaisen frame pairs."
       }
     ]
   },
